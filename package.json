@@ -1,21 +1,31 @@
 {
   "name": "api2021",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "pug": "2.0.0-beta11",
+    "concurrently": "5.1.0",
+    "cors": "2.8.5",
+    "@material-ui/core": "latest",
+    "@material-ui/icons": "^4.11.2",
+    "react-router-dom": "^5.2.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start-front": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start-server": "node ./server/bin/www",
+    "start": "concurrently \"npm run start-server\" \"npm run start-front\""
   },
   "eslintConfig": {
     "extends": [
