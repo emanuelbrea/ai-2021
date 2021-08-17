@@ -43,7 +43,8 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
-    },
+    }
+
 }));
 
 export default function ForgotPassword() {
@@ -57,7 +58,7 @@ export default function ForgotPassword() {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Forgot Password
+                    Recupero de contraseña
                 </Typography>
                 <form className={classes.form} noValidate>
                     <TextField
@@ -66,12 +67,21 @@ export default function ForgotPassword() {
                         required
                         fullWidth
                         id="email"
-                        label="Email Address"
+                        label="Email"
                         name="email"
                         autoComplete="email"
                         autoFocus
                     />
-                    <Typography component="body1" >
+                    <TextField
+                        variant="outlined"
+                        required
+                        fullWidth
+                        name="dni"
+                        label="DNI"
+                        id="dni"
+                        autoComplete="off"
+                    />
+                    <Typography component="body3" >
                         Enviaremos un mail con instrucciones para restablecer la contraseña
                     </Typography>
                     <Button
@@ -81,17 +91,17 @@ export default function ForgotPassword() {
                         color="primary"
                         className={classes.submit}
                     >
-                        Reset password
+                        Enviar
                     </Button>
                     <Grid container>
                         <Grid item xs>
                             <Link href="/login" variant="body2">
-                                Already have an account? Sign in
+                                ¿Ya tienes usuario? Ingresar
                             </Link>
                         </Grid>
                         <Grid item>
                             <Link href="/signup" variant="body2">
-                                {"Don't have an account? Sign Up"}
+                                {"¿No tienes cuenta? Registrate!"}
                             </Link>
                         </Grid>
                     </Grid>

@@ -1,6 +1,7 @@
 import './css/App.css';
 import React from 'react';
 import Routes from './routes'
+import MenuAppBar from "./components/Menu";
 
 class App extends React.Component{
 
