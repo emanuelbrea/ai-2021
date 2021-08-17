@@ -20,6 +20,7 @@ import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 import ListItemText from "@material-ui/core/ListItemText";
 import logo from '../images/logo.svg';
+import Footer from "./Footer";
 
 
 const drawerWidth = 240;

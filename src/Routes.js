@@ -3,7 +3,7 @@ import { Route,  BrowserRouter as Router, Switch } from 'react-router-dom'
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import ForgotPassword from "./components/ForgotPassword";
-import MenuAppBar from "./components/Menu";
+import Main from "./components/Main";
 
 export default props => (
     <Router>
@@ -11,7 +11,7 @@ export default props => (
                 <Route exact path='/login' component={ Login } />
                 <Route exact path='/signup' component={ Signup } />
                 <Route exact path='/reset' component={ ForgotPassword } />
-                <Route exact path='/' component={ MenuAppBar } />
+                <Route exact path='/' component={ Main } />
             </Switch>
     </Router>
 )
