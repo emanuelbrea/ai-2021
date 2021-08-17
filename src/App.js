@@ -1,7 +1,8 @@
 import './css/App.css';
 import React from 'react';
 import Routes from './routes'
-import MenuAppBar from "./components/Menu";
+import theme from './Theme'
+import {ThemeProvider} from "@material-ui/core";
 
 class App extends React.Component{
 
@@ -12,9 +13,11 @@ class App extends React.Component{
 
   render() {
     return (
+        <ThemeProvider theme={theme}>
         <div className="App">
             <Routes />
         </div>
+        </ThemeProvider>
     );
   }
 
