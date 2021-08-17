@@ -8,16 +8,17 @@ class App extends React.Component{
 
   constructor(props) {
     super(props);
-    this.state = { apiResponse: "" };
+      this.state = { apiResponse: "" };
   }
 
   render() {
     return (
-        <ThemeProvider theme={theme}>
+
         <div className="App">
+            <ThemeProvider theme={theme}>
             <Routes />
-        </div>
         </ThemeProvider>
+        </div>
     );
   }
 
