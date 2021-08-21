@@ -2,6 +2,7 @@ import React from "react";
 import Footer from "./Footer";
 import MenuAppBar from "./NavBar";
 import {makeStyles} from "@material-ui/core/styles";
+import Routing from "./Routing";
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
@@ -16,7 +17,9 @@ export default function Main(){
     return(
         <div className={classes.wrapper}>
             <MenuAppBar/>
+            <Routing/>
             <Footer />
+            {/*TODO mover junto a home dentro de routing /home*/}
         </div>
     );
 }
