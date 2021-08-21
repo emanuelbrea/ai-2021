@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -131,17 +131,18 @@ export default function MenuAppBar() {
                         edge="start"
                         className={clsx(classes.menuButton, open && classes.hide)}
                     >
-                        <MenuIcon />
+                        <MenuIcon/>
                     </IconButton>
-                    <Typography variant="h6" >
+                    <Typography variant="h6">
                         <Link to="/" className={classes.link}>
-                            <img width={40}  src={logo} alt="" />
+                            <img width={40} src={logo} alt=""/>
                             <span className={classes.tagline}>Clinica Brea</span>
                         </Link>
                     </Typography>
                     <section className={classes.rightToolbar}>
-                    <Button color="inherit" className={classes.menuButton} onClick={handleRegister}>Registro</Button>
-                    <Button color="inherit" variant={"outlined"} onClick={handleLogin}>Ingresar</Button>
+                        <Button color="inherit" className={classes.menuButton}
+                                onClick={handleRegister}>Registro</Button>
+                        <Button color="inherit" variant={"outlined"} onClick={handleLogin}>Ingresar</Button>
                     </section>
                 </Toolbar>
             </AppBar>
@@ -157,24 +158,24 @@ export default function MenuAppBar() {
             >
                 <div className={classes.drawerHeader}>
                     <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                        {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
                     </IconButton>
                 </div>
-                <Divider />
+                <Divider/>
                 <List>
                     {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                         <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
+                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
+                            <ListItemText primary={text}/>
                         </ListItem>
                     ))}
                 </List>
-                <Divider />
+                <Divider/>
                 <List>
                     {['All mail', 'Trash', 'Spam'].map((text, index) => (
                         <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
+                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
+                            <ListItemText primary={text}/>
                         </ListItem>
                     ))}
                 </List>
