@@ -1,7 +1,23 @@
-import {Button, Card, CardActions, CardContent, CardMedia, Container, Grid, Typography} from "@material-ui/core";
+import {
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardMedia,
+    Container,
+    Grid,
+    Typography
+} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Footer from "./Footer";
 import React from "react";
+import CalendarioVacunacion from "../images/CalendarioVacunacion.jpg";
+import ControlesPediatricos from "../images/ControlesPediatricos.jpg";
+import Percentiles from "../images/Percentiles.jpg";
+import AOS from "aos/dist/aos";
+import "aos/dist/aos.css";
+
+AOS.init({ once: true });
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -25,14 +41,65 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
     },
     cardMedia: {
-        paddingTop: '56.25%', // 16:9
+        marginTop:'30'
     },
     cardContent: {
         flexGrow: 1,
     },
 }));
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+
+const cards = [
+    {
+        key: 1,
+        description: "Calendario nacional de vacunacion",
+        image: CalendarioVacunacion,
+        title: "Calendario nacional de vacunacion",
+        link: "https://www.stamboulian.com.ar/pacientes/calendario-nacional-de-vacunacion/"
+    },
+    {
+        key: 2,
+        description: "Control pediatrico",
+        image: ControlesPediatricos,
+        title: "Control pediatrico",
+        link: "https://www.clinicapueyrredon.com/control-pediatrico-del-nino-sano/"
+    },
+    {
+        key: 3,
+        description: "Percentiles ",
+        image: Percentiles,
+        title: "Percentiles y parametros generales",
+        link: "https://www.mayoclinic.org/es-es/healthy-lifestyle/infant-and-toddler-health/in-depth/healthy-baby/art-20044767"
+    },
+    {
+        key: 4,
+        description: "Calendario nacional de vacunacion",
+        image: CalendarioVacunacion,
+        title: "Calendario nacional de vacunacion",
+        link: "https://www.stamboulian.com.ar/pacientes/calendario-nacional-de-vacunacion/"
+    },
+    {
+        key: 5,
+        description: "Control pediatrico",
+        image: ControlesPediatricos,
+        title: "Control pediatrico",
+        link: "https://www.clinicapueyrredon.com/control-pediatrico-del-nino-sano/"
+    },
+    {
+        key: 6,
+        description: "Percentiles ",
+        image: Percentiles,
+        title: "Percentiles y parametros generales",
+        link: "https://www.mayoclinic.org/es-es/healthy-lifestyle/infant-and-toddler-health/in-depth/healthy-baby/art-20044767"
+    }
+];
+
+const openInNewTab = (url) => {
+    const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+    if (newWindow) newWindow.opener = null
+}
+
 
 export default function Home() {
     const classes = useStyles();
@@ -53,32 +120,32 @@ export default function Home() {
                 </div>
                 <Container className={classes.cardGrid} maxWidth="md">
                     {/* End hero unit */}
-                    <Grid container spacing={4}>
+                    <Grid container spacing={4} >
                         {cards.map((card) => (
-                            <Grid item key={card} xs={12} sm={6} md={4}>
+                            <Grid item key={card} xs={12} data-aos="zoom-in-up"
+                                  data-aos-duration={1500}>
                                 <Card className={classes.card}>
                                     <CardMedia
                                         className={classes.cardMedia}
-                                        image="https://source.unsplash.com/random"
-                                        title="Image title"
+                                        title={card.title}
+                                        component="img"
+                                        src={card.image}
                                     />
                                     <CardContent className={classes.cardContent}>
                                         <Typography gutterBottom variant="h5" component="h2">
-                                            Heading
+                                            {card.title}
                                         </Typography>
                                         <Typography>
-                                            This is a media card. You can use this section to describe the content.
+                                            {card.description}
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button size="small" color="primary">
-                                            View
-                                        </Button>
-                                        <Button size="small" color="primary">
-                                            Edit
+                                        <Button size="small" color="primary" onClick={() => openInNewTab(card.link)} >
+                                            Conoce mas
                                         </Button>
                                     </CardActions>
                                 </Card>
+
                             </Grid>
                         ))}
                     </Grid>
