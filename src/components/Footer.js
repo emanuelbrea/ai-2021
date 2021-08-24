@@ -137,8 +137,8 @@ export default function Footer() {
                                                 <IconButton
                                                     className={classes.infoIcon}
                                                     tabIndex={-1}
-                                                    href={index===1 && 'mailto:'+info.description}
-                                                    disabled={index===0}
+                                                    href={index === 1 && 'mailto:' + info.description}
+                                                    disabled={index === 0}
                                                 >
                                                     {info.icon}
                                                 </IconButton>

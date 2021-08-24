@@ -1,35 +1,34 @@
-import {
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    CardMedia,
-    Container,
-    Grid,
-    Typography
-} from "@material-ui/core";
+import {Button, Card, CardActions, CardContent, CardMedia, Container, Grid, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Footer from "./Footer";
 import React from "react";
 import CalendarioVacunacion from "../images/CalendarioVacunacion.jpg";
 import ControlesPediatricos from "../images/ControlesPediatricos.jpg";
 import Percentiles from "../images/Percentiles.jpg";
+import Doctor from "../images/doctor.png";
 import AOS from "aos/dist/aos";
 import "aos/dist/aos.css";
+import Box from "@material-ui/core/Box";
 
-AOS.init({ once: true });
+AOS.init({once: true});
 
 const useStyles = makeStyles((theme) => ({
-    icon: {
-        marginRight: theme.spacing(2),
+    heroTitle: {
+        padding: theme.spacing(8, 0, 6),
+        marginTop: theme.spacing(16),
     },
     heroContent: {
-        backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing(8, 0, 6),
-        marginTop: theme.spacing(10),
+        marginRight: theme.spacing(18),
+        marginTop: theme.spacing(26),
     },
-    heroButtons: {
-        marginTop: theme.spacing(4),
+    heroImage: {
+        marginRight: theme.spacing(18),
+    },
+    heroText: {
+        fontSize: '50px',
+        fontWeight: 'bold',
+        marginBottom: '15px',
+        color: "#4675ab",
     },
     cardGrid: {
         paddingTop: theme.spacing(8),
@@ -41,13 +40,13 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
     },
     cardMedia: {
-        marginTop:'30'
+        marginTop: '30',
+        width: 700,
     },
     cardContent: {
         flexGrow: 1,
     },
 }));
-
 
 
 const cards = [
@@ -107,20 +106,36 @@ export default function Home() {
     return (
         <React.Fragment>
             <main>
-                <div className={classes.heroContent}>
-                    <Container maxWidth="sm">
-                        <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-                            Clinica Brea
-                        </Typography>
-                        <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                            Gestionar controles pediatricos nunca fue tan facil.
-                            Con solo unos clicks puede llevar al dia todos los checkeos de sus hijos.
-                        </Typography>
-                    </Container>
-                </div>
+                <Container className={classes.heroTitle} maxWidth="xl">
+                    <Box display="flex" width={1} m={1} p={1}>
+                        <Box p={1} className={classes.heroContent}>
+                            <Container>
+                                <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom
+                                            className={classes.heroText}>
+                                    Clinica Brea
+                                </Typography>
+                                <Typography variant="h5" align="center" color="textSecondary" paragraph>
+                                    Gestionar controles pediatricos nunca fue tan facil.
+                                    Con solo unos clicks puede llevar al dia todos los checkeos de sus hijos.
+                                </Typography>
+                            </Container>
+                        </Box>
+                        <Box p={1} className={classes.heroImage}>
+                            <CardMedia
+                                className={classes.cardMedia}
+                                title={'doctor'}
+                                component="img"
+                                src={Doctor}
+
+                            />
+                        </Box>
+                    </Box>
+
+                </Container>
+
                 <Container className={classes.cardGrid} maxWidth="md">
                     {/* End hero unit */}
-                    <Grid container spacing={4} >
+                    <Grid container spacing={4}>
                         {cards.map((card) => (
                             <Grid item key={card} xs={12} data-aos="zoom-in-up"
                                   data-aos-duration={1500}>
@@ -140,7 +155,7 @@ export default function Home() {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button size="small" color="primary" onClick={() => openInNewTab(card.link)} >
+                                        <Button size="small" color="primary" onClick={() => openInNewTab(card.link)}>
                                             Conoce mas
                                         </Button>
                                     </CardActions>

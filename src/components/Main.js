@@ -1,7 +1,7 @@
 import React from "react";
 import MenuAppBar from "./NavBar";
 import Routing from "./Routing";
-import CssBaseline from "@material-ui/core/CssBaseline";
+import {CssBaseline} from "@material-ui/core";
 
 export default function Main() {
     return (

@@ -142,7 +142,7 @@ export default function MenuAppBar() {
                     </IconButton>
                     <Typography variant="h5">
                         <Link to="/" className={classes.link} onClick={scrollToTop}>
-                            <img width={50} src={logo} style={{marginBottom:-10}} alt=""/>
+                            <img width={50} src={logo} style={{marginBottom: -10}} alt=""/>
                             <span className={classes.tagline}>Clinica Brea</span>
                         </Link>
                     </Typography>
