@@ -19,7 +19,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 import ListItemText from "@material-ui/core/ListItemText";
-import logo from '../images/logo.svg';
+import logo from '../images/logo.png';
 
 const drawerWidth = 240;
 
@@ -116,6 +116,13 @@ export default function MenuAppBar() {
         setOpen(false);
     };
 
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    };
+
     return (
         <div className={classes.root}>
             <AppBar position="fixed"
@@ -133,9 +140,9 @@ export default function MenuAppBar() {
                     >
                         <MenuIcon/>
                     </IconButton>
-                    <Typography variant="h6">
-                        <Link to="/" className={classes.link}>
-                            <img width={40} src={logo} alt=""/>
+                    <Typography variant="h5">
+                        <Link to="/" className={classes.link} onClick={scrollToTop}>
+                            <img width={50} src={logo} style={{marginBottom:-10}} alt=""/>
                             <span className={classes.tagline}>Clinica Brea</span>
                         </Link>
                     </Typography>
