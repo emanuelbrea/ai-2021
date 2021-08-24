@@ -1,7 +1,7 @@
 import {Button, Card, CardActions, CardContent, CardMedia, Container, Grid, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Footer from "./Footer";
-import React from "react";
+import React, {useEffect} from "react";
 import CalendarioVacunacion from "../images/CalendarioVacunacion.jpg";
 import ControlesPediatricos from "../images/ControlesPediatricos.jpg";
 import Percentiles from "../images/Percentiles.jpg";
@@ -10,12 +10,15 @@ import AOS from "aos/dist/aos";
 import "aos/dist/aos.css";
 import Box from "@material-ui/core/Box";
 
-AOS.init({once: true});
 
 const useStyles = makeStyles((theme) => ({
     heroTitle: {
         padding: theme.spacing(8, 0, 6),
         marginTop: theme.spacing(16),
+    },
+    heroTitle2: {
+        marginTop: theme.spacing(50),
+        marginBottom: theme.spacing(16),
     },
     heroContent: {
         marginRight: theme.spacing(18),
@@ -41,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cardMedia: {
         marginTop: '30',
-        width: 700,
+        width: 700
     },
     cardContent: {
         flexGrow: 1,
@@ -70,27 +73,6 @@ const cards = [
         image: Percentiles,
         title: "Percentiles y parametros generales",
         link: "https://www.mayoclinic.org/es-es/healthy-lifestyle/infant-and-toddler-health/in-depth/healthy-baby/art-20044767"
-    },
-    {
-        key: 4,
-        description: "Calendario nacional de vacunacion",
-        image: CalendarioVacunacion,
-        title: "Calendario nacional de vacunacion",
-        link: "https://www.stamboulian.com.ar/pacientes/calendario-nacional-de-vacunacion/"
-    },
-    {
-        key: 5,
-        description: "Control pediatrico",
-        image: ControlesPediatricos,
-        title: "Control pediatrico",
-        link: "https://www.clinicapueyrredon.com/control-pediatrico-del-nino-sano/"
-    },
-    {
-        key: 6,
-        description: "Percentiles ",
-        image: Percentiles,
-        title: "Percentiles y parametros generales",
-        link: "https://www.mayoclinic.org/es-es/healthy-lifestyle/infant-and-toddler-health/in-depth/healthy-baby/art-20044767"
     }
 ];
 
@@ -103,12 +85,16 @@ const openInNewTab = (url) => {
 export default function Home() {
     const classes = useStyles();
 
+    useEffect(() => {
+        AOS.init();
+    }, []);
+
     return (
         <React.Fragment>
             <main>
                 <Container className={classes.heroTitle} maxWidth="xl">
                     <Box display="flex" width={1} m={1} p={1}>
-                        <Box p={1} className={classes.heroContent}>
+                        <Box p={1} className={classes.heroContent} data-aos="zoom-in-up" data-aos-duration={1500}>
                             <Container>
                                 <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom
                                             className={classes.heroText}>
@@ -120,7 +106,7 @@ export default function Home() {
                                 </Typography>
                             </Container>
                         </Box>
-                        <Box p={1} className={classes.heroImage}>
+                        <Box p={1} className={classes.heroImage} data-aos="zoom-in-up" data-aos-duration={1500}>
                             <CardMedia
                                 className={classes.cardMedia}
                                 title={'doctor'}
@@ -130,15 +116,29 @@ export default function Home() {
                             />
                         </Box>
                     </Box>
+                </Container>
+
+                <Container className={classes.heroTitle2} maxWidth="md" data-aos="zoom-in-up"
+                           data-aos-duration={1500} >
+
+                    <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom
+                                className={classes.heroText}>
+                        Funcionalidades
+                    </Typography>
+                    <Typography variant="h5" align="center" color="textSecondary" paragraph>
+                        Gestionar controles pediatricos nunca fue tan facil.
+                        Con solo unos clicks puede llevar al dia todos los checkeos de sus hijos.
+                    </Typography>
+
 
                 </Container>
 
                 <Container className={classes.cardGrid} maxWidth="md">
                     {/* End hero unit */}
-                    <Grid container spacing={4}>
+                    <Grid container  >
                         {cards.map((card) => (
                             <Grid item key={card} xs={12} data-aos="zoom-in-up"
-                                  data-aos-duration={1500}>
+                                  data-aos-duration={1500} style={{marginBottom:50}}>
                                 <Card className={classes.card}>
                                     <CardMedia
                                         className={classes.cardMedia}
