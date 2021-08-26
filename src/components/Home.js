@@ -6,6 +6,8 @@ import CalendarioVacunacion from "../images/CalendarioVacunacion.jpg";
 import ControlesPediatricos from "../images/ControlesPediatricos.jpg";
 import Percentiles from "../images/Percentiles.jpg";
 import Doctor from "../images/doctor.png";
+import Familia from "../images/familia.png";
+import Doctores from "../images/doctores.png";
 import AOS from "aos/dist/aos";
 import "aos/dist/aos.css";
 import Box from "@material-ui/core/Box";
@@ -42,6 +44,12 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
     },
+    cardFuncionalidad: {
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: theme.spacing(2),
+    },
     cardMedia: {
         marginTop: '30',
         width: 700
@@ -75,6 +83,31 @@ const cards = [
         link: "https://www.mayoclinic.org/es-es/healthy-lifestyle/infant-and-toddler-health/in-depth/healthy-baby/art-20044767"
     }
 ];
+
+const funcionalidades = [
+    {
+        key: 1,
+        description: "Calendario nacional de vacunacion",
+        image: Familia,
+        title: "Calendario nacional de vacunacion",
+        delay: 0,
+    },
+    {
+        key: 2,
+        description: "Control pediatrico",
+        image: Doctores,
+        title: "Control pediatrico",
+        delay: 500,
+    },
+    {
+        key: 3,
+        description: "Percentiles ",
+        image: Familia,
+        title: "Percentiles y parametros generales",
+        delay: 1000,
+    }
+];
+
 
 const openInNewTab = (url) => {
     const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
@@ -119,7 +152,7 @@ export default function Home() {
                 </Container>
 
                 <Container className={classes.heroTitle2} maxWidth="md" data-aos="zoom-in-up"
-                           data-aos-duration={1500} >
+                           data-aos-duration={1500}>
 
                     <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom
                                 className={classes.heroText}>
@@ -133,12 +166,38 @@ export default function Home() {
 
                 </Container>
 
+                <Container className={classes.cardGrid} maxWidth="lg">
+                    <Grid container spacing={10}>
+                        {funcionalidades.map((funcionalidad) => (
+                            <Grid item key={funcionalidad.key} xs={12} md={4} lg={4} data-aos="fade-right"
+                                  data-aos-easing="ease-in-sine"
+                                  data-aos-duration={500} data-aos-delay={funcionalidad.delay}>
+                                <Card className={classes.cardFuncionalidad} style={{backgroundColor: "#f2f6f9"}}>
+                                    <CardMedia
+                                        component="img"
+                                        src={funcionalidad.image}
+                                    />
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="h2">
+                                            {funcionalidad.title}
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary" component="p">
+                                            {funcionalidad.description}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+
+                </Container>
+
                 <Container className={classes.cardGrid} maxWidth="md">
                     {/* End hero unit */}
-                    <Grid container  >
+                    <Grid container>
                         {cards.map((card) => (
-                            <Grid item key={card} xs={12} data-aos="zoom-in-up"
-                                  data-aos-duration={1500} style={{marginBottom:50}}>
+                            <Grid item key={card} data-aos="zoom-in-up"
+                                  data-aos-duration={1500} style={{marginBottom: 50}}>
                                 <Card className={classes.card}>
                                     <CardMedia
                                         className={classes.cardMedia}
