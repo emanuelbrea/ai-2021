@@ -8,10 +8,13 @@ import Percentiles from "../images/Percentiles.jpg";
 import Doctor from "../images/doctor.png";
 import Familia from "../images/familia.png";
 import Doctores from "../images/doctores.png";
+import Vacunas from "../images/Vacunas.jpg";
+import LogoDoctor from "../images/logoDoctor.jpg";
+import LogoClinica from "../images/logoClinica.jpg";
 import AOS from "aos/dist/aos";
 import "aos/dist/aos.css";
 import Box from "@material-ui/core/Box";
-
+import Carousel from 'react-material-ui-carousel'
 
 const useStyles = makeStyles((theme) => ({
     heroTitle: {
@@ -46,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cardFuncionalidad: {
         height: '100%',
+        width: 'auto',
         display: 'flex',
         flexDirection: 'column',
         padding: theme.spacing(2),
@@ -62,21 +66,18 @@ const useStyles = makeStyles((theme) => ({
 
 const cards = [
     {
-        key: 1,
         description: "Calendario nacional de vacunacion",
         image: CalendarioVacunacion,
         title: "Calendario nacional de vacunacion",
         link: "https://www.stamboulian.com.ar/pacientes/calendario-nacional-de-vacunacion/"
     },
     {
-        key: 2,
         description: "Control pediatrico",
         image: ControlesPediatricos,
         title: "Control pediatrico",
         link: "https://www.clinicapueyrredon.com/control-pediatrico-del-nino-sano/"
     },
     {
-        key: 3,
         description: "Percentiles ",
         image: Percentiles,
         title: "Percentiles y parametros generales",
@@ -86,25 +87,41 @@ const cards = [
 
 const funcionalidades = [
     {
-        key: 1,
-        description: "Calendario nacional de vacunacion",
-        image: Familia,
-        title: "Calendario nacional de vacunacion",
+        description: "Los usuarios podrán registrar un nuevo control pediátrico a cada niño de su perfil. Un control " +
+            "pediátrico registra para un niño: fecha, peso, altura, diámetro cabeza (se mide hasta el año), observaciones,",
+        image: LogoDoctor,
+        title: "Registro de control pediatrico",
         delay: 0,
     },
     {
-        key: 2,
-        description: "Control pediatrico",
-        image: Doctores,
-        title: "Control pediatrico",
+        description: "Los usuarios podrán registrar cada una de las vacunas aplicadas a los niños. Para ello el sistema " +
+            "debe contar con una replica del calendario de vacunación y permitir al usuario completar el mismo ingresando " ,
+        image: Vacunas,
+        title: "Registro de vacunas",
         delay: 500,
     },
     {
-        key: 3,
-        description: "Percentiles ",
-        image: Familia,
-        title: "Percentiles y parametros generales",
+        description: "Los usuarios podrán comparar los controles de sus hijos con los percentiles de Curva de Crecimiento ofrecidos por la OMS.",
+        image: LogoClinica,
+        title: "Consulta de Percentiles",
         delay: 1000,
+    }
+];
+
+const reviews = [
+    {
+        description: "Los usuarios podrán registrar un nuevo control pediátrico a cada niño de su perfil. Un control " +
+            "pediátrico registra para un niño: fecha, peso, altura, diámetro cabeza (se mide hasta el año), observaciones,",
+        title: "Registro de control pediatrico",
+    },
+    {
+        description: "Los usuarios podrán registrar cada una de las vacunas aplicadas a los niños. Para ello el sistema " +
+            "debe contar con una replica del calendario de vacunación y permitir al usuario completar el mismo ingresando " ,
+        title: "Registro de vacunas",
+    },
+    {
+        description: "Los usuarios podrán comparar los controles de sus hijos con los percentiles de Curva de Crecimiento ofrecidos por la OMS.",
+        title: "Consulta de Percentiles",
     }
 ];
 
@@ -168,8 +185,8 @@ export default function Home() {
 
                 <Container className={classes.cardGrid} maxWidth="lg">
                     <Grid container spacing={10}>
-                        {funcionalidades.map((funcionalidad) => (
-                            <Grid item key={funcionalidad.key} xs={12} md={4} lg={4} data-aos="fade-right"
+                        {funcionalidades.map((funcionalidad,index) => (
+                            <Grid item key={index} xs={12} md={4} lg={4} data-aos="fade-right"
                                   data-aos-easing="ease-in-sine"
                                   data-aos-duration={500} data-aos-delay={funcionalidad.delay}>
                                 <Card className={classes.cardFuncionalidad} style={{backgroundColor: "#f2f6f9"}}>
@@ -192,11 +209,57 @@ export default function Home() {
 
                 </Container>
 
+                <Container className={classes.heroTitle} maxWidth="xl">
+                <Box display="flex" width={1} m={1} p={1}>
+                    <Box p={1} className={classes.heroImage} data-aos="zoom-in-up" data-aos-duration={1500}>
+                        <CardMedia
+                            className={classes.cardMedia}
+                            title={'doctor'}
+                            component="img"
+                            src={Doctores}
+
+                        />
+                    </Box>
+                    <Box p={1} className={classes.heroContent} data-aos="zoom-in-up" data-aos-duration={1500}>
+                        <Container>
+                            <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom
+                                        className={classes.heroText}>
+                                Que dicen nuestros clientes
+                            </Typography>
+                            <Carousel activeIndicatorIconButtonProps={{style: {backgroundColor: '#4675AB' ,opacity:1,color:'#4675AB'}}}
+                              indicatorIconButtonProps={{style: {color: "#6f9cbf", width:"20px",opacity:0.6}}}>
+                                {
+                                    reviews.map( (item, i) =>
+                                    <Typography key={i} variant="h6" align="left" color="textSecondary" paragraph>
+                                            {item.description}
+                                    </Typography>
+                                    )
+                                }
+                            </Carousel>
+                        </Container>
+                    </Box>
+
+                </Box>
+            </Container>
+
+
+
+                <Container className={classes.heroTitle2} maxWidth="md" data-aos="zoom-in-up"
+                           data-aos-duration={1500}>
+
+                    <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom
+                                className={classes.heroText}>
+                        Articulos informativos
+                    </Typography>
+
+
+                </Container>
+
                 <Container className={classes.cardGrid} maxWidth="md">
                     {/* End hero unit */}
                     <Grid container>
-                        {cards.map((card) => (
-                            <Grid item key={card} data-aos="zoom-in-up"
+                        {cards.map((card,index) => (
+                            <Grid item key={index} data-aos="zoom-in-up"
                                   data-aos-duration={1500} style={{marginBottom: 50}}>
                                 <Card className={classes.card}>
                                     <CardMedia
