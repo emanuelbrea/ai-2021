@@ -11,8 +11,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import logo from "../images/logo.png";
 import {Container} from "@material-ui/core";
-import Button from "@material-ui/core/Button";
-import {useHistory} from "react-router-dom";
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ChildFriendlyIcon from '@material-ui/icons/ChildFriendly';

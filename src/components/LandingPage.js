@@ -127,7 +127,7 @@ const openInNewTab = (url) => {
 }
 
 
-export default function Home() {
+export default function LandingPage() {
     const classes = useStyles();
 
     useEffect(() => {
