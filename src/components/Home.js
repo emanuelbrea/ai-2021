@@ -155,7 +155,7 @@ export default function Home() {
                             <CardMedia
                                 component="img"
                                 src={Doctor}
-                                style={{width:"80%"}}
+                                style={{width: "80%"}}
                             />
                         </Box>
                     </Box>
@@ -208,7 +208,7 @@ export default function Home() {
                             <CardMedia
                                 component="img"
                                 src={Doctores}
-                                style={{width:"80%"}}
+                                style={{width: "80%"}}
                             />
                         </Box>
                         <Box p={1} className={classes.heroContent} data-aos="zoom-in-up" data-aos-duration={1500}>

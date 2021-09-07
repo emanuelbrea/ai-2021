@@ -6,6 +6,7 @@ import PropsRoute from "./PropsRoute";
 import ForgotPassword from "./ForgotPassword";
 import useLocationBlocker from "./useLocationBlocker";
 import Home from "./Home";
+import SideBar from "./SideBar";
 
 function Routing() {
     useLocationBlocker();
@@ -14,6 +15,7 @@ function Routing() {
             <PropsRoute path="/signup" component={Signup}/>
             <PropsRoute path="/login" component={Login}/>
             <PropsRoute path='/reset' component={ForgotPassword}/>
+            <PropsRoute path='/dashboard' component={SideBar}/>
             <PropsRoute path='/' component={Home}/>
 
         </Switch>
