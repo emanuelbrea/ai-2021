@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -46,6 +46,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Signup() {
     const classes = useStyles();
+    const [values, setValues] = useState({
+        password: '',
+    });
+
+    const handleChange = (prop) => (event) => {
+        setValues({...values, [prop]: event.target.value});
+    };
 
     return (
         <Container component="main" maxWidth="xs">
@@ -122,9 +129,11 @@ export default function Signup() {
                                 fullWidth
                                 name="password"
                                 label="Contraseña"
-                                type="password"
+                                type='password'
                                 id="password"
                                 autoComplete="current-password"
+                                value={values.password}
+                                onChange={handleChange('password')}
                             />
                         </Grid>
                     </Grid>
