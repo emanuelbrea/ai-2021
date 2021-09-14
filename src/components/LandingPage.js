@@ -269,7 +269,6 @@ export default function LandingPage() {
                                   data-aos-duration={1500} style={{marginBottom: 50}}>
                                 <Card className={classes.cardFuncionalidad}>
                                     <CardMedia
-                                        title={card.title}
                                         component="img"
                                         src={card.image}
                                     />
