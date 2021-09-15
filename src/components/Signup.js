@@ -15,7 +15,7 @@ function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
+            <Link color="inherit" href="http://localhost:3000/">
                 Clinica Brea
             </Link>{' '}
             {new Date().getFullYear()}
@@ -26,7 +26,7 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(10),
+        marginTop: theme.spacing(20),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

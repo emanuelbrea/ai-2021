@@ -6,14 +6,21 @@ import Button from "@material-ui/core/Button";
 import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import {MenuItem, Paper, Tab, Tabs} from "@material-ui/core";
+import {Fab, MenuItem, Paper, Tab, Tabs} from "@material-ui/core";
+import AddIcon from '@material-ui/icons/Add';
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import Tooltip from "@material-ui/core/Tooltip";
+import DateFnsUtils from '@date-io/date-fns';
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(20),
+        marginTop: theme.spacing(10),
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'left',
+        alignItems: 'center',
     },
     avatar: {
         margin: theme.spacing(1),
@@ -31,6 +38,17 @@ const useStyles = makeStyles((theme) => ({
     },
     tabs: {
         backgroundColor: 'white',
+    },
+    title: {
+        marginBottom: theme.spacing(4),
+    },
+    floatingIcon: {
+        '& > *': {
+            margin: theme.spacing(1),
+        },
+        position: 'fixed',
+        bottom: theme.spacing(6),
+        right: theme.spacing(6),
     }
 }));
 
@@ -65,36 +83,81 @@ export default function ChildrenProfile(props) {
 
     const classes = useStyles();
     const [grupoSanguineo, setgrupoSanguineo] = useState('A positivo (A +)');
-    const [value, setValue] = React.useState(1);
+    const initialTabs = ["Juan", "Pepe"];
+    const [nombre, setNombre] = useState(initialTabs[0]);
+    const [currentTab, setcurrentTab] = useState(initialTabs[0]);
+    const [fecha, setFecha] = useState(new Date());
 
+    const [tabs, setTabs] = useState(initialTabs);
+
+    const initialState = {
+        alergias: ["Polen"],
+        enfermedades: ["Diabetes"]
+    };
+
+    const [estado, setEstado] = useState(initialState);
+
+    const handleAddItem = (name) => {
+        const value = estado[name];
+        const newValue = [...value, ""];
+        setEstado((estado) => ({...estado, [name]: newValue}));
+    }
+
+    const handleInputChange = (e, index) => {
+        const {name, value} = e.target;
+        const list = estado[name];
+        const newList = [...list];
+        newList[index] = value;
+        setEstado((estado) => ({...estado, [name]: newList}));
+    };
+
+    const handleRemoveClick = (index, name) => {
+        const list = estado[name];
+        const newList = [...list];
+        newList.splice(index, 1);
+        setEstado((estado) => ({...estado, [name]: newList}));
+    };
+
+    //TABS
     const handleTabChange = (event, newValue) => {
-        setValue(newValue);
+        setcurrentTab(newValue);
     };
 
+    const addTab = () => {
+        const newValue = "+";
+        setcurrentTab(newValue);
+        setTabs([...tabs, newValue]);
+    }
 
-    const handleChange = (event) => {
-        setgrupoSanguineo(event.target.value);
-    };
+    const deleteTab = () => {
+        setTabs(tabs.filter(item => item !== currentTab));
+        setcurrentTab(tabs[0]);
+    }
 
 
     return (
         <React.Fragment>
             <Paper className={classes.root}>
+
                 <Tabs
-                    value={value}
+                    value={currentTab}
                     onChange={handleTabChange}
                     centered
                     indicatorColor="primary"
                 >
-                    <Tab label="Juan"/>
-                    <Tab label="Florencia"/>
-                    <Tab label="Pedro"/>
+                    {tabs.map((tab, index) => (
+                        <Tab
+                            label={tab}
+                            key={index}
+                            value={tab}
+                        />
+                    ))}
                 </Tabs>
             </Paper>
             <Container component="main" maxWidth="xs">
                 <CssBaseline/>
                 <div className={classes.paper}>
-                    <Typography component="h1" variant="h5">
+                    <Typography component="h1" variant="h5" className={classes.title}>
                         Mis hijos
                     </Typography>
                     <form className={classes.form} noValidate>
@@ -108,21 +171,25 @@ export default function ChildrenProfile(props) {
                                     id="firstName"
                                     label="Nombre"
                                     autoFocus
-                                    value="Juan"
+                                    value={nombre}
+                                    onChange={(e) => setNombre(e.target.value)}
                                 />
                             </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    id="date"
-                                    fullWidth
-                                    label="Birthday"
-                                    type="date"
-                                    value="2017-05-24"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
-                            </Grid>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <Grid item xs={12}>
+                                    <KeyboardDatePicker
+                                        fullWidth
+                                        autoOk
+                                        variant="inline"
+                                        inputVariant="outlined"
+                                        label="Fecha de nacimiento"
+                                        format="MM/dd/yyyy"
+                                        value={fecha}
+                                        InputAdornmentProps={{position: "end"}}
+                                        onChange={date => setFecha(date)}
+                                    />
+                                </Grid>
+                            </MuiPickersUtilsProvider>
                             <Grid item xs={12}>
                                 <TextField
                                     variant="outlined"
@@ -132,7 +199,7 @@ export default function ChildrenProfile(props) {
                                     label="Grupo Sanguineo"
                                     name="email"
                                     value={grupoSanguineo}
-                                    onChange={handleChange}
+                                    onChange={(e) => setgrupoSanguineo(e.target.value)}
                                 >
                                     {gruposSanguineos.map((option) => (
                                         <MenuItem key={option.value} value={option.value}>
@@ -141,28 +208,70 @@ export default function ChildrenProfile(props) {
                                     ))}
                                 </TextField>
                             </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    name="alergias"
-                                    label="Alergias"
-                                    id="alergias"
-                                    autoComplete="off"
-                                    value="Polen"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    name="enfermedades"
-                                    label="Enfermedades Crónicas"
-                                    id="enfermedades"
-                                    autoComplete="off"
-                                    value="Diabetes"
-                                />
-                            </Grid>
+                            {estado.alergias.map((alergia, index) => (
+                                <Grid item key={index} xs={12}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        name="alergias"
+                                        label="Alergias"
+                                        id="alergias"
+                                        autoComplete="off"
+                                        value={alergia}
+                                        onChange={e => handleInputChange(e, index)}
+                                        InputProps={{
+                                            endAdornment:
+                                                <div style={{display: "flex"}}>
+                                                    {estado.alergias.length > 1 && <Tooltip title="Eliminar">
+                                                        <IconButton aria-label="delete"
+                                                                    onClick={() => handleRemoveClick(index, 'alergias')}>
+                                                            <DeleteIcon/>
+                                                        </IconButton>
+                                                    </Tooltip>}
+                                                    {estado.alergias.length === index + 1 && estado.alergias[index] !== '' &&
+                                                    <Tooltip title="Agregar">
+                                                        <IconButton aria-label="add"
+                                                                    onClick={() => handleAddItem('alergias')}>
+                                                            <AddIcon/>
+                                                        </IconButton>
+                                                    </Tooltip>}
+                                                </div>
+                                        }}
+                                    />
+                                </Grid>
+                            ))}
+                            {estado.enfermedades.map((enfermedad, index) => (
+                                <Grid item key={index} xs={12}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        name="enfermedades"
+                                        label="Enfermedades Crónicas"
+                                        id="enfermedades"
+                                        autoComplete="off"
+                                        value={enfermedad}
+                                        onChange={e => handleInputChange(e, index)}
+                                        InputProps={{
+                                            endAdornment:
+                                                <div style={{display: "flex"}}>
+                                                    {estado.enfermedades.length > 1 && <Tooltip title="Eliminar">
+                                                        <IconButton aria-label="delete"
+                                                                    onClick={() => handleRemoveClick(index, 'enfermedades')}>
+                                                            <DeleteIcon/>
+                                                        </IconButton>
+                                                    </Tooltip>}
+                                                    {estado.enfermedades.length === index + 1 && estado.enfermedades[index] !== '' &&
+                                                    <Tooltip title="Agregar">
+                                                        <IconButton aria-label="add"
+                                                                    onClick={() => handleAddItem('enfermedades')}>
+                                                            <AddIcon/>
+                                                        </IconButton>
+                                                    </Tooltip>}
+                                                </div>
+                                        }}
+                                    />
+                                </Grid>
+                            ))}
                         </Grid>
                         <Button
                             type="submit"
@@ -171,11 +280,20 @@ export default function ChildrenProfile(props) {
                             color="primary"
                             className={classes.submit}
                         >
-                            Agregar
+                            Guardar
                         </Button>
                     </form>
                 </div>
             </Container>
+            <div className={classes.floatingIcon}>
+                <Fab color="primary" aria-label="add" title="Agregar hijo" onClick={addTab}>
+                    <AddIcon/>
+                </Fab>
+                <Fab style={{backgroundColor: "red", color: "white"}} size="small" aria-label="delete"
+                     title="Eliminar hijo" onClick={deleteTab}>
+                    <DeleteIcon/>
+                </Fab>
+            </div>
         </React.Fragment>
     );
 }
