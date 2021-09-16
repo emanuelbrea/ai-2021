@@ -19,7 +19,7 @@ import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import Profile from "./Profile";
 import ChildrenProfile from "./ChildrenProfile";
-import EnhancedTable from "./Vacunacion";
+import Vacunas from "./Vacunas";
 
 const drawerWidth = 260;
 
@@ -79,12 +79,12 @@ const useStyles = makeStyles((theme) => ({
 const menuOptions = [
     {
         name: "Control pediatrico",
-        value: "perfil",
+        value: "vacunas",
         icon: <ChildFriendlyIcon/>,
     },
     {
         name: "Vacunas",
-        value: "vacunacion",
+        value: "vacunas",
         icon: <ChildCareIcon/>,
     },
     {
@@ -176,8 +176,8 @@ export default function Home() {
                 {menu === "hijos" && (
                     <ChildrenProfile/>
                 )}
-                {menu === "vacunacion" && (
-                    <EnhancedTable/>
+                {menu === "vacunas" && (
+                    <Vacunas/>
                 )}
 
             </main>

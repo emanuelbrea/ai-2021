@@ -9,10 +9,10 @@ import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(20),
+        marginTop: theme.spacing(16),
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'left',
+        alignItems: 'center',
     },
     avatar: {
         margin: theme.spacing(1),
@@ -29,7 +29,10 @@ const useStyles = makeStyles((theme) => ({
         "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
             display: "none"
         }
-    }
+    },
+    title: {
+        marginBottom: theme.spacing(4),
+    },
 }));
 
 export default function Profile(props) {
@@ -40,7 +43,7 @@ export default function Profile(props) {
         <Container component="main" maxWidth="xs">
             <CssBaseline/>
             <div className={classes.paper}>
-                <Typography component="h1" variant="h5">
+                <Typography component="h1" variant="h5" className={classes.title}>
                     Mi Perfil
                 </Typography>
                 <form className={classes.form} noValidate>

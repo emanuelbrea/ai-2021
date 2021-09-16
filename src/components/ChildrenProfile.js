@@ -6,7 +6,18 @@ import Button from "@material-ui/core/Button";
 import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import {Fab, MenuItem, Paper, Tab, Tabs} from "@material-ui/core";
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Fab,
+    MenuItem,
+    Paper,
+    Tab,
+    Tabs
+} from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -87,6 +98,8 @@ export default function ChildrenProfile(props) {
     const [nombre, setNombre] = useState(initialTabs[0]);
     const [currentTab, setcurrentTab] = useState(initialTabs[0]);
     const [fecha, setFecha] = useState(new Date());
+    const [openAlert, setOpenAlert] = useState(false);
+    const defaultNewTab = "+";
 
     const [tabs, setTabs] = useState(initialTabs);
 
@@ -124,15 +137,29 @@ export default function ChildrenProfile(props) {
     };
 
     const addTab = () => {
-        const newValue = "+";
-        setcurrentTab(newValue);
-        setTabs([...tabs, newValue]);
+        setcurrentTab(defaultNewTab);
+        setTabs([...tabs, defaultNewTab]);
     }
 
     const deleteTab = () => {
+        handleClose();
+        const newTab = tabs.at(-1) === currentTab ? tabs[0] : tabs.at(-1);
         setTabs(tabs.filter(item => item !== currentTab));
-        setcurrentTab(tabs[0]);
+        setcurrentTab(newTab);
     }
+
+    //ALERTS
+    const handleClickOpen = () => {
+        if (currentTab !== defaultNewTab) {
+            setOpenAlert(true);
+        } else {
+            deleteTab();
+        }
+    };
+
+    const handleClose = () => {
+        setOpenAlert(false);
+    };
 
 
     return (
@@ -289,11 +316,35 @@ export default function ChildrenProfile(props) {
                 <Fab color="primary" aria-label="add" title="Agregar hijo" onClick={addTab}>
                     <AddIcon/>
                 </Fab>
+                {tabs.length !== 1 &&
                 <Fab style={{backgroundColor: "red", color: "white"}} size="small" aria-label="delete"
-                     title="Eliminar hijo" onClick={deleteTab}>
+                     title="Eliminar hijo" onClick={handleClickOpen}>
                     <DeleteIcon/>
                 </Fab>
+                }
             </div>
+            <Dialog
+                open={openAlert}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"¿Eliminar hijo " + currentTab + " ?"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Se perderan los datos del hijo {currentTab}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Cancelar
+                    </Button>
+                    <Button style={{backgroundColor: "red", color: "white"}} onClick={deleteTab} color="primary"
+                            autoFocus>
+                        Confirmar
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </React.Fragment>
     );
 }
