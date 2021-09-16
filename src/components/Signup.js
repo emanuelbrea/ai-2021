@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -8,14 +8,14 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
+            <Link color="inherit" href="http://localhost:3000/">
                 Clinica Brea
             </Link>{' '}
             {new Date().getFullYear()}
@@ -26,14 +26,14 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(20),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
     },
     avatar: {
         margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
+        backgroundColor: theme.palette.primary.main,
     },
     form: {
         width: '100%',
@@ -46,13 +46,20 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Signup() {
     const classes = useStyles();
+    const [values, setValues] = useState({
+        password: '',
+    });
+
+    const handleChange = (prop) => (event) => {
+        setValues({...values, [prop]: event.target.value});
+    };
 
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
+            <CssBaseline/>
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
+                    <LockOutlinedIcon/>
                 </Avatar>
                 <Typography component="h1" variant="h5">
                     Registro
@@ -122,9 +129,11 @@ export default function Signup() {
                                 fullWidth
                                 name="password"
                                 label="Contraseña"
-                                type="password"
+                                type='password'
                                 id="password"
                                 autoComplete="current-password"
+                                value={values.password}
+                                onChange={handleChange('password')}
                             />
                         </Grid>
                     </Grid>
@@ -147,7 +156,7 @@ export default function Signup() {
                 </form>
             </div>
             <Box mt={5}>
-                <Copyright />
+                <Copyright/>
             </Box>
         </Container>
     );

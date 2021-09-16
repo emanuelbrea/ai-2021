@@ -3,14 +3,12 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 function Copyright() {
@@ -18,7 +16,7 @@ function Copyright() {
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
             <Link color="inherit" href="https://material-ui.com/">
-                Your Website
+                Clinica Brea
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -28,14 +26,14 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(10),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
     },
     avatar: {
         margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
+        backgroundColor: theme.palette.primary.main,
     },
     form: {
         width: '100%', // Fix IE 11 issue.
@@ -43,7 +41,8 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
-    },
+    }
+
 }));
 
 export default function ForgotPassword() {
@@ -51,13 +50,13 @@ export default function ForgotPassword() {
 
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
+            <CssBaseline/>
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
+                    <LockOutlinedIcon/>
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Forgot Password
+                    Recupero de contraseña
                 </Typography>
                 <form className={classes.form} noValidate>
                     <TextField
@@ -66,12 +65,21 @@ export default function ForgotPassword() {
                         required
                         fullWidth
                         id="email"
-                        label="Email Address"
+                        label="Email"
                         name="email"
                         autoComplete="email"
                         autoFocus
                     />
-                    <Typography component="body1" >
+                    <TextField
+                        variant="outlined"
+                        required
+                        fullWidth
+                        name="dni"
+                        label="DNI"
+                        id="dni"
+                        autoComplete="off"
+                    />
+                    <Typography component="body3">
                         Enviaremos un mail con instrucciones para restablecer la contraseña
                     </Typography>
                     <Button
@@ -81,24 +89,24 @@ export default function ForgotPassword() {
                         color="primary"
                         className={classes.submit}
                     >
-                        Reset password
+                        Enviar
                     </Button>
                     <Grid container>
                         <Grid item xs>
                             <Link href="/login" variant="body2">
-                                Already have an account? Sign in
+                                ¿Ya tienes usuario? Ingresar
                             </Link>
                         </Grid>
                         <Grid item>
                             <Link href="/signup" variant="body2">
-                                {"Don't have an account? Sign Up"}
+                                {"¿No tienes cuenta? Registrate!"}
                             </Link>
                         </Grid>
                     </Grid>
                 </form>
             </div>
             <Box mt={8}>
-                <Copyright />
+                <Copyright/>
             </Box>
         </Container>
     );

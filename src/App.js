@@ -1,22 +1,15 @@
-import './css/App.css';
 import React from 'react';
-import Routes from './routes'
+import Routes from './Routes'
+import theme from './Theme'
+import {ThemeProvider} from "@material-ui/core";
 
-class App extends React.Component{
+export default function App() {
 
-  constructor(props) {
-    super(props);
-    this.state = { apiResponse: "" };
-  }
-
-  render() {
     return (
-        <div className="App">
-            <Routes />
-        </div>
+        <ThemeProvider theme={theme}>
+            <Routes/>
+        </ThemeProvider>
     );
-  }
+
 
 }
-
-export default App;
