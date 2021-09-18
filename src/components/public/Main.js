@@ -1,13 +1,13 @@
 import React from "react";
 import MenuAppBar from "./NavBar";
 import {CssBaseline} from "@material-ui/core";
-import PropsRoute from "./PropsRoute";
+import PropsRoute from "../routes/PropsRoute";
 import Signup from "./Signup";
 import Login from "./Login";
 import ForgotPassword from "./ForgotPassword";
 import LandingPage from "./LandingPage";
 import {Redirect, Switch} from "react-router-dom";
-import useLocationBlocker from "./useLocationBlocker";
+import useLocationBlocker from "../routes/useLocationBlocker";
 
 export default function Main() {
     useLocationBlocker();

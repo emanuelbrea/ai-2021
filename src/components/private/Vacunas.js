@@ -7,51 +7,49 @@ import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
+import {Card, Fab} from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import CalendarioVacunacion from "../../images/CalendarioVacunacion.jpg";
+import Box from "@material-ui/core/Box";
+import ModalImage from "react-modal-image";
 
 const columns = [
     {field: 'id', headerName: 'ID', width: 90},
     {
-        field: 'firstName',
-        headerName: 'First name',
-        width: 150,
+        field: 'fecha',
+        headerName: 'Fecha',
+        width: 170,
+        editable: true,
+        type: 'date',
+    },
+    {
+        field: 'vacuna',
+        headerName: 'Vacuna',
+        width: 180,
+        editable: true,
+        flex: 1
+    },
+    {
+        field: 'lugar',
+        headerName: 'Lugar de aplicacion',
+        width: 300,
         editable: true,
     },
     {
-        field: 'lastName',
-        headerName: 'Last name',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'age',
-        headerName: 'Age',
-        type: 'number',
-        width: 110,
-        editable: true,
-    },
-    {
-        field: 'fullName',
-        headerName: 'Full name',
-        description: 'This column has a value getter and is not sortable.',
-        sortable: false,
+        field: 'nombre',
+        headerName: 'Hijo',
         width: 160,
-        valueGetter: (params) =>
-            `${params.getValue(params.id, 'firstName') || ''} ${
-                params.getValue(params.id, 'lastName') || ''
-            }`,
+        editable: true,
     },
 ];
 
 const initialRows = [
-    {id: 1, lastName: 'Snow', firstName: 'Jon', age: 35},
-    {id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42},
-    {id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45},
-    {id: 4, lastName: 'Stark', firstName: 'Arya', age: 16},
-    {id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null},
-    {id: 6, lastName: 'Melisandre', firstName: null, age: 150},
-    {id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44},
-    {id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36},
-    {id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65},
+    {id: 1, fecha: '2020-02-02', vacuna: 'BCG', lugar: 'CABA', nombre: 'Juan'},
+    {id: 2, fecha: '2020-03-02', vacuna: 'Hepatitis B', lugar: 'Sanatario brea', nombre: 'Juan'},
+    {id: 3, fecha: '2020-04-02', vacuna: 'Neumococo', lugar: 'Sanatario guemes', nombre: 'Pepe'},
+    {id: 4, fecha: '2020-05-02', vacuna: 'IPV', lugar: 'Sanatario mater dei', nombre: 'Juan'},
+    {id: 5, fecha: '2020-07-02', vacuna: 'Antigripal', lugar: 'Sanatario otamendi', nombre: 'Pepe'},
+    {id: 6, fecha: '2020-08-02', vacuna: 'Triple Viral', lugar: 'Sanatario trinidad', nombre: 'Pepe'},
 ];
 
 const useToolbarStyles = makeStyles((theme) => ({
@@ -72,6 +70,24 @@ const useToolbarStyles = makeStyles((theme) => ({
     title: {
         flex: '1 1 100%',
     },
+    floatingIcon: {
+        '& > *': {
+            margin: theme.spacing(1),
+        },
+        position: 'fixed',
+        bottom: theme.spacing(6),
+        right: theme.spacing(6),
+    },
+    cardFuncionalidad: {
+        marginTop: theme.spacing(2),
+        width: '55%',
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+        justify: 'center',
+        padding: theme.spacing(1),
+        backgroundColor: "#f2f6f9"
+    },
 }));
 
 export default function Vacunas() {
@@ -87,8 +103,14 @@ export default function Vacunas() {
         setRows(selectedRowData);
     };
 
+    const handleAddRow = () => {
+        const maxId = Math.max(...rows.map(user => user.id))
+        const newRow = {id: maxId, fecha: '2020-03-02', vacuna: '', lugar: '', nombre: 'Juan'};
+        setRows([...rows, newRow]);
+    }
+
     return (
-        <div style={{height: 400, width: '100%'}}>
+        <div style={{height: 400, width: '100%', padding: '15px'}}>
             <Toolbar
                 className={clsx(classes.root, {
                     [classes.highlight]: selected.length > 0,
@@ -121,6 +143,26 @@ export default function Vacunas() {
                 disableSelectionOnClick
                 onSelectionModelChange={(ids) => setSelected(ids)}
             />
+            <div className={classes.floatingIcon}>
+                <Fab color="primary" aria-label="add" title="Agregar control" onClick={handleAddRow}>
+                    <AddIcon/>
+                </Fab>
+            </div>
+            <Typography className={classes.title} variant="h6" id="tableTitle" component="div"
+                        style={{marginTop: '10px'}}>
+                Calendario de Vacunacion
+            </Typography>
+            <Box display="flex" justifyContent="center">
+                <Card className={classes.cardFuncionalidad}>
+                    <ModalImage
+                        small={CalendarioVacunacion}
+                        large={CalendarioVacunacion}
+                        alt="Calendario vacunacion"
+                    />
+                </Card>
+            </Box>
+
+
         </div>
     );
 }

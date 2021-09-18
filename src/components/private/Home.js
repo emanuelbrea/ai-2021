@@ -6,11 +6,10 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import logo from "../images/logo.png";
-import {Container} from "@material-ui/core";
+import logo from "../../images/logo.png";
+import {Container, withStyles} from "@material-ui/core";
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ChildFriendlyIcon from '@material-ui/icons/ChildFriendly';
@@ -20,6 +19,9 @@ import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import Profile from "./Profile";
 import ChildrenProfile from "./ChildrenProfile";
 import Vacunas from "./Vacunas";
+import MuiListItem from "@material-ui/core/ListItem";
+import ControlPediatrico from "./ControlPediatrico";
+import {Redirect} from "react-router-dom";
 
 const drawerWidth = 260;
 
@@ -57,19 +59,6 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(3),
         alignItems: 'center',
     },
-    rightToolbar: {
-        marginLeft: "auto",
-        marginRight: theme.spacing(2)
-    },
-    tagline: {
-        display: "inline-block",
-        marginLeft: 10,
-    },
-    menuItem: {
-        '&:hover': {
-            backgroundColor: "#f2f6f9",
-        },
-    },
     main: {
         width: '100%'
     }
@@ -79,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 const menuOptions = [
     {
         name: "Control pediatrico",
-        value: "vacunas",
+        value: "control",
         icon: <ChildFriendlyIcon/>,
     },
     {
@@ -101,25 +90,55 @@ const menuPerfil = [
         name: "Mi Perfil",
         value: "perfil",
         icon: <PersonOutlineIcon/>,
+        index: 3
     },
     {
         name: "Mis hijos",
         value: "hijos",
         icon: <PeopleOutlineIcon/>,
+        index: 4
     },
     {
         name: "Salir",
         value: "salir",
         icon: <ExitToAppIcon/>,
+        index: 5
     }
 
 ];
 
+const ListItem = withStyles({
+    root: {
+        "&$selected": {
+            backgroundColor: '#4F46E5',
+            color: "white",
+            "& .MuiListItemIcon-root": {
+                color: "white"
+            }
+        },
+        "&$selected:hover": {
+            backgroundColor: '#4F46E5',
+            color: "white",
+            "& .MuiListItemIcon-root": {
+                color: "white"
+            }
+        },
+    },
+    selected: {}
+})(MuiListItem);
+
+
 export default function Home() {
     const classes = useStyles();
+    const initialIndex = 0;
 
-    const [menu, setMenu] = useState('perfil');
+    const [menu, setMenu] = useState(menuOptions[initialIndex].value);
+    const [selectedIndex, setSelectedIndex] = useState(initialIndex);
 
+    const handleListItemClick = (index, value) => {
+        setSelectedIndex(index);
+        setMenu(value)
+    };
 
     return (
         <div className={classes.root}>
@@ -153,15 +172,17 @@ export default function Home() {
                 </div>
                 <List>
                     {menuOptions.map((option, index) => (
-                        <ListItem button key={index} className={classes.menuItem} onClick={() => setMenu(option.value)}>
+                        <ListItem button key={index} selected={selectedIndex === index}
+                                  onClick={() => handleListItemClick(index, option.value)}>
                             <ListItemIcon>{option.icon}</ListItemIcon>
                             <ListItemText primary={option.name}/>
                         </ListItem>
                     ))}
                 </List>
                 <List>
-                    {menuPerfil.map((option, index) => (
-                        <ListItem button key={index} className={classes.menuItem} onClick={() => setMenu(option.value)}>
+                    {menuPerfil.map((option) => (
+                        <ListItem button key={option.index} selected={selectedIndex === option.index}
+                                  onClick={() => handleListItemClick(option.index, option.value)}>
                             <ListItemIcon>{option.icon}</ListItemIcon>
                             <ListItemText primary={option.name}/>
                         </ListItem>
@@ -178,6 +199,12 @@ export default function Home() {
                 )}
                 {menu === "vacunas" && (
                     <Vacunas/>
+                )}
+                {menu === "control" && (
+                    <ControlPediatrico/>
+                )}
+                {menu === "salir" && (
+                    <Redirect to='/'/>
                 )}
 
             </main>
