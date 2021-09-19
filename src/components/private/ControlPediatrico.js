@@ -39,7 +39,6 @@ const columns = [
         type: 'number',
         width: 150,
         editable: true,
-        flex: 1
     },
     {
         field: 'medicamento',

@@ -18,9 +18,10 @@ import Carousel from 'react-material-ui-carousel'
 const useStyles = makeStyles((theme) => ({
     heroTitle: {
         marginTop: theme.spacing(26),
+        paddingBottom: '300px',
     },
     centerTitle: {
-        marginTop: theme.spacing(50),
+        paddingTop: theme.spacing(20),
         marginBottom: theme.spacing(16),
     },
     heroContent: {
@@ -137,7 +138,8 @@ export default function LandingPage() {
     return (
         <React.Fragment>
             <main>
-                <Container className={classes.heroTitle} maxWidth="xl">
+                <section className={classes.heroTitle} >
+                    <Container>
                     <Box display="flex" width={1} m={1} p={1}>
                         <Box p={1} className={classes.heroContent} data-aos="zoom-in-up" data-aos-duration={1500}>
                             <Container>
@@ -159,11 +161,13 @@ export default function LandingPage() {
                             />
                         </Box>
                     </Box>
-                </Container>
+                    </Container>
+                </section>
 
-                <Container className={classes.centerTitle} maxWidth="md" data-aos="zoom-in-up"
-                           data-aos-duration={1500}>
-
+                <section className={classes.heroTitle}>
+                <Container >
+                <div data-aos="zoom-in-up"
+                     data-aos-duration={1500}>
                     <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom
                                 className={classes.heroText}>
                         Funcionalidades
@@ -172,6 +176,8 @@ export default function LandingPage() {
                         Gestionar controles pediatricos nunca fue tan facil.
                         Con solo unos clicks puede llevar al dia todos los checkeos de sus hijos.
                     </Typography>
+                </div>
+
 
 
                 </Container>
@@ -201,7 +207,7 @@ export default function LandingPage() {
                     </Grid>
 
                 </Container>
-
+                </section>
                 <Container className={classes.heroTitle} maxWidth="xl">
                     <Box display="flex" width={1} m={1} p={1}>
                         <Box p={1} className={classes.heroImage} data-aos="zoom-in-up" data-aos-duration={1500}>

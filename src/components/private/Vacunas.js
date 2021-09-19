@@ -144,7 +144,7 @@ export default function Vacunas() {
                 onSelectionModelChange={(ids) => setSelected(ids)}
             />
             <div className={classes.floatingIcon}>
-                <Fab color="primary" aria-label="add" title="Agregar control" onClick={handleAddRow}>
+                <Fab color="primary" aria-label="add" title="Agregar vacuna" onClick={handleAddRow}>
                     <AddIcon/>
                 </Fab>
             </div>
