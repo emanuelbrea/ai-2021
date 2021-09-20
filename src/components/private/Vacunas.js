@@ -7,11 +7,14 @@ import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {Card, Fab} from "@material-ui/core";
+import {Card, Dialog, DialogActions, DialogTitle, Fab} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import CalendarioVacunacion from "../../images/CalendarioVacunacion.jpg";
 import Box from "@material-ui/core/Box";
 import ModalImage from "react-modal-image";
+import SaveIcon from "@material-ui/icons/Save";
+import Button from "@material-ui/core/Button";
+
 
 const columns = [
     {field: 'id', headerName: 'ID', width: 90},
@@ -94,6 +97,15 @@ export default function Vacunas() {
     const classes = useToolbarStyles();
     const [selected, setSelected] = useState([]);
     const [rows, setRows] = useState(initialRows);
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     const handleDeleteRows = () => {
         const selectedIDs = new Set(selected);
@@ -147,6 +159,10 @@ export default function Vacunas() {
                 <Fab color="primary" aria-label="add" title="Agregar vacuna" onClick={handleAddRow}>
                     <AddIcon/>
                 </Fab>
+                <Fab style={{backgroundColor: "green", color: "white"}} aria-label="save" title="Guardar"
+                     onClick={handleClickOpen}>
+                    <SaveIcon/>
+                </Fab>
             </div>
             <Typography className={classes.title} variant="h6" id="tableTitle" component="div"
                         style={{marginTop: '10px'}}>
@@ -161,6 +177,19 @@ export default function Vacunas() {
                     />
                 </Card>
             </Box>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Datos guardados correctamente"}</DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleClose} color="secondary">
+                        Ok
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
 
         </div>

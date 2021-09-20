@@ -100,6 +100,7 @@ export default function ChildrenProfile(props) {
     const [fecha, setFecha] = useState(new Date());
     const [openAlert, setOpenAlert] = useState(false);
     const defaultNewTab = "+";
+    const [openSave, setOpenSave] = useState(false);
 
     const [tabs, setTabs] = useState(initialTabs);
 
@@ -159,6 +160,15 @@ export default function ChildrenProfile(props) {
 
     const handleClose = () => {
         setOpenAlert(false);
+    };
+
+
+    const handleClickOpenSave = () => {
+        setOpenSave(true);
+    };
+
+    const handleCloseSave = () => {
+        setOpenSave(false);
     };
 
 
@@ -301,7 +311,7 @@ export default function ChildrenProfile(props) {
                             ))}
                         </Grid>
                         <Button
-                            type="submit"
+                            onClick={handleClickOpenSave}
                             fullWidth
                             variant="contained"
                             color="primary"
@@ -342,6 +352,19 @@ export default function ChildrenProfile(props) {
                     <Button style={{backgroundColor: "red", color: "white"}} onClick={deleteTab} color="primary"
                             autoFocus>
                         Confirmar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={openSave}
+                onClose={handleCloseSave}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Datos guardados correctamente"}</DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleCloseSave} color="secondary">
+                        Ok
                     </Button>
                 </DialogActions>
             </Dialog>

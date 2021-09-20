@@ -17,8 +17,8 @@ import Carousel from 'react-material-ui-carousel'
 
 const useStyles = makeStyles((theme) => ({
     heroTitle: {
-        marginTop: theme.spacing(26),
-        paddingBottom: '300px',
+        paddingTop: theme.spacing(26),
+        paddingBottom: theme.spacing(26),
     },
     centerTitle: {
         paddingTop: theme.spacing(20),
@@ -138,76 +138,76 @@ export default function LandingPage() {
     return (
         <React.Fragment>
             <main>
-                <section className={classes.heroTitle} >
-                    <Container>
-                    <Box display="flex" width={1} m={1} p={1}>
-                        <Box p={1} className={classes.heroContent} data-aos="zoom-in-up" data-aos-duration={1500}>
-                            <Container>
-                                <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom
-                                            className={classes.heroText}>
-                                    Clinica Brea
-                                </Typography>
-                                <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                                    Gestionar controles pediatricos nunca fue tan facil.
-                                    Con solo unos clicks puede llevar al dia todos los checkeos de sus hijos.
-                                </Typography>
-                            </Container>
+                <section className={classes.heroTitle}>
+                    <Container maxWidth={"xl"}>
+                        <Box display="flex" width={1} m={1} p={1}>
+                            <Box p={1} className={classes.heroContent} data-aos="zoom-in-up" data-aos-duration={1500}>
+                                <Container>
+                                    <Typography component="h1" variant="h2" align="center" color="textPrimary"
+                                                gutterBottom
+                                                className={classes.heroText}>
+                                        Clinica Brea
+                                    </Typography>
+                                    <Typography variant="h5" align="center" color="textSecondary" paragraph>
+                                        Gestionar controles pediatricos nunca fue tan facil.
+                                        Con solo unos clicks puede llevar al dia todos los checkeos de sus hijos.
+                                    </Typography>
+                                </Container>
+                            </Box>
+                            <Box p={1} className={classes.heroImage} data-aos="zoom-in-up" data-aos-duration={1500}>
+                                <CardMedia
+                                    component="img"
+                                    src={Doctor}
+                                    style={{width: "80%"}}
+                                />
+                            </Box>
                         </Box>
-                        <Box p={1} className={classes.heroImage} data-aos="zoom-in-up" data-aos-duration={1500}>
-                            <CardMedia
-                                component="img"
-                                src={Doctor}
-                                style={{width: "80%"}}
-                            />
-                        </Box>
-                    </Box>
                     </Container>
                 </section>
 
                 <section className={classes.heroTitle}>
-                <Container >
-                <div data-aos="zoom-in-up"
-                     data-aos-duration={1500}>
-                    <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom
-                                className={classes.heroText}>
-                        Funcionalidades
-                    </Typography>
-                    <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                        Gestionar controles pediatricos nunca fue tan facil.
-                        Con solo unos clicks puede llevar al dia todos los checkeos de sus hijos.
-                    </Typography>
-                </div>
+                    {/*<Container maxWidth={"xl"}>*/}
+                    <div data-aos="zoom-in-up"
+                         data-aos-duration={1500}>
+                        <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom
+                                    className={classes.heroText}>
+                            Funcionalidades
+                        </Typography>
+                        <Typography variant="h5" align="center" color="textSecondary" paragraph>
+                            Gestionar controles pediatricos nunca fue tan facil.
+                            Con solo unos clicks puede llevar al dia todos los checkeos de sus hijos.
+                        </Typography>
+                    </div>
 
 
+                    <Container className={classes.cardGrid} maxWidth="lg">
+                        <Grid container spacing={10}>
+                            {funcionalidades.map((funcionalidad, index) => (
+                                <Grid item key={index} xs={12} md={4} lg={4} data-aos="fade-right"
+                                      data-aos-easing="ease-in-sine"
+                                      data-aos-duration={500} data-aos-delay={funcionalidad.delay}>
+                                    <Card className={classes.cardFuncionalidad}>
+                                        <CardMedia
+                                            component="img"
+                                            src={funcionalidad.image}
+                                        />
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h5" component="h2">
+                                                {funcionalidad.title}
+                                            </Typography>
+                                            <Typography variant="body2" color="textSecondary" component="p">
+                                                {funcionalidad.description}
+                                            </Typography>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            ))}
+                        </Grid>
 
-                </Container>
-
-                <Container className={classes.cardGrid} maxWidth="lg">
-                    <Grid container spacing={10}>
-                        {funcionalidades.map((funcionalidad, index) => (
-                            <Grid item key={index} xs={12} md={4} lg={4} data-aos="fade-right"
-                                  data-aos-easing="ease-in-sine"
-                                  data-aos-duration={500} data-aos-delay={funcionalidad.delay}>
-                                <Card className={classes.cardFuncionalidad}>
-                                    <CardMedia
-                                        component="img"
-                                        src={funcionalidad.image}
-                                    />
-                                    <CardContent>
-                                        <Typography gutterBottom variant="h5" component="h2">
-                                            {funcionalidad.title}
-                                        </Typography>
-                                        <Typography variant="body2" color="textSecondary" component="p">
-                                            {funcionalidad.description}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        ))}
-                    </Grid>
-
-                </Container>
+                    </Container>
                 </section>
+
+
                 <Container className={classes.heroTitle} maxWidth="xl">
                     <Box display="flex" width={1} m={1} p={1}>
                         <Box p={1} className={classes.heroImage} data-aos="zoom-in-up" data-aos-duration={1500}>

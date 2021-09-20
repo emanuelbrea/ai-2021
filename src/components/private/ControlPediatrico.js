@@ -7,8 +7,10 @@ import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {Fab} from "@material-ui/core";
+import {Dialog, DialogActions, DialogTitle, Fab} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import SaveIcon from "@material-ui/icons/Save";
+import Button from "@material-ui/core/Button";
 
 const columns = [
     {field: 'id', headerName: 'ID', width: 90},
@@ -234,6 +236,7 @@ export default function ControlPediatrico() {
     const classes = useStyles();
     const [selected, setSelected] = useState([]);
     const [rows, setRows] = useState(initialRows);
+    const [open, setOpen] = useState(false);
 
     const handleDeleteRows = () => {
         const selectedIDs = new Set(selected);
@@ -252,6 +255,14 @@ export default function ControlPediatrico() {
         };
         setRows([...rows, newRow]);
     }
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     return (
         <div style={{height: 400, width: '100%', padding: '15px'}}>
@@ -291,7 +302,24 @@ export default function ControlPediatrico() {
                 <Fab color="primary" aria-label="add" title="Agregar control" onClick={handleAddRow}>
                     <AddIcon/>
                 </Fab>
+                <Fab style={{backgroundColor: "green", color: "white"}} aria-label="save" title="Guardar"
+                     onClick={handleClickOpen}>
+                    <SaveIcon/>
+                </Fab>
             </div>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Datos guardados correctamente"}</DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleClose} color="secondary">
+                        Ok
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
 
     );

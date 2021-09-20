@@ -3,9 +3,10 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import React from "react";
+import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+import {Dialog, DialogActions, DialogTitle} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -38,6 +39,31 @@ const useStyles = makeStyles((theme) => ({
 export default function Profile(props) {
 
     const classes = useStyles();
+    const [openSave, setOpenSave] = useState(false);
+
+    const initialState = {
+        nombre: "Emanuel",
+        apellido: "Brea",
+        email: "brea.emanuel@gmail.com",
+        dni: 40127028,
+        telefono: 1234456789,
+        password: 'password'
+    };
+
+    const [estado, setEstado] = useState(initialState);
+
+    const handleInputChange = (e) => {
+        const {name, value} = e.target;
+        setEstado({...estado, [name]: value});
+    };
+
+    const handleClickOpenSave = () => {
+        setOpenSave(true);
+    };
+
+    const handleCloseSave = () => {
+        setOpenSave(false);
+    };
 
     return (
         <Container component="main" maxWidth="xs">
@@ -51,13 +77,14 @@ export default function Profile(props) {
                         <Grid item xs={12}>
                             <TextField
                                 autoComplete="off"
-                                name="firstName"
+                                name="nombre"
                                 variant="outlined"
                                 fullWidth
                                 id="firstName"
                                 label="Nombre"
                                 autoFocus
-                                value="Emanuel"
+                                onChange={e => handleInputChange(e)}
+                                value={estado.nombre}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -66,9 +93,10 @@ export default function Profile(props) {
                                 fullWidth
                                 id="lastName"
                                 label="Apellido"
-                                name="lastName"
+                                name="apellido"
                                 autoComplete="off"
-                                value="Brea"
+                                onChange={e => handleInputChange(e)}
+                                value={estado.apellido}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -79,7 +107,8 @@ export default function Profile(props) {
                                 label="Email"
                                 name="email"
                                 autoComplete="email"
-                                value="brea.emanuel@gmail.com"
+                                onChange={e => handleInputChange(e)}
+                                value={estado.email}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -91,7 +120,8 @@ export default function Profile(props) {
                                        id="dni"
                                        autoComplete="off"
                                        type="number"
-                                       value="40127028"
+                                       onChange={e => handleInputChange(e)}
+                                       value={estado.dni}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -103,7 +133,8 @@ export default function Profile(props) {
                                        id="telefono"
                                        autoComplete="off"
                                        type="number"
-                                       value="123456789"
+                                       onChange={e => handleInputChange(e)}
+                                       value={estado.telefono}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -115,21 +146,35 @@ export default function Profile(props) {
                                 type="password"
                                 id="password"
                                 autoComplete="off"
-                                value="password"
+                                onChange={e => handleInputChange(e)}
+                                value={estado.password}
                             />
                         </Grid>
                     </Grid>
                     <Button
-                        type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={handleClickOpenSave}
                     >
                         Guardar
                     </Button>
                 </form>
             </div>
+            <Dialog
+                open={openSave}
+                onClose={handleCloseSave}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Datos guardados correctamente"}</DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleCloseSave} color="secondary">
+                        Ok
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 }
