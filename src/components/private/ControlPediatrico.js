@@ -7,10 +7,11 @@ import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {Dialog, DialogActions, DialogTitle, Fab} from "@material-ui/core";
+import {Fab} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import SaveIcon from "@material-ui/icons/Save";
-import Button from "@material-ui/core/Button";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 const columns = [
     {field: 'id', headerName: 'ID', width: 90},
@@ -231,6 +232,9 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function ControlPediatrico() {
     const classes = useStyles();
@@ -307,19 +311,11 @@ export default function ControlPediatrico() {
                     <SaveIcon/>
                 </Fab>
             </div>
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">{"Datos guardados correctamente"}</DialogTitle>
-                <DialogActions>
-                    <Button onClick={handleClose} color="secondary">
-                        Ok
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success" sx={{width: '100%'}}>
+                    Datos guardados correctamente!
+                </Alert>
+            </Snackbar>
         </div>
 
     );

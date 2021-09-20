@@ -6,7 +6,8 @@ import Button from "@material-ui/core/Button";
 import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import {Dialog, DialogActions, DialogTitle} from "@material-ui/core";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -35,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(4),
     },
 }));
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function Profile(props) {
 
@@ -162,19 +167,11 @@ export default function Profile(props) {
                     </Button>
                 </form>
             </div>
-            <Dialog
-                open={openSave}
-                onClose={handleCloseSave}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">{"Datos guardados correctamente"}</DialogTitle>
-                <DialogActions>
-                    <Button onClick={handleCloseSave} color="secondary">
-                        Ok
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <Snackbar open={openSave} autoHideDuration={3000} onClose={handleCloseSave}>
+                <Alert onClose={handleCloseSave} severity="success" sx={{width: '100%'}}>
+                    Datos guardados correctamente!
+                </Alert>
+            </Snackbar>
         </Container>
     );
 }

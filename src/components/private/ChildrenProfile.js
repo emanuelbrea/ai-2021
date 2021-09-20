@@ -24,6 +24,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Tooltip from "@material-ui/core/Tooltip";
 import DateFnsUtils from '@date-io/date-fns';
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -89,6 +91,10 @@ const gruposSanguineos = [
         value: 'O negativo (O-)',
     },
 ];
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function ChildrenProfile(props) {
 
@@ -355,19 +361,11 @@ export default function ChildrenProfile(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <Dialog
-                open={openSave}
-                onClose={handleCloseSave}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">{"Datos guardados correctamente"}</DialogTitle>
-                <DialogActions>
-                    <Button onClick={handleCloseSave} color="secondary">
-                        Ok
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <Snackbar open={openSave} autoHideDuration={3000} onClose={handleCloseSave}>
+                <Alert onClose={handleCloseSave} severity="success" sx={{width: '100%'}}>
+                    Datos guardados correctamente!
+                </Alert>
+            </Snackbar>
         </React.Fragment>
     );
 }
