@@ -22,6 +22,7 @@ import Vacunas from "./Vacunas";
 import MuiListItem from "@material-ui/core/ListItem";
 import ControlPediatrico from "./ControlPediatrico";
 import {Redirect} from "react-router-dom";
+import Percentiles from "./Percentiles";
 
 const drawerWidth = 260;
 
@@ -78,7 +79,7 @@ const menuOptions = [
     },
     {
         name: "Percentiles",
-        value: "children",
+        value: "percentiles",
         icon: <TrendingUpIcon/>,
     }
 
@@ -202,6 +203,9 @@ export default function Home() {
                 )}
                 {menu === "control" && (
                     <ControlPediatrico/>
+                )}
+                {menu === "percentiles" && (
+                    <Percentiles/>
                 )}
                 {menu === "salir" && (
                     <Redirect to='/'/>
