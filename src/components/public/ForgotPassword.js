@@ -3,8 +3,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -43,10 +41,11 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
-    },
+    }
+
 }));
 
-export default function Login(props) {
+export default function ForgotPassword() {
     const classes = useStyles();
 
     return (
@@ -57,7 +56,7 @@ export default function Login(props) {
                     <LockOutlinedIcon/>
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Ingresar
+                    Recupero de contraseña
                 </Typography>
                 <form className={classes.form} noValidate>
                     <TextField
@@ -73,19 +72,17 @@ export default function Login(props) {
                     />
                     <TextField
                         variant="outlined"
-                        margin="normal"
                         required
                         fullWidth
-                        name="password"
-                        label="Contraseña"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
+                        margin="normal"
+                        name="dni"
+                        label="DNI"
+                        id="dni"
+                        autoComplete="off"
                     />
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary"/>}
-                        label="Recordarme"
-                    />
+                    <Typography component="body3">
+                        Enviaremos un mail con instrucciones para restablecer la contraseña
+                    </Typography>
                     <Button
                         type="submit"
                         fullWidth
@@ -93,12 +90,12 @@ export default function Login(props) {
                         color="primary"
                         className={classes.submit}
                     >
-                        Ingresar
+                        Enviar
                     </Button>
                     <Grid container>
                         <Grid item xs>
-                            <Link href="/reset" variant="body2">
-                                ¿Olvistate la contraseña?
+                            <Link href="/login" variant="body2">
+                                ¿Ya tienes usuario? Ingresar
                             </Link>
                         </Grid>
                         <Grid item>

@@ -109,6 +109,7 @@ export default function Signup() {
                                 label="DNI"
                                 id="dni"
                                 autoComplete="off"
+                                type="number"
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -120,6 +121,7 @@ export default function Signup() {
                                 label="Telefono"
                                 id="telefono"
                                 autoComplete="off"
+                                type="number"
                             />
                         </Grid>
                         <Grid item xs={12}>

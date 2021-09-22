@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -10,12 +12,15 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import {useHistory} from "react-router-dom";
 
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
+            <Link color="inherit" href="http://localhost:3000/">
                 Clinica Brea
             </Link>{' '}
             {new Date().getFullYear()}
@@ -26,7 +31,7 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(10),
+        marginTop: theme.spacing(20),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -41,12 +46,35 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
-    }
-
+    },
 }));
 
-export default function ForgotPassword() {
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+export default function Login(props) {
     const classes = useStyles();
+    const history = useHistory();
+    const [email, setEmail] = useState('');
+
+    const [failedLogin, setFailedLogin] = useState(false);
+
+    const handleClickOpen = () => {
+        if (email === '') {
+            setFailedLogin(true);
+        } else {
+            history.push("/home");
+        }
+    };
+
+    const handleClose = () => {
+        setFailedLogin(false);
+    };
+
+    const handleInputChange = (e) => {
+        setEmail(e.target.value);
+    };
 
     return (
         <Container component="main" maxWidth="xs">
@@ -56,7 +84,7 @@ export default function ForgotPassword() {
                     <LockOutlinedIcon/>
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Recupero de contraseña
+                    Ingresar
                 </Typography>
                 <form className={classes.form} noValidate>
                     <TextField
@@ -69,32 +97,37 @@ export default function ForgotPassword() {
                         name="email"
                         autoComplete="email"
                         autoFocus
+                        value={email}
+                        onChange={handleInputChange}
                     />
                     <TextField
                         variant="outlined"
+                        margin="normal"
                         required
                         fullWidth
-                        name="dni"
-                        label="DNI"
-                        id="dni"
-                        autoComplete="off"
+                        name="password"
+                        label="Contraseña"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
                     />
-                    <Typography component="body3">
-                        Enviaremos un mail con instrucciones para restablecer la contraseña
-                    </Typography>
+                    <FormControlLabel
+                        control={<Checkbox value="remember" color="primary"/>}
+                        label="Recordarme"
+                    />
                     <Button
-                        type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={handleClickOpen}
                     >
-                        Enviar
+                        Ingresar
                     </Button>
                     <Grid container>
                         <Grid item xs>
-                            <Link href="/login" variant="body2">
-                                ¿Ya tienes usuario? Ingresar
+                            <Link href="/reset" variant="body2">
+                                ¿Olvistate la contraseña?
                             </Link>
                         </Grid>
                         <Grid item>
@@ -108,6 +141,11 @@ export default function ForgotPassword() {
             <Box mt={8}>
                 <Copyright/>
             </Box>
+            <Snackbar open={failedLogin} autoHideDuration={3000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="error" sx={{width: '100%'}}>
+                    Datos incorrectos
+                </Alert>
+            </Snackbar>
         </Container>
     );
 }

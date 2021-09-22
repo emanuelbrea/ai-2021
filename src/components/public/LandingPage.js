@@ -2,14 +2,14 @@ import {Button, Card, CardActions, CardContent, CardMedia, Container, Grid, Typo
 import {makeStyles} from "@material-ui/core/styles";
 import Footer from "./Footer";
 import React, {useEffect} from "react";
-import CalendarioVacunacion from "../images/CalendarioVacunacion.jpg";
-import ControlesPediatricos from "../images/ControlesPediatricos.jpg";
-import Percentiles from "../images/Percentiles.jpg";
-import Doctor from "../images/doctor.png";
-import Doctores from "../images/doctores.png";
-import Vacunas from "../images/Vacunas.jpg";
-import LogoDoctor from "../images/logoDoctor.jpg";
-import LogoClinica from "../images/logoClinica.jpg";
+import CalendarioVacunacion from "../../images/CalendarioVacunacion.jpg";
+import ControlesPediatricos from "../../images/ControlesPediatricos.jpg";
+import Percentiles from "../../images/Percentiles.jpg";
+import Doctor from "../../images/doctor.png";
+import Doctores from "../../images/doctores.png";
+import Vacunas from "../../images/Vacunas.jpg";
+import LogoDoctor from "../../images/logoDoctor.jpg";
+import LogoClinica from "../../images/logoClinica.jpg";
 import AOS from "aos/dist/aos";
 import "aos/dist/aos.css";
 import Box from "@material-ui/core/Box";
@@ -17,10 +17,11 @@ import Carousel from 'react-material-ui-carousel'
 
 const useStyles = makeStyles((theme) => ({
     heroTitle: {
-        marginTop: theme.spacing(26),
+        paddingTop: theme.spacing(26),
+        paddingBottom: theme.spacing(26),
     },
     centerTitle: {
-        marginTop: theme.spacing(50),
+        paddingTop: theme.spacing(20),
         marginBottom: theme.spacing(16),
     },
     heroContent: {
@@ -108,15 +109,15 @@ const reviews = [
         persona: "Sandra Bullock, Madre de Juan",
     },
     {
-        description: "Los usuarios podrán registrar cada una de las vacunas aplicadas a los niños. Para ello el sistema " +
-            "debe contar con una replica del calendario de vacunación y permitir al usuario completar el mismo ingresando ",
+        description: "Lo mejor de Clinica Brea es la interfaz. Es muy clara y rapida. Siempre que llevo a mis hijos al" +
+            "doctor le muestro la aplicacion. Es genial!",
         title: "Registro de vacunas",
         persona: "Brad Pitt, Padre de Gonzalo",
     },
     {
-        description: "Los usuarios podrán comparar los controles de sus hijos con los percentiles de Curva de Crecimiento ofrecidos por la OMS.",
+        description: "Clinica Brea es lo mejor que hay para los padres! Ademas es muy facil de usar.",
         title: "Consulta de Percentiles",
-        persona: "Sandra Bullock, Madre de Juanes",
+        persona: "Angelina Jolie, Madre de Pepe",
     }
 ];
 
@@ -137,70 +138,75 @@ export default function LandingPage() {
     return (
         <React.Fragment>
             <main>
-                <Container className={classes.heroTitle} maxWidth="xl">
-                    <Box display="flex" width={1} m={1} p={1}>
-                        <Box p={1} className={classes.heroContent} data-aos="zoom-in-up" data-aos-duration={1500}>
-                            <Container>
-                                <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom
-                                            className={classes.heroText}>
-                                    Clinica Brea
-                                </Typography>
-                                <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                                    Gestionar controles pediatricos nunca fue tan facil.
-                                    Con solo unos clicks puede llevar al dia todos los checkeos de sus hijos.
-                                </Typography>
-                            </Container>
+                <section className={classes.heroTitle}>
+                    <Container maxWidth={"xl"}>
+                        <Box display="flex" width={1} m={1} p={1}>
+                            <Box p={1} className={classes.heroContent} data-aos="zoom-in-up" data-aos-duration={1500}>
+                                <Container>
+                                    <Typography component="h1" variant="h2" align="center" color="textPrimary"
+                                                gutterBottom
+                                                className={classes.heroText}>
+                                        Clinica Brea
+                                    </Typography>
+                                    <Typography variant="h5" align="center" color="textSecondary" paragraph>
+                                        Gestionar controles pediatricos nunca fue tan facil.
+                                        Con solo unos clicks puede llevar al dia todos los checkeos de sus hijos.
+                                    </Typography>
+                                </Container>
+                            </Box>
+                            <Box p={1} className={classes.heroImage} data-aos="zoom-in-up" data-aos-duration={1500}>
+                                <CardMedia
+                                    component="img"
+                                    src={Doctor}
+                                    style={{width: "80%"}}
+                                />
+                            </Box>
                         </Box>
-                        <Box p={1} className={classes.heroImage} data-aos="zoom-in-up" data-aos-duration={1500}>
-                            <CardMedia
-                                component="img"
-                                src={Doctor}
-                                style={{width: "80%"}}
-                            />
-                        </Box>
-                    </Box>
-                </Container>
+                    </Container>
+                </section>
 
-                <Container className={classes.centerTitle} maxWidth="md" data-aos="zoom-in-up"
-                           data-aos-duration={1500}>
-
-                    <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom
-                                className={classes.heroText}>
-                        Funcionalidades
-                    </Typography>
-                    <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                        Gestionar controles pediatricos nunca fue tan facil.
-                        Con solo unos clicks puede llevar al dia todos los checkeos de sus hijos.
-                    </Typography>
+                <section className={classes.heroTitle}>
+                    {/*<Container maxWidth={"xl"}>*/}
+                    <div data-aos="zoom-in-up"
+                         data-aos-duration={1500}>
+                        <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom
+                                    className={classes.heroText}>
+                            Funcionalidades
+                        </Typography>
+                        <Typography variant="h5" align="center" color="textSecondary" paragraph>
+                            Clinica Brea es la mejor herramienta para mantener todos los datos medicos de sus hijos en
+                            un solo lugar.
+                        </Typography>
+                    </div>
 
 
-                </Container>
+                    <Container className={classes.cardGrid} maxWidth="lg">
+                        <Grid container spacing={10}>
+                            {funcionalidades.map((funcionalidad, index) => (
+                                <Grid item key={index} xs={12} md={4} lg={4} data-aos="fade-right"
+                                      data-aos-easing="ease-in-sine"
+                                      data-aos-duration={500} data-aos-delay={funcionalidad.delay}>
+                                    <Card className={classes.cardFuncionalidad}>
+                                        <CardMedia
+                                            component="img"
+                                            src={funcionalidad.image}
+                                        />
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h5" component="h2">
+                                                {funcionalidad.title}
+                                            </Typography>
+                                            <Typography variant="body2" color="textSecondary" component="p">
+                                                {funcionalidad.description}
+                                            </Typography>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            ))}
+                        </Grid>
 
-                <Container className={classes.cardGrid} maxWidth="lg">
-                    <Grid container spacing={10}>
-                        {funcionalidades.map((funcionalidad, index) => (
-                            <Grid item key={index} xs={12} md={4} lg={4} data-aos="fade-right"
-                                  data-aos-easing="ease-in-sine"
-                                  data-aos-duration={500} data-aos-delay={funcionalidad.delay}>
-                                <Card className={classes.cardFuncionalidad}>
-                                    <CardMedia
-                                        component="img"
-                                        src={funcionalidad.image}
-                                    />
-                                    <CardContent>
-                                        <Typography gutterBottom variant="h5" component="h2">
-                                            {funcionalidad.title}
-                                        </Typography>
-                                        <Typography variant="body2" color="textSecondary" component="p">
-                                            {funcionalidad.description}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        ))}
-                    </Grid>
+                    </Container>
+                </section>
 
-                </Container>
 
                 <Container className={classes.heroTitle} maxWidth="xl">
                     <Box display="flex" width={1} m={1} p={1}>

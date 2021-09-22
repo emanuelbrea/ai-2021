@@ -24,6 +24,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Tooltip from "@material-ui/core/Tooltip";
 import DateFnsUtils from '@date-io/date-fns';
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -90,6 +92,10 @@ const gruposSanguineos = [
     },
 ];
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 export default function ChildrenProfile(props) {
 
     const classes = useStyles();
@@ -100,6 +106,7 @@ export default function ChildrenProfile(props) {
     const [fecha, setFecha] = useState(new Date());
     const [openAlert, setOpenAlert] = useState(false);
     const defaultNewTab = "+";
+    const [openSave, setOpenSave] = useState(false);
 
     const [tabs, setTabs] = useState(initialTabs);
 
@@ -159,6 +166,15 @@ export default function ChildrenProfile(props) {
 
     const handleClose = () => {
         setOpenAlert(false);
+    };
+
+
+    const handleClickOpenSave = () => {
+        setOpenSave(true);
+    };
+
+    const handleCloseSave = () => {
+        setOpenSave(false);
     };
 
 
@@ -301,7 +317,7 @@ export default function ChildrenProfile(props) {
                             ))}
                         </Grid>
                         <Button
-                            type="submit"
+                            onClick={handleClickOpenSave}
                             fullWidth
                             variant="contained"
                             color="primary"
@@ -345,6 +361,11 @@ export default function ChildrenProfile(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
+            <Snackbar open={openSave} autoHideDuration={3000} onClose={handleCloseSave}>
+                <Alert onClose={handleCloseSave} severity="success" sx={{width: '100%'}}>
+                    Datos guardados correctamente!
+                </Alert>
+            </Snackbar>
         </React.Fragment>
     );
 }
