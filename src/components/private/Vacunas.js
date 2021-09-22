@@ -42,6 +42,8 @@ const columns = [
     {
         field: 'nombre',
         headerName: 'Hijo',
+        type: 'singleSelect',
+        valueOptions: ['Juan', 'Pepe'],
         width: 160,
         editable: true,
     },
@@ -122,7 +124,7 @@ export default function Vacunas() {
 
     const handleAddRow = () => {
         const maxId = Math.max(...rows.map(user => user.id))
-        const newRow = {id: maxId, fecha: '2020-03-02', vacuna: '', lugar: '', nombre: 'Juan'};
+        const newRow = {id: maxId + 1, fecha: '2020-03-02', vacuna: '', lugar: '', nombre: 'Juan'};
         setRows([...rows, newRow]);
     }
 
@@ -152,6 +154,7 @@ export default function Vacunas() {
                 }
             </Toolbar>
             <DataGrid
+                style={{backgroundColor: "#f2f6f9"}}
                 rows={rows}
                 columns={columns}
                 pageSize={5}

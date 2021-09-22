@@ -86,6 +86,8 @@ const columns = [
         headerName: 'Hijo',
         width: 110,
         editable: true,
+        type: 'singleSelect',
+        valueOptions: ['Juan', 'Pepe'],
     },
 ];
 
@@ -253,7 +255,7 @@ export default function ControlPediatrico() {
     const handleAddRow = () => {
         const maxId = Math.max(...rows.map(user => user.id))
         const newRow = {
-            id: maxId, fecha: '2020-02-02', peso: 0, altura: 0, diametro: 0, observaciones: '',
+            id: maxId + 1, fecha: '2020-02-02', peso: 0, altura: 0, diametro: 0, observaciones: '',
             medicamento: '', dosis: 0, periodo: '',
             estudios: '', resultados: '', nombre: 'Juan'
         };
@@ -269,7 +271,7 @@ export default function ControlPediatrico() {
     };
 
     return (
-        <div style={{height: 400, width: '100%', padding: '15px'}}>
+        <div style={{height: 600, width: '100%', padding: '15px'}}>
             <Toolbar
                 className={clsx(classes.root, {
                     [classes.highlight]: selected.length > 0,
@@ -294,10 +296,12 @@ export default function ControlPediatrico() {
                 }
             </Toolbar>
             <DataGrid
+                style={{backgroundColor: "#f2f6f9"}}
+                autoHeight
                 rows={rows}
                 columns={columns}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
+                pageSize={10}
+                rowsPerPageOptions={[10]}
                 checkboxSelection
                 disableSelectionOnClick
                 onSelectionModelChange={(ids) => setSelected(ids)}

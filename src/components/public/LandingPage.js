@@ -109,15 +109,15 @@ const reviews = [
         persona: "Sandra Bullock, Madre de Juan",
     },
     {
-        description: "Los usuarios podrán registrar cada una de las vacunas aplicadas a los niños. Para ello el sistema " +
-            "debe contar con una replica del calendario de vacunación y permitir al usuario completar el mismo ingresando ",
+        description: "Lo mejor de Clinica Brea es la interfaz. Es muy clara y rapida. Siempre que llevo a mis hijos al" +
+            "doctor le muestro la aplicacion. Es genial!",
         title: "Registro de vacunas",
         persona: "Brad Pitt, Padre de Gonzalo",
     },
     {
-        description: "Los usuarios podrán comparar los controles de sus hijos con los percentiles de Curva de Crecimiento ofrecidos por la OMS.",
+        description: "Clinica Brea es lo mejor que hay para los padres! Ademas es muy facil de usar.",
         title: "Consulta de Percentiles",
-        persona: "Sandra Bullock, Madre de Juanes",
+        persona: "Angelina Jolie, Madre de Pepe",
     }
 ];
 
@@ -174,8 +174,8 @@ export default function LandingPage() {
                             Funcionalidades
                         </Typography>
                         <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                            Gestionar controles pediatricos nunca fue tan facil.
-                            Con solo unos clicks puede llevar al dia todos los checkeos de sus hijos.
+                            Clinica Brea es la mejor herramienta para mantener todos los datos medicos de sus hijos en
+                            un solo lugar.
                         </Typography>
                     </div>
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +12,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import {useHistory} from "react-router-dom";
 
 function Copyright() {
     return (
@@ -46,8 +49,32 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 export default function Login(props) {
     const classes = useStyles();
+    const history = useHistory();
+    const [email, setEmail] = useState('');
+
+    const [failedLogin, setFailedLogin] = useState(false);
+
+    const handleClickOpen = () => {
+        if (email === '') {
+            setFailedLogin(true);
+        } else {
+            history.push("/home");
+        }
+    };
+
+    const handleClose = () => {
+        setFailedLogin(false);
+    };
+
+    const handleInputChange = (e) => {
+        setEmail(e.target.value);
+    };
 
     return (
         <Container component="main" maxWidth="xs">
@@ -70,6 +97,8 @@ export default function Login(props) {
                         name="email"
                         autoComplete="email"
                         autoFocus
+                        value={email}
+                        onChange={handleInputChange}
                     />
                     <TextField
                         variant="outlined"
@@ -87,11 +116,11 @@ export default function Login(props) {
                         label="Recordarme"
                     />
                     <Button
-                        type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={handleClickOpen}
                     >
                         Ingresar
                     </Button>
@@ -112,6 +141,11 @@ export default function Login(props) {
             <Box mt={8}>
                 <Copyright/>
             </Box>
+            <Snackbar open={failedLogin} autoHideDuration={3000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="error" sx={{width: '100%'}}>
+                    Datos incorrectos
+                </Alert>
+            </Snackbar>
         </Container>
     );
 }

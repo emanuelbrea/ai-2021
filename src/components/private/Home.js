@@ -21,8 +21,10 @@ import ChildrenProfile from "./ChildrenProfile";
 import Vacunas from "./Vacunas";
 import MuiListItem from "@material-ui/core/ListItem";
 import ControlPediatrico from "./ControlPediatrico";
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import Percentiles from "./Percentiles";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 const drawerWidth = 260;
 
@@ -62,7 +64,15 @@ const useStyles = makeStyles((theme) => ({
     },
     main: {
         width: '100%'
-    }
+    },
+    link: {
+        textDecoration: "none",
+        color: "inherit"
+    },
+    tagline: {
+        display: "inline-block",
+        marginLeft: 10,
+    },
 
 }));
 
@@ -128,17 +138,26 @@ const ListItem = withStyles({
     selected: {}
 })(MuiListItem);
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
-export default function Home() {
+export default function Home(props) {
     const classes = useStyles();
     const initialIndex = 0;
 
     const [menu, setMenu] = useState(menuOptions[initialIndex].value);
     const [selectedIndex, setSelectedIndex] = useState(initialIndex);
 
+    const [firstLogin, setFirstLogin] = useState(true);
+
     const handleListItemClick = (index, value) => {
         setSelectedIndex(index);
         setMenu(value)
+    };
+
+    const handleClose = () => {
+        setFirstLogin(false);
     };
 
     return (
@@ -147,7 +166,9 @@ export default function Home() {
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     <Typography variant="h5" className={classes.title}>
-                        Clinica Brea
+                        <Link to="/" className={classes.link}>
+                            <span className={classes.tagline}>Clinica Brea</span>
+                        </Link>
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -212,6 +233,11 @@ export default function Home() {
                 )}
 
             </main>
+            <Snackbar open={firstLogin} autoHideDuration={3000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success" sx={{width: '100%'}}>
+                    Ingreso exitoso!
+                </Alert>
+            </Snackbar>
         </div>
     );
 }

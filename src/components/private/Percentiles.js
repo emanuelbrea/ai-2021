@@ -178,8 +178,8 @@ export default function Percentiles() {
                     <Box p={1} style={{width: "50%"}}>
                         <Card className={classes.cardFuncionalidad}>
                             <ModalImage
-                                small={estado.sexo == sexos[0] ? PercentilesAltF : PercentilesAltM}
-                                large={estado.sexo == sexos[0] ? PercentilesAltF : PercentilesAltM}
+                                small={estado.sexo === sexos[0] ? PercentilesAltF : PercentilesAltM}
+                                large={estado.sexo === sexos[0] ? PercentilesAltF : PercentilesAltM}
                                 alt="Tabla de Percentiles Altura"
                             />
                         </Card>
@@ -187,8 +187,8 @@ export default function Percentiles() {
                     <Box p={1} style={{width: "50%"}}>
                         <Card className={classes.cardFuncionalidad}>
                             <ModalImage
-                                small={estado.sexo == sexos[0] ? PercentilesPesoF : PercentilesPesoM}
-                                large={estado.sexo == sexos[0] ? PercentilesPesoF : PercentilesPesoM}
+                                small={estado.sexo === sexos[0] ? PercentilesPesoF : PercentilesPesoM}
+                                large={estado.sexo === sexos[0] ? PercentilesPesoF : PercentilesPesoM}
                                 alt="Tabla de Percentiles Peso"
                             />
                         </Card>
