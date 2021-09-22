@@ -45,6 +45,8 @@ export default function Profile(props) {
 
     const classes = useStyles();
     const [openSave, setOpenSave] = useState(false);
+    const [cambioPassword, setCambioPassword] = useState(false);
+    const [wrongPassword, setWrongPassword] = useState(false);
 
     const initialState = {
         nombre: "Emanuel",
@@ -52,7 +54,8 @@ export default function Profile(props) {
         email: "brea.emanuel@gmail.com",
         dni: 40127028,
         telefono: 1234456789,
-        password: 'password'
+        password: 'password',
+        newPassword: '',
     };
 
     const [estado, setEstado] = useState(initialState);
@@ -63,7 +66,12 @@ export default function Profile(props) {
     };
 
     const handleClickOpenSave = () => {
-        setOpenSave(true);
+        if (cambioPassword && estado.password !== estado.newPassword) {
+            setWrongPassword(true);
+        } else {
+            setCambioPassword(false);
+            setOpenSave(true);
+        }
     };
 
     const handleCloseSave = () => {
@@ -151,10 +159,30 @@ export default function Profile(props) {
                                 type="password"
                                 id="password"
                                 autoComplete="off"
-                                onChange={e => handleInputChange(e)}
+                                onChange={e => {
+                                    setCambioPassword(true);
+                                    handleInputChange(e)
+                                }
+                                }
                                 value={estado.password}
                             />
                         </Grid>
+                        {
+                            cambioPassword &&
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    name="newPassword"
+                                    label="Confirmar Contraseña"
+                                    type="password"
+                                    id="newPassword"
+                                    autoComplete="off"
+                                    onChange={e => handleInputChange(e)}
+                                    value={estado.newPassword}
+                                />
+                            </Grid>
+                        }
                     </Grid>
                     <Button
                         fullWidth
@@ -170,6 +198,11 @@ export default function Profile(props) {
             <Snackbar open={openSave} autoHideDuration={3000} onClose={handleCloseSave}>
                 <Alert onClose={handleCloseSave} severity="success" sx={{width: '100%'}}>
                     Datos guardados correctamente!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={wrongPassword} autoHideDuration={3000} onClose={() => setWrongPassword(false)}>
+                <Alert onClose={handleCloseSave} severity="error" sx={{width: '100%'}}>
+                    Las contraseñas no coinciden!
                 </Alert>
             </Snackbar>
         </Container>

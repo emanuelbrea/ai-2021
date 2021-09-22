@@ -42,6 +42,11 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    numberField: {
+        "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+            display: "none"
+        }
+    },
 }));
 
 export default function Signup() {
@@ -101,27 +106,27 @@ export default function Signup() {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                name="dni"
-                                label="DNI"
-                                id="dni"
-                                autoComplete="off"
-                                type="number"
+                            <TextField className={classes.numberField}
+                                       variant="outlined"
+                                       required
+                                       fullWidth
+                                       name="dni"
+                                       label="DNI"
+                                       id="dni"
+                                       autoComplete="off"
+                                       type="number"
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                name="telefono"
-                                label="Telefono"
-                                id="telefono"
-                                autoComplete="off"
-                                type="number"
+                            <TextField className={classes.numberField}
+                                       variant="outlined"
+                                       required
+                                       fullWidth
+                                       name="telefono"
+                                       label="Telefono"
+                                       id="telefono"
+                                       autoComplete="off"
+                                       type="number"
                             />
                         </Grid>
                         <Grid item xs={12}>
