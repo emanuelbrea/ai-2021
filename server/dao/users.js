@@ -5,13 +5,13 @@ const queryCreateUser = `INSERT INTO users(username, email, password, dni, telef
 const queryLoginUser = `SELECT * FROM  users where email = $1 `
 
 exports.createUser = function (username, email, password, dni, telefono) {
-    return poolPostgres.query( queryCreateUser ,
+    return poolPostgres.query(queryCreateUser,
         [username, email, password, dni, telefono]
     );
 }
 
 exports.userLogin = function (email) {
-    return poolPostgres.query( queryLoginUser ,
+    return poolPostgres.query(queryLoginUser,
         [email]
     );
 }

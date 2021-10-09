@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
  * @param {string} password
  * @returns {string} returns hashed password
  */
-exports.hashPassword = function(password) {
+exports.hashPassword = function (password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8))
 }
 
@@ -17,7 +17,7 @@ exports.hashPassword = function(password) {
  * @param {string} password
  * @returns {Boolean} return True or False
  */
-exports.comparePassword= function(hashPassword, password) {
+exports.comparePassword = function (hashPassword, password) {
     return bcrypt.compareSync(password, hashPassword);
 }
 
@@ -27,7 +27,7 @@ exports.comparePassword= function(hashPassword, password) {
  * @param {string} email
  * @returns {Boolean} True or False
  */
-exports.isValidEmail= function(email) {
+exports.isValidEmail = function (email) {
     return /\S+@\S+\.\S+/.test(email);
 }
 
@@ -37,11 +37,11 @@ exports.isValidEmail= function(email) {
  * @param {string} id
  * @returns {string} token
  */
-exports.generateToken= function(id) {
+exports.generateToken = function (id) {
     const token = jwt.sign({
             userId: id
         },
-        process.env.SECRET, { expiresIn: '7d' }
+        process.env.SECRET, {expiresIn: '7d'}
     );
     return token;
 }
