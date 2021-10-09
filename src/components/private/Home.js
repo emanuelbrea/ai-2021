@@ -167,7 +167,7 @@ export default function Home(props) {
                 <Toolbar>
                     <Typography variant="h5" className={classes.title}>
                         <Link to="/" className={classes.link}>
-                            <span className={classes.tagline}>Clinica Brea</span>
+                            <span className={classes.tagline}>Papis Felices</span>
                         </Link>
                     </Typography>
                 </Toolbar>

@@ -57,7 +57,7 @@ export default function MenuAppBar() {
                     <Typography variant="h5">
                         <Link to="/" className={classes.link} onClick={scrollToTop}>
                             <img width={50} src={logo} style={{marginBottom: -10}} alt=""/>
-                            <span className={classes.tagline}>Clinica Brea</span>
+                            <span className={classes.tagline}>Papis Felices</span>
                         </Link>
                     </Typography>
                     <section className={classes.rightToolbar}>

@@ -102,7 +102,7 @@ const initialRows = [
         medicamento: 'ibupirac',
         dosis: 2,
         periodo: '2 meses',
-        estudios: 'oculista',
+        estudios: 'pediatra',
         resultados: 'todo en orden',
         nombre: 'Juan'
     },
@@ -116,7 +116,7 @@ const initialRows = [
         medicamento: 'ibupirac',
         dosis: 2,
         periodo: '5 meses',
-        estudios: 'oculista',
+        estudios: 'pediatra',
         resultados: 'todo en orden',
         nombre: 'Juan'
     },
@@ -130,7 +130,7 @@ const initialRows = [
         medicamento: 'ibupirac',
         dosis: 3,
         periodo: '3 meses',
-        estudios: 'dentista',
+        estudios: 'pediatra',
         resultados: 'todo en orden',
         nombre: 'Pepe'
     },
@@ -144,7 +144,7 @@ const initialRows = [
         medicamento: 'ibupirac',
         dosis: 2,
         periodo: '2 meses',
-        estudios: 'oculista',
+        estudios: 'pediatra',
         resultados: 'todo en orden',
         nombre: 'Juan'
     },
@@ -158,7 +158,7 @@ const initialRows = [
         medicamento: 'ibupirac',
         dosis: 6,
         periodo: '4 meses',
-        estudios: 'oculista',
+        estudios: 'pediatra',
         resultados: 'todo en orden',
         nombre: 'Juan'
     },
@@ -172,7 +172,7 @@ const initialRows = [
         medicamento: 'ibupirac',
         dosis: 2,
         periodo: '6 meses',
-        estudios: 'dentista',
+        estudios: 'pediatra',
         resultados: 'todo en orden',
         nombre: 'Pepe'
     },
@@ -186,7 +186,7 @@ const initialRows = [
         medicamento: 'ibupirac',
         dosis: 2,
         periodo: '7 meses',
-        estudios: 'oculista',
+        estudios: 'pediatra',
         resultados: 'todo en orden',
         nombre: 'Juan'
     },
@@ -200,7 +200,7 @@ const initialRows = [
         medicamento: 'ibupirac',
         dosis: 3,
         periodo: '9 meses',
-        estudios: 'dentista',
+        estudios: 'pediatra',
         resultados: 'todo en orden',
         nombre: 'Juan'
     },
