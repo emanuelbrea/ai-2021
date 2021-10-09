@@ -24,4 +24,15 @@ User.prototype.createUser = async function () {
         throw error;
     }
 };
-module.exports = User;
+
+
+User.userLogin = async function (email) {
+    try {
+        const {rows} = await userDao.userLogin(email);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
+module.exports = User

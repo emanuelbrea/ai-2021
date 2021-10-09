@@ -1,12 +1,6 @@
 const {Pool} = require('pg')
 
-const poolPostgres = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'postgres',
-    password: 'password',
-    port: 5432,
-})
+const poolPostgres = new Pool()
 
 module.exports = {
     async query(text, params) {

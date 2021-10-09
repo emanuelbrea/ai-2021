@@ -28,7 +28,10 @@
     "react-modal-image": "^2.5.0",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
-    "web-vitals": "^2.1.1"
+    "web-vitals": "^2.1.1",
+    "bcrypt": "^5.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "dotenv": "^10.0.0"
   },
   "scripts": {
     "start-front": "react-scripts start",
