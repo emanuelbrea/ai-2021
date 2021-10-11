@@ -2,7 +2,6 @@ const controlDao = require("../dao/controlDao");
 
 
 function Control({
-                     id,
                      fecha,
                      peso,
                      altura,
@@ -13,7 +12,6 @@ function Control({
                      resultados,
                      id_hijo
                  }) {
-    this.id = id;
     this.fecha = fecha;
     this.peso = peso;
     this.altura = altura;
@@ -28,8 +26,8 @@ function Control({
 
 Control.prototype.createControl = async function () {
     try {
-        const {rows} = await controlDao.createControl(this.id, this.fecha, this.peso,
-            this.altura, this.diametro, this.observaciones, this.medicamentos, this.estudios, this.resultados, this.id_hijo);
+        const {rows} = await controlDao.createControl(this.fecha, this.peso, this.altura, this.diametro,
+            this.observaciones, this.medicamentos, this.estudios, this.resultados, this.id_hijo);
         return rows;
     } catch (error) {
         throw error;
@@ -37,9 +35,9 @@ Control.prototype.createControl = async function () {
 };
 
 
-Control.deleteControl = async function (id, id_hijo) {
+Control.deleteControl = async function (fecha, medicamentos, estudios, resultados, id_hijo) {
     try {
-        const {rows} = await controlDao.deleteControl(id, id_hijo);
+        const {rows} = await controlDao.deleteControl(fecha, medicamentos, estudios, resultados, id_hijo);
         return rows;
     } catch (error) {
         throw error;

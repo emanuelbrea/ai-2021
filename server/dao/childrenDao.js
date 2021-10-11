@@ -1,15 +1,15 @@
 const poolPostgres = require('../dao/dbpool');
 
-const queryCreateChildren = `INSERT INTO children(nombre, nacimiento, grupo_sanguineo, alergias, enfermedades, padre_id) 
-VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`
+const queryCreateChildren = `INSERT INTO children(nombre, nacimiento, grupo_sanguineo, padre) 
+VALUES ($1, $2, $3, $4) RETURNING *`
 
 
-const queryDeleteChildren = `DELETE FROM children WHERE nombre= $1 and padre_id =$2`
+const queryDeleteChildren = `DELETE FROM children WHERE nombre= $1 and padre =$2`
 
 
-exports.createChildren = function (nombre, nacimiento, grupoSanguineo, alergias, enfermedades, padre) {
+exports.createChildren = function (nombre, nacimiento, grupoSanguineo, padre) {
     return poolPostgres.query(queryCreateChildren,
-        [nombre, nacimiento, grupoSanguineo, alergias, enfermedades, padre]
+        [nombre, nacimiento, grupoSanguineo,  padre]
     );
 }
 

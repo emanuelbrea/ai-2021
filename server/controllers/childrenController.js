@@ -2,12 +2,12 @@ const Children = require("../model/Children");
 
 
 exports.createChildren = async (req, res, next) => {
-    const {nombre, nacimiento, grupoSanguineo, alergias, enfermedades, padre} = req.body;
+    const {nombre, nacimiento, grupoSanguineo, padre} = req.body;
     try {
         if (!padre || !nombre) {
             return res.status(400).send({'message': 'Some values are missing'});
         }
-        const children = new Children({nombre, nacimiento, grupoSanguineo, alergias, enfermedades, padre});
+        const children = new Children({nombre, nacimiento, grupoSanguineo, padre});
         const result = await children.createChildren();
         return res.status(201).send('Children created');
     } catch (error) {
