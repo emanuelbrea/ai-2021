@@ -10,7 +10,8 @@ function Control({
                      medicamentos,
                      estudios,
                      resultados,
-                     id_hijo
+                     nombre_hijo,
+                     padre
                  }) {
     this.fecha = fecha;
     this.peso = peso;
@@ -20,14 +21,15 @@ function Control({
     this.medicamentos = medicamentos;
     this.estudios = estudios;
     this.resultados = resultados;
-    this.id_hijo = id_hijo;
+    this.nombre_hijo = nombre_hijo;
+    this.padre = padre;
 }
 
 
 Control.prototype.createControl = async function () {
     try {
         const {rows} = await controlDao.createControl(this.fecha, this.peso, this.altura, this.diametro,
-            this.observaciones, this.medicamentos, this.estudios, this.resultados, this.id_hijo);
+            this.observaciones, this.medicamentos, this.estudios, this.resultados, this.nombre_hijo, this.padre);
         return rows;
     } catch (error) {
         throw error;
@@ -35,9 +37,9 @@ Control.prototype.createControl = async function () {
 };
 
 
-Control.deleteControl = async function (fecha, medicamentos, estudios, resultados, id_hijo) {
+Control.deleteControl = async function (fecha, medicamentos, estudios, resultados, nombre_hijo, padre) {
     try {
-        const {rows} = await controlDao.deleteControl(fecha, medicamentos, estudios, resultados, id_hijo);
+        const {rows} = await controlDao.deleteControl(fecha, medicamentos, estudios, resultados, nombre_hijo, padre);
         return rows;
     } catch (error) {
         throw error;

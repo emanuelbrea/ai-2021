@@ -8,6 +8,8 @@ require('dotenv').config();
 var usersRouter = require('./routes/users');
 var childrenRouter = require('./routes/children');
 var controlRouter = require('./routes/control');
+var childrenDataRouter = require('./routes/childrenData');
+var vacunasRouter = require('./routes/vacunas');
 
 var server = express();
 
@@ -19,6 +21,8 @@ server.use(cors());
 server.use(usersRouter);
 server.use(childrenRouter);
 server.use(controlRouter);
+server.use(childrenDataRouter);
+server.use(vacunasRouter);
 
 
 // catch 404 and forward to error handler

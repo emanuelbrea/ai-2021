@@ -37,3 +37,30 @@ exports.deleteChildren = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.getChildren = async (req, res, next) => {
+    const {padre} = req.body;
+    try {
+        if (!padre) {
+            return res.status(400).send({'message': 'Some values are missing'});
+        }
+        const result = await Children.getChildren(padre);
+        return res.status(200).send(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.editChildren = async (req, res, next) => {
+    const {nombre, nacimiento, grupoSanguineo, nombre_old, nacimiento_old, padre} = req.body;
+    try {
+        if (!padre || !nombre) {
+            return res.status(400).send({'message': 'Some values are missing'});
+        }
+        const result = await Children.editChildren(
+            nombre, nacimiento, grupoSanguineo, nombre_old, nacimiento_old, padre);
+        return res.status(200).send('Edited children');
+    } catch (error) {
+        next(error);
+    }
+};

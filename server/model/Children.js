@@ -33,4 +33,23 @@ Children.deleteChildren = async function (nombre, padre) {
     }
 };
 
+Children.getChildren = async function (padre) {
+    try {
+        const {rows} = await childrenDao.getChildren(padre);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
+Children.editChildren = async function (nombre, nacimiento, grupoSanguineo, nombre_old, nacimiento_old, padre) {
+    try {
+        const {rows} = await childrenDao.editChildren(
+            nombre, nacimiento, grupoSanguineo, nombre_old, nacimiento_old, padre);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
 module.exports = Children
