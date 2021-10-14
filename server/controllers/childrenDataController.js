@@ -39,7 +39,8 @@ exports.deleteChildrenData = async (req, res, next) => {
 };
 
 exports.getChildrenData = async (req, res, next) => {
-    const {nombre_hijo, padre} = req.body;
+    const nombre_hijo = req.query.nombre_hijo;
+    const padre = req.query.padre;
     try {
         if (!nombre_hijo || !padre) {
             return res.status(400).send({'message': 'Some values are missing'});

@@ -53,28 +53,56 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+
 export default function Login(props) {
     const classes = useStyles();
     const history = useHistory();
-    const [email, setEmail] = useState('');
 
-    const [failedLogin, setFailedLogin] = useState(false);
+    const initialState = {
+        email: '',
+        password: '',
+        missingValues: false,
+        failedLogin: false
+    };
 
-    const handleClickOpen = () => {
-        if (email === '') {
-            setFailedLogin(true);
+    const [estado, setEstado] = useState(initialState);
+
+    const handleClickLogin = () => {
+        if (estado.email === '' || estado.password === '') {
+            setWarning('missingValues', true);
         } else {
-            history.push("/home");
+            checkLogin().then(responseJson => {
+                if (responseJson.success === 'true') {
+                    history.push('/home');
+                } else {
+                    setWarning('failedLogin', true);
+                }
+            });
         }
     };
 
-    const handleClose = () => {
-        setFailedLogin(false);
-    };
+    const setWarning = (name, value) => {
+        setEstado({...estado, [name]: value});
+    }
 
     const handleInputChange = (e) => {
-        setEmail(e.target.value);
+        const {name, value} = e.target;
+        setEstado({...estado, [name]: value});
     };
+
+
+    const checkLogin = async () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email: estado.email, password: estado.password})
+        };
+        const loginStatus = await fetch('/login', requestOptions)
+            .then(res => res.json())
+
+        return loginStatus;
+
+    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -97,7 +125,7 @@ export default function Login(props) {
                         name="email"
                         autoComplete="email"
                         autoFocus
-                        value={email}
+                        value={estado.email}
                         onChange={handleInputChange}
                     />
                     <TextField
@@ -110,6 +138,8 @@ export default function Login(props) {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        value={estado.password}
+                        onChange={handleInputChange}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary"/>}
@@ -120,7 +150,7 @@ export default function Login(props) {
                         variant="contained"
                         color="primary"
                         className={classes.submit}
-                        onClick={handleClickOpen}
+                        onClick={handleClickLogin}
                     >
                         Ingresar
                     </Button>
@@ -141,11 +171,18 @@ export default function Login(props) {
             <Box mt={8}>
                 <Copyright/>
             </Box>
-            <Snackbar open={failedLogin} autoHideDuration={3000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="error" sx={{width: '100%'}}>
+            <Snackbar open={estado.failedLogin} autoHideDuration={3000}
+                      onClose={() => setWarning('failedLogin', false)}>
+                <Alert onClose={() => setWarning('failedLogin', false)} severity="error" sx={{width: '100%'}}>
                     Datos incorrectos
                 </Alert>
-            </Snackbar>
+            </Snackbar><
+            Snackbar open={estado.missingValues} autoHideDuration={3000}
+                     onClose={() => setWarning('missingValues', false)}>
+            <Alert onClose={() => setWarning('missingValues', false)} severity="warning" sx={{width: '100%'}}>
+                Datos incompletos
+            </Alert>
+        </Snackbar>
         </Container>
     );
 }

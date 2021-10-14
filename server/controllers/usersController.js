@@ -35,18 +35,33 @@ exports.checkLogin = async (req, res, next) => {
     //getting user data from request body
     const {email, password} = req.body;
     try {
+        let success = 'false';
+        let message = '';
+        let data = {};
+        let status_code = 400;
         if (!email || !password) {
-            return res.status(400).send({'message': 'Some values are missing'});
+            message = 'Some values are missing';
+        } else if (!helper.isValidEmail(email)) {
+            message = 'Por favor, ingrese un mail valido';
+        } else {
+            const result = await User.userLogin(email);
+            if (!result[0] || !helper.comparePassword(result[0].password, password)) {
+                message = 'The credentials you provided are incorrect';
+                status_code = 401;
+            } else {
+                const token = helper.generateToken(result[0].id);
+                status_code = 200;
+                success = 'true';
+                message = 'User logged in successfully';
+                data = {"token": token};
+            }
         }
-        if (!helper.isValidEmail(email)) {
-            return res.status(400).send({'message': 'Please enter a valid email address'});
-        }
-        const result = await User.userLogin(email);
-        if (!result[0] || !helper.comparePassword(result[0].password, password)) {
-            return res.status(400).send({'message': 'The credentials you provided are incorrect'});
-        }
-        const token = helper.generateToken(result[0].id);
-        return res.status(200).send({token});
+        const response = {
+            success: success,
+            message: message,
+            data: data
+        };
+        return res.status(status_code).send(response);
     } catch (error) {
         const errorToThrow = new Error();
         switch (error?.code) {
