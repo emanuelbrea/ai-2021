@@ -5,29 +5,46 @@ exports.postSignup = async (req, res, next) => {
     //getting user data from request body
     const {username, password, email, dni, telefono} = req.body;
     try {
+        let success = 'false';
+        let message = '';
+        let data = {};
+        let status_code = 400;
         if (!email || !password) {
-            return res.status(400).send({'message': 'Some values are missing'});
+            message = 'Some values are missing';
+        } else if (!helper.isValidEmail(email)) {
+            message = 'Por favor, ingrese un mail valido';
+        } else {
+            const hashPassword = helper.hashPassword(password);
+            const user = new User({username, email, password: hashPassword, dni, telefono});
+
+            try {
+                const result = await user.createUser();
+                const token = helper.generateToken(result[0].id);
+                status_code = 200;
+                success = 'true';
+                message = 'Usuario registrado correctamente';
+                data = {"token": token};
+            } catch (error) {
+                switch (error?.code) {
+                    case '23505':
+                        message = 'Usuario con email ya registrado! Por favor, utilize otro.'
+                        status_code = 403;
+                        break;
+                    default:
+                        status_code = 500;
+                        message = 'No se pudo crear al usuario'
+                }
+            }
         }
-        if (!helper.isValidEmail(email)) {
-            return res.status(400).send({'message': 'Please enter a valid email address'});
-        }
-        const hashPassword = helper.hashPassword(password);
-        const user = new User({username, email, password: hashPassword, dni, telefono});
-        const result = await user.createUser();
-        const token = helper.generateToken(result[0].id);
-        return res.status(201).send({token});
+
+        const response = {
+            success: success,
+            message: message,
+            data: data
+        };
+        return res.status(status_code).send(response);
     } catch (error) {
-        const errorToThrow = new Error();
-        switch (error?.code) {
-            case '23505':
-                errorToThrow.message = 'User already exists';
-                errorToThrow.statusCode = 403;
-                break;
-            default:
-                errorToThrow.statusCode = 500;
-        }
-        //pass error to next()
-        next(errorToThrow);
+        next(error);
     }
 };
 

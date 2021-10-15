@@ -173,16 +173,18 @@ export default function Login(props) {
             </Box>
             <Snackbar open={estado.failedLogin} autoHideDuration={3000}
                       onClose={() => setWarning('failedLogin', false)}>
-                <Alert onClose={() => setWarning('failedLogin', false)} severity="error" sx={{width: '100%'}}>
+                <Alert onClose={() => setWarning('failedLogin', false)}
+                       severity="error" sx={{width: '100%'}}>
                     Datos incorrectos
                 </Alert>
-            </Snackbar><
-            Snackbar open={estado.missingValues} autoHideDuration={3000}
-                     onClose={() => setWarning('missingValues', false)}>
-            <Alert onClose={() => setWarning('missingValues', false)} severity="warning" sx={{width: '100%'}}>
-                Datos incompletos
-            </Alert>
-        </Snackbar>
+            </Snackbar>
+            <Snackbar open={estado.missingValues} autoHideDuration={3000}
+                      onClose={() => setWarning('missingValues', false)}>
+                <Alert onClose={() => setWarning('missingValues', false)}
+                       severity="warning" sx={{width: '100%'}}>
+                    Datos incompletos
+                </Alert>
+            </Snackbar>
         </Container>
     );
 }
