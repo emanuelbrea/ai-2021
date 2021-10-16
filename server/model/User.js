@@ -35,4 +35,13 @@ User.userLogin = async function (email) {
     }
 };
 
+User.updateUser = async function (username, password, dni, telefono, email) {
+    try {
+        const {rows} = await userDao.updateUser(username, password, dni, telefono, email);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
 module.exports = User

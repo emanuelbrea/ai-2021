@@ -63,13 +63,13 @@ exports.checkLogin = async (req, res, next) => {
         } else {
             const result = await User.userLogin(email);
             if (!result[0] || !helper.comparePassword(result[0].password, password)) {
-                message = 'The credentials you provided are incorrect';
+                message = 'Credenciales incorrectas';
                 status_code = 401;
             } else {
                 const token = helper.generateToken(result[0].id);
                 status_code = 200;
                 success = 'true';
-                message = 'User logged in successfully';
+                message = 'Inicio de sesion correcto';
                 data = {"token": token};
             }
         }
@@ -80,17 +80,39 @@ exports.checkLogin = async (req, res, next) => {
         };
         return res.status(status_code).send(response);
     } catch (error) {
-        const errorToThrow = new Error();
-        switch (error?.code) {
-            case '23505':
-                errorToThrow.message = 'User already exists';
-                errorToThrow.statusCode = 403;
-                break;
-            default:
-                errorToThrow.statusCode = 500;
-        }
-        //pass error to next()
-        next(errorToThrow);
+        next(error);
     }
 };
 
+exports.updateUser = async (req, res, next) => {
+    //getting user data from request body
+    const {username, password, dni, telefono, email} = req.body;
+    try {
+        let success = 'false';
+        let message = '';
+        let data = {};
+        let status_code = 400;
+        if (!email) {
+            message = 'Some values are missing';
+        } else {
+            const result = await User.updateUser(username, password, dni, telefono, email);
+            if (!result[0] ) {
+                message = 'No se pudo actualizar el usuario';
+                status_code = 401;
+            } else {
+                status_code = 200;
+                success = 'true';
+                message = 'Usuario actualizado correctamente';
+                data = {"result": result[0]};
+            }
+        }
+        const response = {
+            success: success,
+            message: message,
+            data: data
+        };
+        return res.status(status_code).send(response);
+    } catch (error) {
+        next(error);
+    }
+};
