@@ -105,105 +105,7 @@ const initialRows = [
         estudios: 'pediatra',
         resultados: 'todo en orden',
         nombre: 'Juan'
-    },
-    {
-        id: 2,
-        fecha: '2020-03-02',
-        peso: 7,
-        altura: 71,
-        diametro: 31,
-        observaciones: 'todo bien',
-        medicamento: 'ibupirac',
-        dosis: 2,
-        periodo: '5 meses',
-        estudios: 'pediatra',
-        resultados: 'todo en orden',
-        nombre: 'Juan'
-    },
-    {
-        id: 3,
-        fecha: '2020-04-02',
-        peso: 8,
-        altura: 72,
-        diametro: 32,
-        observaciones: 'todo bien',
-        medicamento: 'ibupirac',
-        dosis: 3,
-        periodo: '3 meses',
-        estudios: 'pediatra',
-        resultados: 'todo en orden',
-        nombre: 'Pepe'
-    },
-    {
-        id: 4,
-        fecha: '2020-05-02',
-        peso: 9,
-        altura: 73,
-        diametro: 33,
-        observaciones: 'todo bien',
-        medicamento: 'ibupirac',
-        dosis: 2,
-        periodo: '2 meses',
-        estudios: 'pediatra',
-        resultados: 'todo en orden',
-        nombre: 'Juan'
-    },
-    {
-        id: 5,
-        fecha: '2020-06-02',
-        peso: 10,
-        altura: 74,
-        diametro: 34,
-        observaciones: 'todo bien',
-        medicamento: 'ibupirac',
-        dosis: 6,
-        periodo: '4 meses',
-        estudios: 'pediatra',
-        resultados: 'todo en orden',
-        nombre: 'Juan'
-    },
-    {
-        id: 6,
-        fecha: '2020-07-02',
-        peso: 11,
-        altura: 75,
-        diametro: 35,
-        observaciones: 'todo bien',
-        medicamento: 'ibupirac',
-        dosis: 2,
-        periodo: '6 meses',
-        estudios: 'pediatra',
-        resultados: 'todo en orden',
-        nombre: 'Pepe'
-    },
-    {
-        id: 7,
-        fecha: '2020-08-02',
-        peso: 12,
-        altura: 76,
-        diametro: 36,
-        observaciones: 'todo bien',
-        medicamento: 'ibupirac',
-        dosis: 2,
-        periodo: '7 meses',
-        estudios: 'pediatra',
-        resultados: 'todo en orden',
-        nombre: 'Juan'
-    },
-    {
-        id: 8,
-        fecha: '2020-09-02',
-        peso: 13,
-        altura: 77,
-        diametro: 37,
-        observaciones: 'todo bien',
-        medicamento: 'ibupirac',
-        dosis: 3,
-        periodo: '9 meses',
-        estudios: 'pediatra',
-        resultados: 'todo en orden',
-        nombre: 'Juan'
-    },
+    }
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -269,6 +171,89 @@ export default function ControlPediatrico() {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const getControles = async () => {
+        const controles = await fetch('/control?' + +new URLSearchParams({
+            padre: 'brea.emanuel@gmail.com'
+        }))
+            .then(res => res.json())
+
+        return controles;
+
+    }
+
+    const editControl = async () => {
+        const requestOptions = {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                fecha: "2020/05/02",
+                peso: 12,
+                altura: 12,
+                diametro: 13,
+                observaciones: "covid",
+                medicamentos: "covid",
+                estudios: "covid",
+                resultados: "covid",
+                nombre_hijo: "pepe",
+                fecha_old: "2020/05/02",
+                medicamentos_old: "covid",
+                estudios_old: "covid",
+                resultados_old: "covid",
+                nombre_hijo_old: "pepe",
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const control = await fetch('/control', requestOptions)
+            .then(res => res.json())
+
+        return control;
+
+    }
+
+    const deleteControl = async () => {
+        const requestOptions = {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                fecha: "2020/05/02",
+                medicamentos: "covid3",
+                estudios: "covid3",
+                resultados: "covid3",
+                nombre_hijo: "pepe",
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const control = await fetch('/control', requestOptions)
+            .then(res => res.json())
+
+        return control;
+
+    }
+
+    const createControl = async () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                fecha: "2020/05/02",
+                peso: 12,
+                altura: 12,
+                diametro: 13,
+                observaciones: "covid",
+                medicamentos: "covid",
+                estudios: "covid",
+                resultados: "covid",
+                nombre_hijo: "pepe",
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const control = await fetch('/control', requestOptions)
+            .then(res => res.json())
+
+        return control;
+
+    }
 
     return (
         <div style={{height: 600, width: '100%', padding: '15px'}}>

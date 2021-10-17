@@ -128,6 +128,77 @@ export default function Vacunas() {
         setRows([...rows, newRow]);
     }
 
+    const getVacunas = async () => {
+        const vacunas = await fetch('/vacuna?' + +new URLSearchParams({
+            padre: 'brea.emanuel@gmail.com'
+        }))
+            .then(res => res.json())
+
+        return vacunas;
+
+    }
+
+    const editVacuna = async () => {
+        const requestOptions = {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                fecha: "2020/05/02",
+                vacuna: "covid3",
+                lugar: "caba",
+                fecha_old: "2020/02/02",
+                vacuna_old: "covid",
+                lugar_old: "caba",
+                nombre_hijo: "pepe",
+                nombre_hijo_old: "pepe",
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const vacuna = await fetch('/vacuna', requestOptions)
+            .then(res => res.json())
+
+        return vacuna;
+
+    }
+
+    const deleteVacuna = async () => {
+        const requestOptions = {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                fecha: "2020/05/02",
+                vacuna: "covid3",
+                nombre_hijo: "pepe",
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const vacuna = await fetch('/vacuna', requestOptions)
+            .then(res => res.json())
+
+        return vacuna;
+
+    }
+
+    const createVacuna = async () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                fecha: "2020/05/02",
+                vacuna: "covid3",
+                lugar: "caba",
+                nombre_hijo: "pepe",
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const vacuna = await fetch('/vacuna', requestOptions)
+            .then(res => res.json())
+
+        return vacuna;
+
+    }
+
+
     return (
         <div style={{height: 400, width: '100%', padding: '15px'}}>
             <Toolbar

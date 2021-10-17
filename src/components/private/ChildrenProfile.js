@@ -177,6 +177,135 @@ export default function ChildrenProfile(props) {
         setOpenSave(false);
     };
 
+    const getChildren = async () => {
+        const children = await fetch('/children?' + +new URLSearchParams({
+            padre: 'brea.emanuel@gmail.com'
+        }))
+            .then(res => res.json())
+
+        return children;
+
+    }
+
+    const editChildren = async () => {
+        const requestOptions = {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                nombre: "pepe",
+                nacimiento: "2020/05/02",
+                grupoSanguineo: "A+",
+                nombre_old: "pepe",
+                nacimiento_old: "2020/05/02",
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const children = await fetch('/children', requestOptions)
+            .then(res => res.json())
+
+        return children;
+
+    }
+
+    const deleteChildren = async () => {
+        const requestOptions = {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                nombre: "pepe",
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const children = await fetch('/children', requestOptions)
+            .then(res => res.json())
+
+        return children;
+
+    }
+
+    const createChildren = async () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                nombre: "pepe",
+                nacimiento: "2020/05/02",
+                grupoSanguineo: "A+",
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const children = await fetch('/children', requestOptions)
+            .then(res => res.json())
+
+        return children;
+
+    }
+
+
+    const getChildrenData = async () => {
+        const children = await fetch('/childrenData?' + +new URLSearchParams({
+            nombre_hijo: 'pepe',
+            padre: 'brea.emanuel@gmail.com'
+        }))
+            .then(res => res.json())
+
+        return children;
+
+    }
+
+    const editChildrenData = async () => {
+        const requestOptions = {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                descripcion: "ajo",
+                descripcion_old: "mani",
+                tipo: "alergia",
+                nombre_hijo: "pepe",
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const childrenData = await fetch('/childrenData', requestOptions)
+            .then(res => res.json())
+
+        return childrenData;
+
+    }
+
+    const deleteChildrenData = async () => {
+        const requestOptions = {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                nombre: "pepe",
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const childrenData = await fetch('/childrenData', requestOptions)
+            .then(res => res.json())
+
+        return childrenData;
+
+    }
+
+    const createChildrenData = async () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                descripcion: "mani",
+                tipo: "alergia",
+                nombre_hijo: "pepe",
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const childrenData = await fetch('/childrenData', requestOptions)
+            .then(res => res.json())
+
+        return childrenData;
+
+    }
+
 
     return (
         <React.Fragment>
