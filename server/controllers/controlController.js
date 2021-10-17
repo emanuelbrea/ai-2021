@@ -26,7 +26,7 @@ exports.createControl = async (req, res, next) => {
                     status_code = 200;
                     success = 'true';
                     message = 'Control creado correctamente';
-                    data = {"result": result[0]};
+                    data = {result: result[0]};
                 }
             } catch (error) {
                 switch (error?.code) {
@@ -97,7 +97,7 @@ exports.getControls = async (req, res, next) => {
             status_code = 200;
             success = 'true';
             message = 'Controles obtenidos';
-            data = {"result": result, "size": result.size};
+            data = {result: result, size: result.length};
         }
 
     } catch (error) {
@@ -136,7 +136,7 @@ exports.editControls = async (req, res, next) => {
                 status_code = 200;
                 success = 'true';
                 message = 'Control actualizado correctamente';
-                data = {"result": result[0]};
+                data = {result: result[0]};
             }
         }
     } catch (error) {

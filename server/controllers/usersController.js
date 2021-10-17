@@ -106,7 +106,7 @@ exports.updateUser = async (req, res, next) => {
                 status_code = 200;
                 success = 'true';
                 message = 'Usuario actualizado correctamente';
-                data = {"result": result[0]};
+                data = {result: result[0]};
             }
         }
 

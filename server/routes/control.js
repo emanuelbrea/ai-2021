@@ -8,4 +8,8 @@ router.post('/control', controlController.createControl);
 
 router.delete('/control', controlController.deleteControl);
 
+router.get('/control', controlController.getControls);
+
+router.put('/control', controlController.editControls);
+
 module.exports = router;

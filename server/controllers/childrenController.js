@@ -17,7 +17,7 @@ exports.createChildren = async (req, res, next) => {
             status_code = 200;
             success = 'true';
             message = 'Hijo creado correctamente';
-            data = {"result": result[0]}
+            data = {result: result[0]}
         } catch (error) {
             switch (error?.code) {
                 case '23505':
@@ -83,7 +83,7 @@ exports.getChildren = async (req, res, next) => {
             status_code = 200;
             success = 'true';
             message = 'Hijos obtenidos';
-            data = {"result": result, "size": result.size};
+            data = {result: result, size: result.length};
         }
     } catch (error) {
         message = error.message;
@@ -116,7 +116,7 @@ exports.editChildren = async (req, res, next) => {
                 status_code = 200;
                 success = 'true';
                 message = 'Hijo actualizado correctamente';
-                data = {"result": result[0]};
+                data = {result: result[0]};
             }
         }
     } catch (error) {

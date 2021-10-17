@@ -16,7 +16,7 @@ exports.createChildrenData = async (req, res, next) => {
             status_code = 200;
             success = 'true';
             message = 'Registro creado correctamente';
-            data = {"result": result[0]}
+            data = {result: result[0]}
         } catch (error) {
             switch (error?.code) {
                 case '23505':
@@ -86,7 +86,7 @@ exports.getChildrenData = async (req, res, next) => {
             status_code = 200;
             success = 'true';
             message = 'Registros obtenidos';
-            data = {"result": result, "size": result.size};
+            data = {result: result, size: result.length};
         }
     } catch (error) {
         message = error.message;
@@ -119,7 +119,7 @@ exports.editChildrenData = async (req, res, next) => {
                 status_code = 200;
                 success = 'true';
                 message = 'Registro actualizado correctamente';
-                data = {"result": result[0]};
+                data = {result: result[0]};
             }
         }
     } catch (error) {

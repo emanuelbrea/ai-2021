@@ -21,7 +21,7 @@ exports.createVacuna = async (req, res, next) => {
                 status_code = 200;
                 success = 'true';
                 message = 'Vacuna creada correctamente';
-                data = {"result": result[0]};
+                data = {result: result[0]};
             }
         } catch (error) {
             switch (error?.code) {
@@ -88,7 +88,7 @@ exports.getVacunas = async (req, res, next) => {
             status_code = 200;
             success = 'true';
             message = 'Vacunas obtenidas';
-            data = {"result": result, "size": result.size};
+            data = {result: result, size: result.length};
         }
     } catch (error) {
         message = error.message;
@@ -121,7 +121,7 @@ exports.editVacuna = async (req, res, next) => {
                 status_code = 200;
                 success = 'true';
                 message = 'Vacuna actualizada correctamente';
-                data = {"result": result[0]};
+                data = {result: result[0]};
             }
         }
     } catch (error) {

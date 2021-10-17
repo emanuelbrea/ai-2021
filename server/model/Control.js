@@ -46,4 +46,25 @@ Control.deleteControl = async function (fecha, medicamentos, estudios, resultado
     }
 };
 
+Control.getControls = async function (padre) {
+    try {
+        const {rows} = await controlDao.getControls(padre);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
+Control.editControls = async function (fecha, peso, altura, diametro, observaciones, medicamentos, estudios, resultados, nombre_hijo,
+                                       fecha_old, medicamentos_old, estudios_old, resultados_old, nombre_hijo_old, padre) {
+    try {
+        const {rows} = await controlDao.editControl(
+            fecha, peso, altura, diametro, observaciones, medicamentos, estudios, resultados, nombre_hijo,
+            fecha_old, medicamentos_old, estudios_old, resultados_old, nombre_hijo_old, padre);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
 module.exports = Control
