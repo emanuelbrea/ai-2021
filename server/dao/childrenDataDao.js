@@ -4,12 +4,12 @@ const queryCreateChildrenData = `INSERT INTO children_data(descripcion, tipo, no
 VALUES ($1, $2, $3, $4) RETURNING *`
 
 const queryDeleteChildrenData = `DELETE FROM children_data 
-WHERE descripcion= $1 and tipo =$2 and nombre_hijo=$3 and padre=$4`
+WHERE descripcion= $1 and tipo =$2 and nombre_hijo=$3 and padre=$4 RETURNING *`
 
 const queryGetChildrenData = `SELECT * FROM children_data WHERE nombre_hijo=$1 and padre=$2`
 
 const queryEditChildrenData = `UPDATE children_data SET descripcion=$1 
-where descripcion= $2 and tipo=$3 and nombre_hijo =$4 and padre=$5`
+where descripcion= $2 and tipo=$3 and nombre_hijo =$4 and padre=$5 RETURNING *`
 
 exports.createChildrenData = function (descripcion, tipo, nombre_hijo, padre) {
     return poolPostgres.query(queryCreateChildrenData,

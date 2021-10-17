@@ -4,13 +4,15 @@ const User = require('../model/User');
 exports.postSignup = async (req, res, next) => {
     //getting user data from request body
     const {username, password, email, dni, telefono} = req.body;
+
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
     try {
-        let success = 'false';
-        let message = '';
-        let data = {};
-        let status_code = 400;
+
         if (!email || !password) {
-            message = 'Some values are missing';
+            message = 'Valores faltantes';
         } else if (!helper.isValidEmail(email)) {
             message = 'Por favor, ingrese un mail valido';
         } else {
@@ -36,28 +38,28 @@ exports.postSignup = async (req, res, next) => {
                 }
             }
         }
-
-        const response = {
-            success: success,
-            message: message,
-            data: data
-        };
-        return res.status(status_code).send(response);
     } catch (error) {
-        next(error);
+        message = error.message;
+        status_code = 500;
     }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
 };
 
 exports.checkLogin = async (req, res, next) => {
     //getting user data from request body
     const {email, password} = req.body;
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
     try {
-        let success = 'false';
-        let message = '';
-        let data = {};
-        let status_code = 400;
         if (!email || !password) {
-            message = 'Some values are missing';
+            message = 'Valores faltantes';
         } else if (!helper.isValidEmail(email)) {
             message = 'Por favor, ingrese un mail valido';
         } else {
@@ -73,30 +75,31 @@ exports.checkLogin = async (req, res, next) => {
                 data = {"token": token};
             }
         }
-        const response = {
-            success: success,
-            message: message,
-            data: data
-        };
-        return res.status(status_code).send(response);
     } catch (error) {
-        next(error);
+        message = error.message;
+        status_code = 500;
     }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
 };
 
 exports.updateUser = async (req, res, next) => {
     //getting user data from request body
     const {username, password, dni, telefono, email} = req.body;
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
     try {
-        let success = 'false';
-        let message = '';
-        let data = {};
-        let status_code = 400;
         if (!email) {
-            message = 'Some values are missing';
+            message = 'Valores faltantes';
         } else {
             const result = await User.updateUser(username, password, dni, telefono, email);
-            if (!result[0] ) {
+            if (!result[0]) {
                 message = 'No se pudo actualizar el usuario';
                 status_code = 401;
             } else {
@@ -106,13 +109,15 @@ exports.updateUser = async (req, res, next) => {
                 data = {"result": result[0]};
             }
         }
-        const response = {
-            success: success,
-            message: message,
-            data: data
-        };
-        return res.status(status_code).send(response);
+
     } catch (error) {
-        next(error);
+        message = error.message;
+        status_code = 500;
     }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
 };

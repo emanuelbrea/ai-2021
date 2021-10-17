@@ -33,7 +33,7 @@ server.use(function (req, res, next) {
 // error handler
 server.use(function (err, req, res, next) {
     console.error(err.stack)
-    res.status(500).send('Something broke!')
+    res.status(500).send('Error interno del server')
 });
 
 module.exports = server;
