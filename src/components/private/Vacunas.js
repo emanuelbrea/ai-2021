@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {DataGrid} from '@mui/x-data-grid';
 import {lighten, makeStyles} from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -40,7 +40,7 @@ const columns = [
         editable: true,
     },
     {
-        field: 'nombre',
+        field: 'nombre_hijo',
         headerName: 'Hijo',
         type: 'singleSelect',
         valueOptions: ['Juan', 'Pepe'],
@@ -49,14 +49,6 @@ const columns = [
     },
 ];
 
-const initialRows = [
-    {id: 1, fecha: '2020-02-02', vacuna: 'BCG', lugar: 'CABA', nombre: 'Juan'},
-    {id: 2, fecha: '2020-03-02', vacuna: 'Hepatitis B', lugar: 'Sanatario brea', nombre: 'Juan'},
-    {id: 3, fecha: '2020-04-02', vacuna: 'Neumococo', lugar: 'Sanatario guemes', nombre: 'Pepe'},
-    {id: 4, fecha: '2020-05-02', vacuna: 'IPV', lugar: 'Sanatario mater dei', nombre: 'Juan'},
-    {id: 5, fecha: '2020-07-02', vacuna: 'Antigripal', lugar: 'Sanatario otamendi', nombre: 'Pepe'},
-    {id: 6, fecha: '2020-08-02', vacuna: 'Triple Viral', lugar: 'Sanatario trinidad', nombre: 'Pepe'},
-];
 
 const useToolbarStyles = makeStyles((theme) => ({
     root: {
@@ -103,12 +95,8 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export default function Vacunas() {
     const classes = useToolbarStyles();
     const [selected, setSelected] = useState([]);
-    const [rows, setRows] = useState(initialRows);
+    const [rows, setRows] = useState([]);
     const [open, setOpen] = useState(false);
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
 
     const handleClose = () => {
         setOpen(false);
@@ -129,7 +117,7 @@ export default function Vacunas() {
     }
 
     const getVacunas = async () => {
-        const vacunas = await fetch('/vacuna?' + +new URLSearchParams({
+        const vacunas = await fetch('/vacuna?'  +new URLSearchParams({
             padre: 'brea.emanuel@gmail.com'
         }))
             .then(res => res.json())
@@ -138,26 +126,74 @@ export default function Vacunas() {
 
     }
 
-    const editVacuna = async () => {
+    const handleCellClick = (param, event) => {
+        let copyRows = rows;
+        const id = param.id;
+        const field = param.field;
+        copyRows.find(a => a.id==id)[field] = param.value;
+        setRows(copyRows);
+    };
+
+    useEffect(() => {
+        let mounted = true;
+        getVacunas().then(items => {
+                if(mounted && items.success==='true') {
+                    convertDate(items.data.result);
+                    addOldValues(items.data.result);
+                    setRows(items.data.result);
+                }
+            })
+        return () => mounted = false;
+    }, [])
+
+    const convertDate = (vacunas) => {
+        for(let i = 0; i < vacunas.length; i++){
+            let fecha = new Date(vacunas[i].fecha);
+            vacunas[i].fecha = new Date(fecha.toDateString());
+        }
+    }
+
+    const addOldValues = (vacunas) => {
+        for(let i = 0; i < vacunas.length; i++){
+            vacunas[i].fecha_old = vacunas[i].fecha;
+            vacunas[i].vacuna_old = vacunas[i].vacuna;
+            vacunas[i].lugar_old = vacunas[i].lugar;
+            vacunas[i].nombre_hijo_old = vacunas[i].nombre_hijo;
+        }
+    }
+
+    const handleSaveVacunas = () => {
+        for(let i=0; i<rows.length;i++){
+            editVacuna(
+                rows[i].fecha, rows[i].vacuna, rows[i].lugar,
+                rows[i].fecha_old, rows[i].vacuna_old, rows[i].lugar_old,
+                rows[i].nombre_hijo, rows[i].nombre_hijo_old,"brea.emanuel@gmail.com"
+            ).then((vacuna) => console.log(vacuna))
+        }
+        setOpen(true);
+    };
+
+    const editVacuna = async (fecha, vacuna, lugar, fecha_old, vacuna_old, lugar_old, nombre_hijo, nombre_hijo_old, padre
+    ) => {
         const requestOptions = {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                fecha: "2020/05/02",
-                vacuna: "covid3",
-                lugar: "caba",
-                fecha_old: "2020/02/02",
-                vacuna_old: "covid",
-                lugar_old: "caba",
-                nombre_hijo: "pepe",
-                nombre_hijo_old: "pepe",
-                padre: "brea.emanuel@gmail.com"
+                fecha: fecha,
+                vacuna: vacuna,
+                lugar: lugar,
+                fecha_old: fecha_old,
+                vacuna_old: vacuna_old,
+                lugar_old: lugar_old,
+                nombre_hijo: nombre_hijo,
+                nombre_hijo_old: nombre_hijo_old,
+                padre: padre
             })
         };
-        const vacuna = await fetch('/vacuna', requestOptions)
+        const vacunas = await fetch('/vacuna', requestOptions)
             .then(res => res.json())
 
-        return vacuna;
+        return vacunas;
 
     }
 
@@ -233,13 +269,14 @@ export default function Vacunas() {
                 checkboxSelection
                 disableSelectionOnClick
                 onSelectionModelChange={(ids) => setSelected(ids)}
+                onCellEditCommit={handleCellClick}
             />
             <div className={classes.floatingIcon}>
                 <Fab color="primary" aria-label="add" title="Agregar vacuna" onClick={handleAddRow}>
                     <AddIcon/>
                 </Fab>
                 <Fab style={{backgroundColor: "green", color: "white"}} aria-label="save" title="Guardar"
-                     onClick={handleClickOpen}>
+                     onClick={handleSaveVacunas}>
                     <SaveIcon/>
                 </Fab>
             </div>
