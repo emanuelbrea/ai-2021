@@ -154,6 +154,9 @@ export default function Home(props) {
     const handleListItemClick = (index, value) => {
         setSelectedIndex(index);
         setMenu(value)
+        if(value == 'salir'){
+            sessionStorage.clear();
+        }
     };
 
     const handleClose = () => {

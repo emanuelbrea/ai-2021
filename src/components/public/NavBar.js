@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import {Link, useHistory} from "react-router-dom";
 import logo from '../../images/logo.png';
+import useToken from "../routes/useToken";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -39,7 +40,7 @@ const scrollToTop = () => {
 export default function MenuAppBar() {
     const classes = useStyles();
     const history = useHistory();
-
+    const {token, setToken} = useToken();
 
     const handleLogin = () => {
         history.push("/login");
@@ -47,6 +48,16 @@ export default function MenuAppBar() {
 
     const handleRegister = () => {
         history.push("/signup");
+    };
+
+    const handleInicio = () => {
+        history.push("/home");
+    };
+
+    const handleLogout = () => {
+        setToken('expired');
+        sessionStorage.clear();
+        history.push("/login");
     };
 
 
@@ -61,9 +72,14 @@ export default function MenuAppBar() {
                         </Link>
                     </Typography>
                     <section className={classes.rightToolbar}>
-                        <Button color="inherit" className={classes.menuButton}
-                                onClick={handleRegister}>Registro</Button>
-                        <Button color="inherit" variant={"outlined"} onClick={handleLogin}>Ingresar</Button>
+                        {token === undefined ?
+                            <div><Button color="inherit" className={classes.menuButton} onClick={handleRegister}>Registro</Button>
+                            <Button color="inherit" variant={"outlined"} onClick={handleLogin}>Ingresar</Button></div>
+                            : <div>
+                                <Button color="inherit" className={classes.menuButton} onClick={handleInicio}>Inicio</Button>
+                                <Button color="inherit" variant={"outlined"} onClick={handleLogout}>Salir</Button>
+                            </div>
+                        }
                     </section>
                 </Toolbar>
             </AppBar>
