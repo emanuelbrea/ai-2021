@@ -3,9 +3,9 @@ const poolPostgres = require('../dao/dbpool');
 const queryCreateVacuna = `INSERT INTO vacunas(fecha, vacuna, lugar, nombre_hijo, padre) 
 VALUES ($1, $2, $3, $4, $5) RETURNING *`
 
-const queryDeleteVacuna = `DELETE FROM vacunas WHERE fecha= $1 and vacuna =$2 and nombre_hijo=$3 RETURNING *`
+const queryDeleteVacuna = `DELETE FROM vacunas WHERE fecha= $1 and vacuna =$2 and nombre_hijo=$3 and padre=$4 RETURNING *`
 
-const queryGetVacunas = `SELECT * FROM vacunas WHERE padre=$1`
+const queryGetVacunas = `SELECT * FROM vacunas WHERE padre=$1 ORDER BY fecha`
 
 const queryEditVacunas = `UPDATE vacunas SET fecha=$1, vacuna =$2, lugar=$3, nombre_hijo=$4 
 where fecha= $5 and vacuna =$6 and nombre_hijo=$7 and padre=$8 RETURNING *`

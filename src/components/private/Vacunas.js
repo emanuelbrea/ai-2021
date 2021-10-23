@@ -43,7 +43,7 @@ const columns = [
         field: 'nombre_hijo',
         headerName: 'Hijo',
         type: 'singleSelect',
-        valueOptions: ['Juan', 'Pepe'],
+        valueOptions: ['juan', 'pepe'],
         width: 160,
         editable: true,
     },
@@ -96,6 +96,7 @@ export default function Vacunas() {
     const classes = useToolbarStyles();
     const [selected, setSelected] = useState([]);
     const [rows, setRows] = useState([]);
+    const [deletedRows, setDeletedRows] = useState([]);
     const [open, setOpen] = useState(false);
 
     const handleClose = () => {
@@ -107,20 +108,27 @@ export default function Vacunas() {
         const selectedRowData = rows.filter((row) =>
             !selectedIDs.has(row.id)
         );
+        const deleteRows = rows.filter((row) =>
+            selectedIDs.has(row.id)
+        );
+        setDeletedRows([...deletedRows, ...deleteRows]);
         setRows(selectedRowData);
     };
 
     const handleAddRow = () => {
-        const maxId = Math.max(...rows.map(user => user.id))
-        const newRow = {id: maxId + 1, fecha: '2020-03-02', vacuna: '', lugar: '', nombre: 'Juan'};
+        const maxId = rows.length > 0 ? Math.max(...rows.map(user => user.id)) : 0;
+        var today = new Date();
+        const newRow = {
+            id: maxId + 1, fecha: new Date(today.toDateString()),
+            vacuna: '', lugar: '', nombre_hijo: 'pepe', new: true
+        };
         setRows([...rows, newRow]);
     }
 
     const getVacunas = async () => {
-        const vacunas = await fetch('/vacuna?'  +new URLSearchParams({
+        const vacunas = await fetch('/vacuna?' + new URLSearchParams({
             padre: 'brea.emanuel@gmail.com'
-        }))
-            .then(res => res.json())
+        })).then(res => res.json())
 
         return vacunas;
 
@@ -130,51 +138,79 @@ export default function Vacunas() {
         let copyRows = rows;
         const id = param.id;
         const field = param.field;
-        copyRows.find(a => a.id==id)[field] = param.value;
+        copyRows.find(a => a.id === id)[field] = param.value;
         setRows(copyRows);
     };
 
     useEffect(() => {
-        let mounted = true;
         getVacunas().then(items => {
-                if(mounted && items.success==='true') {
-                    convertDate(items.data.result);
-                    addOldValues(items.data.result);
-                    setRows(items.data.result);
-                }
-            })
-        return () => mounted = false;
+            if (items.success === 'true') {
+                addIds(items.data.result);
+                convertDate(items.data.result);
+                addOldValues(items.data.result);
+                setRows(items.data.result);
+            }
+        })
     }, [])
 
     const convertDate = (vacunas) => {
-        for(let i = 0; i < vacunas.length; i++){
-            let fecha = new Date(vacunas[i].fecha);
-            vacunas[i].fecha = new Date(fecha.toDateString());
+        vacunas.forEach((row) => {
+            let fecha = new Date(row.fecha);
+            row.fecha = new Date(fecha.toDateString());
+        });
+    }
+
+    const addIds = (vacunas) => {
+        for (let i = 1; i <= vacunas.length; i++) {
+            vacunas[i - 1].id = i;
         }
     }
 
     const addOldValues = (vacunas) => {
-        for(let i = 0; i < vacunas.length; i++){
-            vacunas[i].fecha_old = vacunas[i].fecha;
-            vacunas[i].vacuna_old = vacunas[i].vacuna;
-            vacunas[i].lugar_old = vacunas[i].lugar;
-            vacunas[i].nombre_hijo_old = vacunas[i].nombre_hijo;
-        }
+        vacunas.forEach((row) => {
+            row.fecha_old = row.fecha;
+            row.vacuna_old = row.vacuna;
+            row.lugar_old = row.lugar;
+            row.nombre_hijo_old = row.nombre_hijo;
+        });
     }
 
     const handleSaveVacunas = () => {
-        for(let i=0; i<rows.length;i++){
-            editVacuna(
-                rows[i].fecha, rows[i].vacuna, rows[i].lugar,
-                rows[i].fecha_old, rows[i].vacuna_old, rows[i].lugar_old,
-                rows[i].nombre_hijo, rows[i].nombre_hijo_old,"brea.emanuel@gmail.com"
-            ).then((vacuna) => console.log(vacuna))
+        if (!validateFields()) {
+            console.log('Falta algo');
+        } else {
+            rows.forEach((row) => {
+                if (row.new !== undefined && row.new === true) {
+                    createVacuna(
+                        row.fecha, row.vacuna, row.lugar, row.nombre_hijo, "brea.emanuel@gmail.com"
+                    );
+                    row.fecha_old = row.fecha;
+                    row.vacuna_old = row.vacuna;
+                    row.lugar_old = row.lugar;
+                    row.nombre_hijo_old = row.nombre_hijo;
+                    row.new = false;
+                } else if (row.fecha != row.fecha_old || row.vacuna != row.vacuna_old
+                    || row.nombre_hijo != row.nombre_hijo_old) {
+                    editVacuna(
+                        row.fecha, row.vacuna, row.lugar,
+                        row.fecha_old, row.vacuna_old, row.lugar_old,
+                        row.nombre_hijo, row.nombre_hijo_old, "brea.emanuel@gmail.com"
+                    )
+                }
+            });
+            deletedRows.forEach((row) => {
+                if (row.new === undefined || row.new === false) {
+                    deleteVacuna(row.fecha, row.vacuna, row.nombre_hijo, "brea.emanuel@gmail.com")
+                }
+            });
+            setDeletedRows([]);
+            setOpen(true);
         }
-        setOpen(true);
+
     };
 
-    const editVacuna = async (fecha, vacuna, lugar, fecha_old, vacuna_old, lugar_old, nombre_hijo, nombre_hijo_old, padre
-    ) => {
+    const editVacuna = async (fecha, vacuna, lugar, fecha_old,
+                              vacuna_old, lugar_old, nombre_hijo, nombre_hijo_old, padre) => {
         const requestOptions = {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
@@ -197,41 +233,54 @@ export default function Vacunas() {
 
     }
 
-    const deleteVacuna = async () => {
+    const deleteVacuna = async (fecha, vacuna, nombre_hijo, padre) => {
         const requestOptions = {
             method: 'DELETE',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                fecha: "2020/05/02",
-                vacuna: "covid3",
-                nombre_hijo: "pepe",
+                fecha: fecha,
+                vacuna: vacuna,
+                nombre_hijo: nombre_hijo,
                 padre: "brea.emanuel@gmail.com"
             })
         };
-        const vacuna = await fetch('/vacuna', requestOptions)
+        const vacunas = await fetch('/vacuna', requestOptions)
             .then(res => res.json())
 
-        return vacuna;
+        return vacunas;
 
     }
 
-    const createVacuna = async () => {
+    const createVacuna = async (fecha, vacuna, lugar, nombre_hijo, padre) => {
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                fecha: "2020/05/02",
-                vacuna: "covid3",
-                lugar: "caba",
-                nombre_hijo: "pepe",
+                fecha: fecha,
+                vacuna: vacuna,
+                lugar: lugar,
+                nombre_hijo: nombre_hijo,
                 padre: "brea.emanuel@gmail.com"
             })
         };
-        const vacuna = await fetch('/vacuna', requestOptions)
+        const vacunas = await fetch('/vacuna', requestOptions)
             .then(res => res.json())
 
-        return vacuna;
+        return vacunas;
 
+    }
+
+    const validateFields = () => {
+        const emptyFields = rows.some((row) =>
+            row.nombre_hijo.length === 0 || row.vacuna.length === 0 || row.lugar.length === 0 || row.fecha.length === 0
+        );
+
+        const duplicatedFields = rows.filter((row, index, self) =>
+                index === self.findIndex((t) => (
+                    t.vacuna === row.vacuna && t.lugar === row.lugar && t.nombre_hijo === row.nombre_hijo
+                ))
+        )
+        return !emptyFields && (duplicatedFields.length === rows.length);
     }
 
 
