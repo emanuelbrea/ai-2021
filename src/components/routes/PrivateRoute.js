@@ -1,16 +1,13 @@
 import {Redirect, Route} from "react-router-dom";
+import useToken from "./useToken";
 
 
-const fakeAuth = {
-    isAuthenticated: true,
-}
+export default function PrivateRoute({component: Component, ...rest}) {
+    const {token, setToken} = useToken();
 
-const PrivateRoute = ({component: Component, ...rest}) => (
-    <Route {...rest} render={(props) => (
-        fakeAuth.isAuthenticated === true
+    return <Route {...rest} render={(props) => (
+        token !== undefined
             ? <Component {...props} />
             : <Redirect to='/login'/>
     )}/>
-)
-
-export default PrivateRoute;
+}

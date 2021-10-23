@@ -15,6 +15,7 @@ import Container from '@material-ui/core/Container';
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import {useHistory} from "react-router-dom";
+import useToken from "../routes/useToken";
 
 function Copyright() {
     return (
@@ -57,6 +58,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export default function Login(props) {
     const classes = useStyles();
     const history = useHistory();
+    const {token, setToken} = useToken();
 
     const initialState = {
         email: '',
@@ -73,6 +75,7 @@ export default function Login(props) {
         } else {
             checkLogin().then(responseJson => {
                 if (responseJson.success === 'true') {
+                    setToken(responseJson.data);
                     history.push('/home');
                 } else {
                     setWarning('failedLogin', true);
