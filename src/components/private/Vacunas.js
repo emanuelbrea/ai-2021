@@ -98,9 +98,14 @@ export default function Vacunas() {
     const [rows, setRows] = useState([]);
     const [deletedRows, setDeletedRows] = useState([]);
     const [open, setOpen] = useState(false);
+    const [missing, setMissing] = useState(false);
 
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const handleCloseMissing = () => {
+        setMissing(false);
     };
 
     const handleDeleteRows = () => {
@@ -125,14 +130,6 @@ export default function Vacunas() {
         setRows([...rows, newRow]);
     }
 
-    const getVacunas = async () => {
-        const vacunas = await fetch('/vacuna?' + new URLSearchParams({
-            padre: 'brea.emanuel@gmail.com'
-        })).then(res => res.json())
-
-        return vacunas;
-
-    }
 
     const handleCellClick = (param, event) => {
         let copyRows = rows;
@@ -177,7 +174,7 @@ export default function Vacunas() {
 
     const handleSaveVacunas = () => {
         if (!validateFields()) {
-            console.log('Falta algo');
+            setMissing(true);
         } else {
             rows.forEach((row) => {
                 if (row.new !== undefined && row.new === true) {
@@ -189,8 +186,8 @@ export default function Vacunas() {
                     row.lugar_old = row.lugar;
                     row.nombre_hijo_old = row.nombre_hijo;
                     row.new = false;
-                } else if (row.fecha != row.fecha_old || row.vacuna != row.vacuna_old
-                    || row.nombre_hijo != row.nombre_hijo_old) {
+                } else if (row.fecha !== row.fecha_old || row.vacuna !== row.vacuna_old
+                    || row.nombre_hijo !== row.nombre_hijo_old) {
                     editVacuna(
                         row.fecha, row.vacuna, row.lugar,
                         row.fecha_old, row.vacuna_old, row.lugar_old,
@@ -208,6 +205,15 @@ export default function Vacunas() {
         }
 
     };
+
+    const getVacunas = async () => {
+        const vacunas = await fetch('/vacuna?' + new URLSearchParams({
+            padre: 'brea.emanuel@gmail.com'
+        })).then(res => res.json())
+
+        return vacunas;
+
+    }
 
     const editVacuna = async (fecha, vacuna, lugar, fecha_old,
                               vacuna_old, lugar_old, nombre_hijo, nombre_hijo_old, padre) => {
@@ -345,6 +351,11 @@ export default function Vacunas() {
             <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="success" sx={{width: '100%'}}>
                     Datos guardados correctamente!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={missing} autoHideDuration={3000} onClose={handleCloseMissing}>
+                <Alert onClose={handleCloseMissing} severity="warning" sx={{width: '100%'}}>
+                    Datos faltantes.
                 </Alert>
             </Snackbar>
 

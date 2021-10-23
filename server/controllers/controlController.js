@@ -4,7 +4,7 @@ const Control = require("../model/Control");
 exports.createControl = async (req, res, next) => {
     const {
         fecha, peso, altura, diametro, observaciones,
-        medicamentos, estudios, resultados, nombre_hijo, padre
+        medicamentos, dosis, periodo, estudios, resultados, nombre_hijo, padre
     } = req.body;
     let success = 'false';
     let message = '';
@@ -16,7 +16,8 @@ exports.createControl = async (req, res, next) => {
         } else {
             try {
                 const control = new Control({
-                    fecha, peso, altura, diametro, observaciones, medicamentos, estudios, resultados, nombre_hijo, padre
+                    fecha, peso, altura, diametro, observaciones, medicamentos, dosis, periodo, estudios, resultados,
+                    nombre_hijo, padre
                 });
                 const result = await control.createControl();
                 if (!result[0]) {
@@ -114,7 +115,7 @@ exports.getControls = async (req, res, next) => {
 
 exports.editControls = async (req, res, next) => {
     const {
-        fecha, peso, altura, diametro, observaciones, medicamentos, estudios, resultados, nombre_hijo,
+        fecha, peso, altura, diametro, observaciones, medicamentos, dosis, periodo, estudios, resultados, nombre_hijo,
         fecha_old, medicamentos_old, estudios_old, resultados_old, nombre_hijo_old, padre
     } = req.body;
     let success = 'false';
@@ -127,8 +128,8 @@ exports.editControls = async (req, res, next) => {
             message = 'Valores faltantes';
         } else {
             const result = await Control.editControls(
-                fecha, peso, altura, diametro, observaciones, medicamentos, estudios, resultados, nombre_hijo,
-                fecha_old, medicamentos_old, estudios_old, resultados_old, nombre_hijo_old, padre);
+                fecha, peso, altura, diametro, observaciones, medicamentos, dosis, periodo, estudios, resultados,
+                nombre_hijo, fecha_old, medicamentos_old, estudios_old, resultados_old, nombre_hijo_old, padre);
             if (!result[0]) {
                 message = 'No se pudo actualizar el control';
                 status_code = 401;

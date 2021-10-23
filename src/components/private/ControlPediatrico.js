@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {DataGrid} from '@mui/x-data-grid';
 import {lighten, makeStyles} from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -44,7 +44,7 @@ const columns = [
         editable: true,
     },
     {
-        field: 'medicamento',
+        field: 'medicamentos',
         headerName: 'Medicamentos',
         width: 180,
         editable: true,
@@ -82,31 +82,15 @@ const columns = [
         editable: true,
     },
     {
-        field: 'nombre',
+        field: 'nombre_hijo',
         headerName: 'Hijo',
         width: 110,
         editable: true,
         type: 'singleSelect',
-        valueOptions: ['Juan', 'Pepe'],
+        valueOptions: ['Juan', 'pepe'],
     },
 ];
 
-const initialRows = [
-    {
-        id: 1,
-        fecha: '2020-02-02',
-        peso: 6,
-        altura: 70,
-        diametro: 30,
-        observaciones: 'todo bien',
-        medicamento: 'ibupirac',
-        dosis: 2,
-        periodo: '2 meses',
-        estudios: 'pediatra',
-        resultados: 'todo en orden',
-        nombre: 'Juan'
-    }
-];
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -143,37 +127,123 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export default function ControlPediatrico() {
     const classes = useStyles();
     const [selected, setSelected] = useState([]);
-    const [rows, setRows] = useState(initialRows);
+    const [rows, setRows] = useState([]);
+    const [deletedRows, setDeletedRows] = useState([]);
     const [open, setOpen] = useState(false);
+    const [missing, setMissing] = useState(false);
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleCloseMissing = () => {
+        setMissing(false);
+    };
 
     const handleDeleteRows = () => {
         const selectedIDs = new Set(selected);
         const selectedRowData = rows.filter((row) =>
             !selectedIDs.has(row.id)
         );
+        const deleteRows = rows.filter((row) =>
+            selectedIDs.has(row.id)
+        );
+        setDeletedRows([...deletedRows, ...deleteRows]);
         setRows(selectedRowData);
     };
 
     const handleAddRow = () => {
-        const maxId = Math.max(...rows.map(user => user.id))
+        const maxId = rows.length > 0 ? Math.max(...rows.map(user => user.id)) : 0;
+        var today = new Date();
         const newRow = {
-            id: maxId + 1, fecha: '2020-02-02', peso: 0, altura: 0, diametro: 0, observaciones: '',
+            id: maxId + 1, fecha: new Date(today.toDateString()), peso: 0, altura: 0, diametro: 0, observaciones: '',
             medicamento: '', dosis: 0, periodo: '',
-            estudios: '', resultados: '', nombre: 'Juan'
+            estudios: '', resultados: '', nombre: 'pepe', new: true
         };
         setRows([...rows, newRow]);
     }
 
-    const handleClickOpen = () => {
-        setOpen(true);
+    const handleCellClick = (param, event) => {
+        let copyRows = rows;
+        const id = param.id;
+        const field = param.field;
+        copyRows.find(a => a.id === id)[field] = param.value;
+        setRows(copyRows);
     };
 
-    const handleClose = () => {
-        setOpen(false);
+    useEffect(() => {
+        getControles().then(items => {
+            if (items.success === 'true') {
+                addIds(items.data.result);
+                convertDate(items.data.result);
+                addOldValues(items.data.result);
+                setRows(items.data.result);
+            }
+        })
+    }, [])
+
+    const convertDate = (controles) => {
+        controles.forEach((row) => {
+            let fecha = new Date(row.fecha);
+            row.fecha = new Date(fecha.toDateString());
+        });
+    }
+
+    const addIds = (controles) => {
+        for (let i = 1; i <= controles.length; i++) {
+            controles[i - 1].id = i;
+        }
+    }
+
+    const addOldValues = (controles) => {
+        controles.forEach((row) => {
+            row.fecha_old = row.fecha;
+            row.medicamentos_old = row.medicamentos;
+            row.estudios_old = row.estudios;
+            row.resultados_old = row.resultados;
+            row.nombre_hijo_old = row.nombre_hijo;
+        });
+    }
+
+    const handleSaveControles = () => {
+        if (!validateFields()) {
+            setMissing(true);
+        } else {
+            rows.forEach((row) => {
+                if (row.new !== undefined && row.new === true) {
+                    createControl(
+                        row.fecha, row.peso, row.altura, row.diametro, row.observaciones, row.medicamentos, row.dosis,
+                        row.periodo, row.estudios, row.resultados, row.nombre_hijo, "brea.emanuel@gmail.com"
+                    );
+                    row.fecha_old = row.fecha;
+                    row.medicamentos_old = row.medicamentos;
+                    row.estudios_old = row.estudios;
+                    row.resultados_old = row.resultados;
+                    row.nombre_hijo_old = row.nombre_hijo;
+                    row.new = false;
+                } else {
+                    editControl(
+                        row.fecha, row.peso, row.altura, row.diametro, row.observaciones, row.medicamentos, row.dosis,
+                        row.periodo, row.estudios, row.resultados, row.nombre_hijo, row.fecha_old, row.medicamentos_old,
+                        row.estudios_old, row.resultados_old, row.nombre_hijo_old, "brea.emanuel@gmail.com"
+                    )
+                }
+            });
+            deletedRows.forEach((row) => {
+                if (row.new === undefined || row.new === false) {
+                    deleteControl(row.fecha, row.medicamentos, row.estudios, row.resultados,
+                        row.nombre_hijo, "brea.emanuel@gmail.com")
+                }
+            });
+            setDeletedRows([]);
+            setOpen(true);
+        }
+
     };
+
 
     const getControles = async () => {
-        const controles = await fetch('/control?' + +new URLSearchParams({
+        const controles = await fetch('/control?' + new URLSearchParams({
             padre: 'brea.emanuel@gmail.com'
         }))
             .then(res => res.json())
@@ -182,25 +252,29 @@ export default function ControlPediatrico() {
 
     }
 
-    const editControl = async () => {
+    const editControl = async (fecha, peso, altura, diametro, observaciones, medicamentos, dosis, periodo,
+                               estudios, resultados, nombre_hijo, fecha_old, medicamentos_old,
+                               estudios_old, resultados_old, nombre_hijo_old, padre) => {
         const requestOptions = {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                fecha: "2020/05/02",
-                peso: 12,
-                altura: 12,
-                diametro: 13,
-                observaciones: "covid",
-                medicamentos: "covid",
-                estudios: "covid",
-                resultados: "covid",
-                nombre_hijo: "pepe",
-                fecha_old: "2020/05/02",
-                medicamentos_old: "covid",
-                estudios_old: "covid",
-                resultados_old: "covid",
-                nombre_hijo_old: "pepe",
+                fecha: fecha,
+                peso: peso,
+                altura: altura,
+                diametro: diametro,
+                observaciones: observaciones,
+                medicamentos: medicamentos,
+                dosis: dosis,
+                periodo: periodo,
+                estudios: estudios,
+                resultados: resultados,
+                nombre_hijo: nombre_hijo,
+                fecha_old: fecha_old,
+                medicamentos_old: medicamentos_old,
+                estudios_old: estudios_old,
+                resultados_old: resultados_old,
+                nombre_hijo_old: nombre_hijo_old,
                 padre: "brea.emanuel@gmail.com"
             })
         };
@@ -211,16 +285,16 @@ export default function ControlPediatrico() {
 
     }
 
-    const deleteControl = async () => {
+    const deleteControl = async (fecha, medicamentos, estudios, resultados, nombre_hijo, padre) => {
         const requestOptions = {
             method: 'DELETE',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                fecha: "2020/05/02",
-                medicamentos: "covid3",
-                estudios: "covid3",
-                resultados: "covid3",
-                nombre_hijo: "pepe",
+                fecha: fecha,
+                medicamentos: medicamentos,
+                estudios: estudios,
+                resultados: resultados,
+                nombre_hijo: nombre_hijo,
                 padre: "brea.emanuel@gmail.com"
             })
         };
@@ -231,20 +305,23 @@ export default function ControlPediatrico() {
 
     }
 
-    const createControl = async () => {
+    const createControl = async (fecha, peso, altura, diametro, observaciones, medicamentos, dosis, periodo,
+                                 estudios, resultados, nombre_hijo, padre) => {
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                fecha: "2020/05/02",
-                peso: 12,
-                altura: 12,
-                diametro: 13,
-                observaciones: "covid",
-                medicamentos: "covid",
-                estudios: "covid",
-                resultados: "covid",
-                nombre_hijo: "pepe",
+                fecha: fecha,
+                peso: peso,
+                altura: altura,
+                diametro: diametro,
+                observaciones: observaciones,
+                medicamentos: medicamentos,
+                dosis: dosis,
+                periodo: periodo,
+                estudios: estudios,
+                resultados: resultados,
+                nombre_hijo: nombre_hijo,
                 padre: "brea.emanuel@gmail.com"
             })
         };
@@ -253,6 +330,21 @@ export default function ControlPediatrico() {
 
         return control;
 
+    }
+
+    const validateFields = () => {
+        const emptyFields = rows.some((row) =>
+            row.nombre_hijo.length === 0 || row.medicamentos.length === 0
+            || row.estudios.length === 0 || row.resultados.length === 0 || row.fecha.length === 0
+        );
+
+        const duplicatedFields = rows.filter((row, index, self) =>
+                index === self.findIndex((t) => (
+                    t.medicamentos === row.medicamentos && t.estudios === row.estudios
+                    && t.resultados === row.resultados && t.nombre_hijo === row.nombre_hijo
+                ))
+        )
+        return !emptyFields && (duplicatedFields.length === rows.length);
     }
 
     return (
@@ -290,19 +382,25 @@ export default function ControlPediatrico() {
                 checkboxSelection
                 disableSelectionOnClick
                 onSelectionModelChange={(ids) => setSelected(ids)}
+                onCellEditCommit={handleCellClick}
             />
             <div className={classes.floatingIcon}>
                 <Fab color="primary" aria-label="add" title="Agregar control" onClick={handleAddRow}>
                     <AddIcon/>
                 </Fab>
                 <Fab style={{backgroundColor: "green", color: "white"}} aria-label="save" title="Guardar"
-                     onClick={handleClickOpen}>
+                     onClick={handleSaveControles}>
                     <SaveIcon/>
                 </Fab>
             </div>
             <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="success" sx={{width: '100%'}}>
                     Datos guardados correctamente!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={missing} autoHideDuration={3000} onClose={handleCloseMissing}>
+                <Alert onClose={handleCloseMissing} severity="warning" sx={{width: '100%'}}>
+                    Datos faltantes.
                 </Alert>
             </Snackbar>
         </div>
