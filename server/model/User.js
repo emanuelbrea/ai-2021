@@ -2,15 +2,16 @@ const userDao = require('../dao/users')
 
 //User constructor
 function User({
-                  username,
                   email,
                   password,
+                  nombre, apellido,
                   dni,
                   telefono
               }) {
-    this.username = username;
     this.email = email;
     this.password = password;
+    this.nombre = nombre;
+    this.apellido = apellido;
     this.dni = dni;
     this.telefono = telefono;
 }
@@ -18,7 +19,8 @@ function User({
 // add a createUser method to the prototype
 User.prototype.createUser = async function () {
     try {
-        const {rows} = await userDao.createUser(this.username, this.email, this.password, this.dni, this.telefono);
+        const {rows} = await userDao.createUser(this.email, this.password,
+            this.nombre, this.apellido, this.dni, this.telefono);
         return rows;
     } catch (error) {
         throw error;
@@ -35,9 +37,9 @@ User.userLogin = async function (email) {
     }
 };
 
-User.updateUser = async function (username, password, dni, telefono, email) {
+User.updateUser = async function (nombre, apellido, dni, telefono, email) {
     try {
-        const {rows} = await userDao.updateUser(username, password, dni, telefono, email);
+        const {rows} = await userDao.updateUser(nombre, apellido, dni, telefono, email);
         return rows;
     } catch (error) {
         throw error;

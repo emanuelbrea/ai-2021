@@ -3,7 +3,7 @@ const User = require('../model/User');
 
 exports.postSignup = async (req, res, next) => {
     //getting user data from request body
-    const {username, password, email, dni, telefono} = req.body;
+    const {password, email, dni, telefono, nombre, apellido} = req.body;
 
     let success = 'false';
     let message = '';
@@ -17,7 +17,14 @@ exports.postSignup = async (req, res, next) => {
             message = 'Por favor, ingrese un mail valido';
         } else {
             const hashPassword = helper.hashPassword(password);
-            const user = new User({username, email, password: hashPassword, dni, telefono});
+            const user = new User({
+                email,
+                password: hashPassword,
+                nombre,
+                apellido,
+                dni: Number(dni),
+                telefono: Number(telefono)
+            });
 
             try {
                 const result = await user.createUser();
@@ -89,7 +96,7 @@ exports.checkLogin = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
     //getting user data from request body
-    const {username, password, dni, telefono, email} = req.body;
+    const {dni, telefono, email, nombre, apellido} = req.body;
     let success = 'false';
     let message = '';
     let data = {};
@@ -98,7 +105,7 @@ exports.updateUser = async (req, res, next) => {
         if (!email) {
             message = 'Valores faltantes';
         } else {
-            const result = await User.updateUser(username, password, dni, telefono, email);
+            const result = await User.updateUser(nombre, apellido, Number(dni), Number(telefono), email);
             if (!result[0]) {
                 message = 'No se pudo actualizar el usuario';
                 status_code = 401;
@@ -110,6 +117,45 @@ exports.updateUser = async (req, res, next) => {
             }
         }
 
+    } catch (error) {
+        message = error.message;
+        status_code = 500;
+    }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
+};
+
+exports.getProfile = async (req, res, next) => {
+    const email = req.query.email;
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
+    try {
+        if (!email) {
+            message = 'Valores faltantes';
+        } else {
+            const result = await User.userLogin(email);
+            if (!result[0]) {
+                message = 'Usuario no existente';
+                status_code = 401;
+            } else {
+                status_code = 200;
+                success = 'true';
+                message = 'Usuario encontrado';
+                data = {
+                    "nombre": result[0].nombre,
+                    "apellido": result[0].apellido,
+                    "dni": result[0].dni,
+                    "telefono": result[0].telefono,
+                    "email": result[0].email
+                };
+            }
+        }
     } catch (error) {
         message = error.message;
         status_code = 500;

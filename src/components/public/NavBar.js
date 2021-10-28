@@ -73,10 +73,13 @@ export default function MenuAppBar() {
                     </Typography>
                     <section className={classes.rightToolbar}>
                         {token === undefined ?
-                            <div><Button color="inherit" className={classes.menuButton} onClick={handleRegister}>Registro</Button>
-                            <Button color="inherit" variant={"outlined"} onClick={handleLogin}>Ingresar</Button></div>
+                            <div><Button color="inherit" className={classes.menuButton}
+                                         onClick={handleRegister}>Registro</Button>
+                                <Button color="inherit" variant={"outlined"} onClick={handleLogin}>Ingresar</Button>
+                            </div>
                             : <div>
-                                <Button color="inherit" className={classes.menuButton} onClick={handleInicio}>Inicio</Button>
+                                <Button color="inherit" className={classes.menuButton}
+                                        onClick={handleInicio}>Inicio</Button>
                                 <Button color="inherit" variant={"outlined"} onClick={handleLogout}>Salir</Button>
                             </div>
                         }

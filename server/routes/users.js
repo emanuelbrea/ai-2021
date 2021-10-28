@@ -10,4 +10,7 @@ router.post('/login', usersController.checkLogin);
 
 router.patch('/user', usersController.updateUser);
 
+router.get('/user', usersController.getProfile);
+
+
 module.exports = router;
