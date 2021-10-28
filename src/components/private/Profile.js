@@ -3,7 +3,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Snackbar from '@mui/material/Snackbar';
@@ -44,15 +44,19 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export default function Profile(props) {
 
     const classes = useStyles();
-    const [openSave, setOpenSave] = useState(false);
+    const [password, setPassword] = useState('password');
+    const [newPassword, setNewPassword] = useState('');
+    const [cambioPassword, setCambioPassword] = useState(false);
+    const [wrongPassword, setWrongPassword] = useState(false);
 
     const initialState = {
-        nombre: "Emanuel",
-        apellido: "Brea",
-        email: "brea.emanuel@gmail.com",
-        dni: 40127028,
-        telefono: 1234456789,
-        password: 'password'
+        nombre: "",
+        apellido: "",
+        email: "",
+        dni: "",
+        telefono: "",
+        success: false,
+        fail: false
     };
 
     const [estado, setEstado] = useState(initialState);
@@ -62,13 +66,56 @@ export default function Profile(props) {
         setEstado({...estado, [name]: value});
     };
 
-    const handleClickOpenSave = () => {
-        setOpenSave(true);
-    };
+    useEffect(() => {
+        getProfile().then(items => {
+            if (items.success === 'true') {
+                setEstado(items.data);
+            }
+        })
+    }, [])
 
-    const handleCloseSave = () => {
-        setOpenSave(false);
-    };
+    const getProfile = async () => {
+        const profile = await fetch('/user?' + new URLSearchParams({
+            email: 'brea.emanuel@gmail.com'
+        })).then(res => res.json())
+
+        return profile;
+
+    }
+
+    const editProfile = async (dni, telefono, email, nombre, apellido) => {
+        const requestOptions = {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                dni: dni,
+                telefono: telefono,
+                email: email,
+                nombre: nombre,
+                apellido: apellido,
+            })
+        };
+        const result = await fetch('/user', requestOptions)
+            .then(res => res.json())
+
+        return result;
+
+    }
+
+    const handleSaveProfile = () => {
+        if (cambioPassword && password !== newPassword) {
+            setWrongPassword(true);
+        } else {
+            editProfile(estado.dni, estado.telefono, estado.email, estado.nombre, estado.apellido).then(result => {
+                if (result.success === 'true') {
+                    setCambioPassword(false);
+                    setEstado({...estado, ['success']: true});
+                } else {
+                    setEstado({...estado, ['fail']: true});
+                }
+            })
+        }
+    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -114,6 +161,7 @@ export default function Profile(props) {
                                 autoComplete="email"
                                 onChange={e => handleInputChange(e)}
                                 value={estado.email}
+                                disabled={true}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -151,25 +199,58 @@ export default function Profile(props) {
                                 type="password"
                                 id="password"
                                 autoComplete="off"
-                                onChange={e => handleInputChange(e)}
-                                value={estado.password}
+                                onChange={e => {
+                                    setCambioPassword(true);
+                                    setPassword(e.target.value);
+                                }
+                                }
+                                value={password}
                             />
                         </Grid>
+                        {
+                            cambioPassword &&
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    name="newPassword"
+                                    label="Confirmar Contraseña"
+                                    type="password"
+                                    id="newPassword"
+                                    autoComplete="off"
+                                    onChange={e => setNewPassword(e.target.value)}
+                                    value={newPassword}
+                                />
+                            </Grid>
+                        }
                     </Grid>
                     <Button
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
-                        onClick={handleClickOpenSave}
+                        onClick={handleSaveProfile}
                     >
                         Guardar
                     </Button>
                 </form>
             </div>
-            <Snackbar open={openSave} autoHideDuration={3000} onClose={handleCloseSave}>
-                <Alert onClose={handleCloseSave} severity="success" sx={{width: '100%'}}>
+            <Snackbar open={estado.success} autoHideDuration={3000}
+                      onClose={() => setEstado({...estado, ['success']: false})}>
+                <Alert onClose={() => setEstado({...estado, ['success']: false})} severity="success"
+                       sx={{width: '100%'}}>
                     Datos guardados correctamente!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={wrongPassword} autoHideDuration={3000} onClose={() => setWrongPassword(false)}>
+                <Alert onClose={() => setWrongPassword(false)} severity="error" sx={{width: '100%'}}>
+                    Las contraseñas no coinciden!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={estado.fail} autoHideDuration={3000}
+                      onClose={() => setEstado({...estado, ['fail']: false})}>
+                <Alert onClose={() => setEstado({...estado, ['fail']: false})} severity="error" sx={{width: '100%'}}>
+                    Hubo un error al actualizar los datos!
                 </Alert>
             </Snackbar>
         </Container>

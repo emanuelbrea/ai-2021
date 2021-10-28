@@ -46,7 +46,7 @@ const infos = [
     },
     {
         icon: <MailIcon/>,
-        description: "clinicabrea@gmail.com"
+        description: "papisfelices@gmail.com"
     }
 ];
 
@@ -146,7 +146,7 @@ export default function Footer() {
                             Sobre nosotros
                         </Typography>
                         <Typography style={{color: "#fafafa"}} paragraph>
-                            En Clinica Brea nos preocupamos por la salud de sus hijos.
+                            En Papis Felices nos preocupamos por la salud de sus hijos.
                         </Typography>
                         <Box display="flex">
                             {socialIcons.map((socialIcon, index) => (

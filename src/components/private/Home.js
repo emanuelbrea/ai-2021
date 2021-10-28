@@ -154,6 +154,9 @@ export default function Home(props) {
     const handleListItemClick = (index, value) => {
         setSelectedIndex(index);
         setMenu(value)
+        if (value == 'salir') {
+            sessionStorage.clear();
+        }
     };
 
     const handleClose = () => {
@@ -167,7 +170,7 @@ export default function Home(props) {
                 <Toolbar>
                     <Typography variant="h5" className={classes.title}>
                         <Link to="/" className={classes.link}>
-                            <span className={classes.tagline}>Clinica Brea</span>
+                            <span className={classes.tagline}>Papis Felices</span>
                         </Link>
                     </Typography>
                 </Toolbar>

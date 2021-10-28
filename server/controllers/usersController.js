@@ -1,5 +1,169 @@
+const helper = require('../auth/helper')
+const User = require('../model/User');
 
+exports.postSignup = async (req, res, next) => {
+    //getting user data from request body
+    const {password, email, dni, telefono, nombre, apellido} = req.body;
 
-exports.users_list = function(req, res) {
-    res.send('NOT IMPLEMENTED: Users list');
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
+    try {
+
+        if (!email || !password) {
+            message = 'Valores faltantes';
+        } else if (!helper.isValidEmail(email)) {
+            message = 'Por favor, ingrese un mail valido';
+        } else {
+            const hashPassword = helper.hashPassword(password);
+            const user = new User({
+                email,
+                password: hashPassword,
+                nombre,
+                apellido,
+                dni: Number(dni),
+                telefono: Number(telefono)
+            });
+
+            try {
+                const result = await user.createUser();
+                const token = helper.generateToken(result[0].id);
+                status_code = 200;
+                success = 'true';
+                message = 'Usuario registrado correctamente';
+                data = {"token": token};
+            } catch (error) {
+                switch (error?.code) {
+                    case '23505':
+                        message = 'Usuario con email ya registrado! Por favor, utilize otro.'
+                        status_code = 403;
+                        break;
+                    default:
+                        status_code = 500;
+                        message = 'No se pudo crear al usuario'
+                }
+            }
+        }
+    } catch (error) {
+        message = error.message;
+        status_code = 500;
+    }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
+};
+
+exports.checkLogin = async (req, res, next) => {
+    //getting user data from request body
+    const {email, password} = req.body;
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
+    try {
+        if (!email || !password) {
+            message = 'Valores faltantes';
+        } else if (!helper.isValidEmail(email)) {
+            message = 'Por favor, ingrese un mail valido';
+        } else {
+            const result = await User.userLogin(email);
+            if (!result[0] || !helper.comparePassword(result[0].password, password)) {
+                message = 'Credenciales incorrectas';
+                status_code = 401;
+            } else {
+                const token = helper.generateToken(result[0].id);
+                status_code = 200;
+                success = 'true';
+                message = 'Inicio de sesion correcto';
+                data = {"token": token};
+            }
+        }
+    } catch (error) {
+        message = error.message;
+        status_code = 500;
+    }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
+};
+
+exports.updateUser = async (req, res, next) => {
+    //getting user data from request body
+    const {dni, telefono, email, nombre, apellido} = req.body;
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
+    try {
+        if (!email) {
+            message = 'Valores faltantes';
+        } else {
+            const result = await User.updateUser(nombre, apellido, Number(dni), Number(telefono), email);
+            if (!result[0]) {
+                message = 'No se pudo actualizar el usuario';
+                status_code = 401;
+            } else {
+                status_code = 200;
+                success = 'true';
+                message = 'Usuario actualizado correctamente';
+                data = {result: result[0]};
+            }
+        }
+
+    } catch (error) {
+        message = error.message;
+        status_code = 500;
+    }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
+};
+
+exports.getProfile = async (req, res, next) => {
+    const email = req.query.email;
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
+    try {
+        if (!email) {
+            message = 'Valores faltantes';
+        } else {
+            const result = await User.userLogin(email);
+            if (!result[0]) {
+                message = 'Usuario no existente';
+                status_code = 401;
+            } else {
+                status_code = 200;
+                success = 'true';
+                message = 'Usuario encontrado';
+                data = {
+                    "nombre": result[0].nombre,
+                    "apellido": result[0].apellido,
+                    "dni": result[0].dni,
+                    "telefono": result[0].telefono,
+                    "email": result[0].email
+                };
+            }
+        }
+    } catch (error) {
+        message = error.message;
+        status_code = 500;
+    }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
 };

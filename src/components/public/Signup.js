@@ -10,13 +10,17 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import MuiAlert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import {useHistory} from "react-router-dom";
+
 
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
             <Link color="inherit" href="http://localhost:3000/">
-                Clinica Brea
+                Papis Felices
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -42,17 +46,70 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    numberField: {
+        "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+            display: "none"
+        }
+    },
 }));
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function Signup() {
     const classes = useStyles();
-    const [values, setValues] = useState({
-        password: '',
-    });
+    const history = useHistory();
 
-    const handleChange = (prop) => (event) => {
-        setValues({...values, [prop]: event.target.value});
+    const initialState = {
+        nombre: '',
+        apellido: '',
+        email: '',
+        dni: '',
+        telefono: '',
+        password: ''
     };
+
+    const [estado, setEstado] = useState(initialState);
+
+    const [missingValues, setMissingValues] = useState(false);
+
+
+    const handleInputChange = (e) => {
+        const {name, value} = e.target;
+        setEstado({...estado, [name]: value});
+    };
+
+    const handleClickSignUp = () => {
+        if (Object.values(estado).some((e) => e === '')) {
+            setMissingValues(true);
+        } else {
+            checkSignup().then(responseJson => {
+                if (responseJson.success === 'true') {
+                    history.push('/home');
+                } else {
+                    setMissingValues(true);
+                }
+            });
+        }
+    };
+
+    const checkSignup = async () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: estado.email, password: estado.password, username: estado.nombre,
+                dni: estado.dni, telefono: estado.telefono
+            })
+        };
+        const signUpStatus = await fetch('/signup', requestOptions)
+            .then(res => res.json())
+
+        return signUpStatus;
+
+    }
+
 
     return (
         <Container component="main" maxWidth="xs">
@@ -69,13 +126,15 @@ export default function Signup() {
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 autoComplete="fname"
-                                name="firstName"
+                                name="nombre"
                                 variant="outlined"
                                 required
                                 fullWidth
-                                id="firstName"
+                                id="nombre"
                                 label="Nombre"
                                 autoFocus
+                                value={estado.nombre}
+                                onChange={handleInputChange}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -83,10 +142,12 @@ export default function Signup() {
                                 variant="outlined"
                                 required
                                 fullWidth
-                                id="lastName"
+                                id="apellido"
                                 label="Apellido"
-                                name="lastName"
+                                name="apellido"
                                 autoComplete="lname"
+                                value={estado.apellido}
+                                onChange={handleInputChange}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -98,30 +159,36 @@ export default function Signup() {
                                 label="Email"
                                 name="email"
                                 autoComplete="email"
+                                value={estado.email}
+                                onChange={handleInputChange}
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                name="dni"
-                                label="DNI"
-                                id="dni"
-                                autoComplete="off"
-                                type="number"
+                            <TextField className={classes.numberField}
+                                       variant="outlined"
+                                       required
+                                       fullWidth
+                                       name="dni"
+                                       label="DNI"
+                                       id="dni"
+                                       autoComplete="off"
+                                       type="number"
+                                       value={estado.dni}
+                                       onChange={handleInputChange}
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                name="telefono"
-                                label="Telefono"
-                                id="telefono"
-                                autoComplete="off"
-                                type="number"
+                            <TextField className={classes.numberField}
+                                       variant="outlined"
+                                       required
+                                       fullWidth
+                                       name="telefono"
+                                       label="Telefono"
+                                       id="telefono"
+                                       autoComplete="off"
+                                       type="number"
+                                       value={estado.telefono}
+                                       onChange={handleInputChange}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -134,17 +201,17 @@ export default function Signup() {
                                 type='password'
                                 id="password"
                                 autoComplete="current-password"
-                                value={values.password}
-                                onChange={handleChange('password')}
+                                value={estado.password}
+                                onChange={handleInputChange}
                             />
                         </Grid>
                     </Grid>
                     <Button
-                        type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={handleClickSignUp}
                     >
                         Registrarse
                     </Button>
@@ -160,6 +227,11 @@ export default function Signup() {
             <Box mt={5}>
                 <Copyright/>
             </Box>
+            <Snackbar open={missingValues} autoHideDuration={3000} onClose={() => setMissingValues(false)}>
+                <Alert onClose={() => setMissingValues(false)} severity="warning" sx={{width: '100%'}}>
+                    Datos incompletos
+                </Alert>
+            </Snackbar>
         </Container>
     );
 }

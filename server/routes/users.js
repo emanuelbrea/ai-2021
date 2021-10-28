@@ -1,9 +1,16 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const auth = require('../auth/auth')
 
-var users_controller = require('../controllers/usersController');
+const usersController = require('../controllers/usersController');
 
-/* GET users listing. */
-router.get('/', users_controller.users_list);
+router.post('/signup', usersController.postSignup);
+
+router.post('/login', usersController.checkLogin);
+
+router.patch('/user', usersController.updateUser);
+
+router.get('/user', usersController.getProfile);
+
 
 module.exports = router;

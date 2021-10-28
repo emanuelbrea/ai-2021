@@ -103,19 +103,19 @@ const funcionalidades = [
 
 const reviews = [
     {
-        description: "Gracias a Clinica Brea puedo llevar al dia todos los controles que les hice a mis hijos." +
+        description: "Gracias a Papis Felices puedo llevar al dia todos los controles que les hice a mis hijos." +
             "Ya no tengo que andar guardando papeles que despues nunca encuentro!",
         title: "Registro de control pediatrico",
         persona: "Sandra Bullock, Madre de Juan",
     },
     {
-        description: "Lo mejor de Clinica Brea es la interfaz. Es muy clara y rapida. Siempre que llevo a mis hijos al" +
+        description: "Lo mejor de Papis Felices es la interfaz. Es muy clara y rapida. Siempre que llevo a mis hijos al" +
             "doctor le muestro la aplicacion. Es genial!",
         title: "Registro de vacunas",
         persona: "Brad Pitt, Padre de Gonzalo",
     },
     {
-        description: "Clinica Brea es lo mejor que hay para los padres! Ademas es muy facil de usar.",
+        description: "Papis Felices es lo mejor que hay para los padres! Ademas es muy facil de usar.",
         title: "Consulta de Percentiles",
         persona: "Angelina Jolie, Madre de Pepe",
     }
@@ -146,7 +146,7 @@ export default function LandingPage() {
                                     <Typography component="h1" variant="h2" align="center" color="textPrimary"
                                                 gutterBottom
                                                 className={classes.heroText}>
-                                        Clinica Brea
+                                        Papis Felices
                                     </Typography>
                                     <Typography variant="h5" align="center" color="textSecondary" paragraph>
                                         Gestionar controles pediatricos nunca fue tan facil.
@@ -174,7 +174,7 @@ export default function LandingPage() {
                             Funcionalidades
                         </Typography>
                         <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                            Clinica Brea es la mejor herramienta para mantener todos los datos medicos de sus hijos en
+                            Papis Felices es la mejor herramienta para mantener todos los datos medicos de sus hijos en
                             un solo lugar.
                         </Typography>
                     </div>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {DataGrid} from '@mui/x-data-grid';
 import {lighten, makeStyles} from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -40,23 +40,15 @@ const columns = [
         editable: true,
     },
     {
-        field: 'nombre',
+        field: 'nombre_hijo',
         headerName: 'Hijo',
         type: 'singleSelect',
-        valueOptions: ['Juan', 'Pepe'],
+        valueOptions: ['juan', 'pepe'],
         width: 160,
         editable: true,
     },
 ];
 
-const initialRows = [
-    {id: 1, fecha: '2020-02-02', vacuna: 'BCG', lugar: 'CABA', nombre: 'Juan'},
-    {id: 2, fecha: '2020-03-02', vacuna: 'Hepatitis B', lugar: 'Sanatario brea', nombre: 'Juan'},
-    {id: 3, fecha: '2020-04-02', vacuna: 'Neumococo', lugar: 'Sanatario guemes', nombre: 'Pepe'},
-    {id: 4, fecha: '2020-05-02', vacuna: 'IPV', lugar: 'Sanatario mater dei', nombre: 'Juan'},
-    {id: 5, fecha: '2020-07-02', vacuna: 'Antigripal', lugar: 'Sanatario otamendi', nombre: 'Pepe'},
-    {id: 6, fecha: '2020-08-02', vacuna: 'Triple Viral', lugar: 'Sanatario trinidad', nombre: 'Pepe'},
-];
 
 const useToolbarStyles = makeStyles((theme) => ({
     root: {
@@ -103,15 +95,17 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export default function Vacunas() {
     const classes = useToolbarStyles();
     const [selected, setSelected] = useState([]);
-    const [rows, setRows] = useState(initialRows);
+    const [rows, setRows] = useState([]);
+    const [deletedRows, setDeletedRows] = useState([]);
     const [open, setOpen] = useState(false);
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+    const [missing, setMissing] = useState(false);
 
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const handleCloseMissing = () => {
+        setMissing(false);
     };
 
     const handleDeleteRows = () => {
@@ -119,14 +113,182 @@ export default function Vacunas() {
         const selectedRowData = rows.filter((row) =>
             !selectedIDs.has(row.id)
         );
+        const deleteRows = rows.filter((row) =>
+            selectedIDs.has(row.id)
+        );
+        setDeletedRows([...deletedRows, ...deleteRows]);
         setRows(selectedRowData);
     };
 
     const handleAddRow = () => {
-        const maxId = Math.max(...rows.map(user => user.id))
-        const newRow = {id: maxId + 1, fecha: '2020-03-02', vacuna: '', lugar: '', nombre: 'Juan'};
+        const maxId = rows.length > 0 ? Math.max(...rows.map(user => user.id)) : 0;
+        var today = new Date();
+        const newRow = {
+            id: maxId + 1, fecha: new Date(today.toDateString()),
+            vacuna: '', lugar: '', nombre_hijo: 'pepe', new: true
+        };
         setRows([...rows, newRow]);
     }
+
+
+    const handleCellClick = (param, event) => {
+        let copyRows = rows;
+        const id = param.id;
+        const field = param.field;
+        copyRows.find(a => a.id === id)[field] = param.value;
+        setRows(copyRows);
+    };
+
+    useEffect(() => {
+        getVacunas().then(items => {
+            if (items.success === 'true') {
+                addIds(items.data.result);
+                convertDate(items.data.result);
+                addOldValues(items.data.result);
+                setRows(items.data.result);
+            }
+        })
+    }, [])
+
+    const convertDate = (vacunas) => {
+        vacunas.forEach((row) => {
+            let fecha = new Date(row.fecha);
+            row.fecha = new Date(fecha.toDateString());
+        });
+    }
+
+    const addIds = (vacunas) => {
+        for (let i = 1; i <= vacunas.length; i++) {
+            vacunas[i - 1].id = i;
+        }
+    }
+
+    const addOldValues = (vacunas) => {
+        vacunas.forEach((row) => {
+            row.fecha_old = row.fecha;
+            row.vacuna_old = row.vacuna;
+            row.lugar_old = row.lugar;
+            row.nombre_hijo_old = row.nombre_hijo;
+        });
+    }
+
+    const handleSaveVacunas = () => {
+        if (!validateFields()) {
+            setMissing(true);
+        } else {
+            rows.forEach((row) => {
+                if (row.new !== undefined && row.new === true) {
+                    createVacuna(
+                        row.fecha, row.vacuna, row.lugar, row.nombre_hijo, "brea.emanuel@gmail.com"
+                    );
+                    row.fecha_old = row.fecha;
+                    row.vacuna_old = row.vacuna;
+                    row.lugar_old = row.lugar;
+                    row.nombre_hijo_old = row.nombre_hijo;
+                    row.new = false;
+                } else if (row.fecha !== row.fecha_old || row.vacuna !== row.vacuna_old
+                    || row.nombre_hijo !== row.nombre_hijo_old) {
+                    editVacuna(
+                        row.fecha, row.vacuna, row.lugar,
+                        row.fecha_old, row.vacuna_old, row.lugar_old,
+                        row.nombre_hijo, row.nombre_hijo_old, "brea.emanuel@gmail.com"
+                    )
+                }
+            });
+            deletedRows.forEach((row) => {
+                if (row.new === undefined || row.new === false) {
+                    deleteVacuna(row.fecha, row.vacuna, row.nombre_hijo, "brea.emanuel@gmail.com")
+                }
+            });
+            setDeletedRows([]);
+            setOpen(true);
+        }
+
+    };
+
+    const getVacunas = async () => {
+        const vacunas = await fetch('/vacuna?' + new URLSearchParams({
+            padre: 'brea.emanuel@gmail.com'
+        })).then(res => res.json())
+
+        return vacunas;
+
+    }
+
+    const editVacuna = async (fecha, vacuna, lugar, fecha_old,
+                              vacuna_old, lugar_old, nombre_hijo, nombre_hijo_old, padre) => {
+        const requestOptions = {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                fecha: fecha,
+                vacuna: vacuna,
+                lugar: lugar,
+                fecha_old: fecha_old,
+                vacuna_old: vacuna_old,
+                lugar_old: lugar_old,
+                nombre_hijo: nombre_hijo,
+                nombre_hijo_old: nombre_hijo_old,
+                padre: padre
+            })
+        };
+        const vacunas = await fetch('/vacuna', requestOptions)
+            .then(res => res.json())
+
+        return vacunas;
+
+    }
+
+    const deleteVacuna = async (fecha, vacuna, nombre_hijo, padre) => {
+        const requestOptions = {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                fecha: fecha,
+                vacuna: vacuna,
+                nombre_hijo: nombre_hijo,
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const vacunas = await fetch('/vacuna', requestOptions)
+            .then(res => res.json())
+
+        return vacunas;
+
+    }
+
+    const createVacuna = async (fecha, vacuna, lugar, nombre_hijo, padre) => {
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                fecha: fecha,
+                vacuna: vacuna,
+                lugar: lugar,
+                nombre_hijo: nombre_hijo,
+                padre: "brea.emanuel@gmail.com"
+            })
+        };
+        const vacunas = await fetch('/vacuna', requestOptions)
+            .then(res => res.json())
+
+        return vacunas;
+
+    }
+
+    const validateFields = () => {
+        const emptyFields = rows.some((row) =>
+            row.nombre_hijo.length === 0 || row.vacuna.length === 0 || row.lugar.length === 0 || row.fecha.length === 0
+        );
+
+        const duplicatedFields = rows.filter((row, index, self) =>
+                index === self.findIndex((t) => (
+                    t.vacuna === row.vacuna && t.lugar === row.lugar && t.nombre_hijo === row.nombre_hijo
+                ))
+        )
+        return !emptyFields && (duplicatedFields.length === rows.length);
+    }
+
 
     return (
         <div style={{height: 400, width: '100%', padding: '15px'}}>
@@ -162,13 +324,14 @@ export default function Vacunas() {
                 checkboxSelection
                 disableSelectionOnClick
                 onSelectionModelChange={(ids) => setSelected(ids)}
+                onCellEditCommit={handleCellClick}
             />
             <div className={classes.floatingIcon}>
                 <Fab color="primary" aria-label="add" title="Agregar vacuna" onClick={handleAddRow}>
                     <AddIcon/>
                 </Fab>
                 <Fab style={{backgroundColor: "green", color: "white"}} aria-label="save" title="Guardar"
-                     onClick={handleClickOpen}>
+                     onClick={handleSaveVacunas}>
                     <SaveIcon/>
                 </Fab>
             </div>
@@ -188,6 +351,11 @@ export default function Vacunas() {
             <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="success" sx={{width: '100%'}}>
                     Datos guardados correctamente!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={missing} autoHideDuration={3000} onClose={handleCloseMissing}>
+                <Alert onClose={handleCloseMissing} severity="warning" sx={{width: '100%'}}>
+                    Datos faltantes.
                 </Alert>
             </Snackbar>
 
