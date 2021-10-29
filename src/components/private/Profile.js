@@ -8,6 +8,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import useToken from "../routes/useToken";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -48,6 +49,7 @@ export default function Profile(props) {
     const [newPassword, setNewPassword] = useState('');
     const [cambioPassword, setCambioPassword] = useState(false);
     const [wrongPassword, setWrongPassword] = useState(false);
+    const {token, setToken} = useToken();
 
     const initialState = {
         nombre: "",
@@ -75,9 +77,16 @@ export default function Profile(props) {
     }, [])
 
     const getProfile = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        };
         const profile = await fetch('/user?' + new URLSearchParams({
             email: 'brea.emanuel@gmail.com'
-        })).then(res => res.json())
+        }), requestOptions).then(res => res.json())
 
         return profile;
 
@@ -86,7 +95,10 @@ export default function Profile(props) {
     const editProfile = async (dni, telefono, email, nombre, apellido) => {
         const requestOptions = {
             method: 'PATCH',
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 dni: dni,
                 telefono: telefono,

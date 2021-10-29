@@ -8,9 +8,14 @@ const poolPostgres = require('../dao/dbpool');
  * @returns {object|void} response object
  */
 exports.verifyToken = async function (req, res, next) {
-    const token = req.headers['x-access-token'];
+    const token = req.headers['authorization'];
     if (!token) {
-        return res.status(400).send({'message': 'Token is not provided'});
+        const response = {
+            success: 'Token no encontrado.',
+            message: 'false',
+            data: {}
+        };
+        return res.status(400).send(response);
     }
     try {
         const decoded = await jwt.verify(token, process.env.SECRET);

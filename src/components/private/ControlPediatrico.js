@@ -12,6 +12,7 @@ import AddIcon from "@material-ui/icons/Add";
 import SaveIcon from "@material-ui/icons/Save";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import useToken from "../routes/useToken";
 
 const columns = [
     {field: 'id', headerName: 'ID', width: 90},
@@ -131,6 +132,7 @@ export default function ControlPediatrico() {
     const [deletedRows, setDeletedRows] = useState([]);
     const [open, setOpen] = useState(false);
     const [missing, setMissing] = useState(false);
+    const {token, setToken} = useToken();
 
     const handleClose = () => {
         setOpen(false);
@@ -243,9 +245,16 @@ export default function ControlPediatrico() {
 
 
     const getControles = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        };
         const controles = await fetch('/control?' + new URLSearchParams({
             padre: 'brea.emanuel@gmail.com'
-        }))
+        }), requestOptions)
             .then(res => res.json())
 
         return controles;
@@ -257,7 +266,7 @@ export default function ControlPediatrico() {
                                estudios_old, resultados_old, nombre_hijo_old, padre) => {
         const requestOptions = {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 fecha: fecha,
                 peso: peso,
@@ -288,7 +297,7 @@ export default function ControlPediatrico() {
     const deleteControl = async (fecha, medicamentos, estudios, resultados, nombre_hijo, padre) => {
         const requestOptions = {
             method: 'DELETE',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 fecha: fecha,
                 medicamentos: medicamentos,
@@ -309,7 +318,7 @@ export default function ControlPediatrico() {
                                  estudios, resultados, nombre_hijo, padre) => {
         const requestOptions = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 fecha: fecha,
                 peso: peso,

@@ -15,6 +15,7 @@ import ModalImage from "react-modal-image";
 import SaveIcon from "@material-ui/icons/Save";
 import MuiAlert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
+import useToken from "../routes/useToken";
 
 
 const columns = [
@@ -99,6 +100,7 @@ export default function Vacunas() {
     const [deletedRows, setDeletedRows] = useState([]);
     const [open, setOpen] = useState(false);
     const [missing, setMissing] = useState(false);
+    const {token, setToken} = useToken();
 
     const handleClose = () => {
         setOpen(false);
@@ -207,9 +209,16 @@ export default function Vacunas() {
     };
 
     const getVacunas = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        };
         const vacunas = await fetch('/vacuna?' + new URLSearchParams({
             padre: 'brea.emanuel@gmail.com'
-        })).then(res => res.json())
+        }), requestOptions).then(res => res.json())
 
         return vacunas;
 
@@ -219,7 +228,7 @@ export default function Vacunas() {
                               vacuna_old, lugar_old, nombre_hijo, nombre_hijo_old, padre) => {
         const requestOptions = {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 fecha: fecha,
                 vacuna: vacuna,
@@ -242,7 +251,7 @@ export default function Vacunas() {
     const deleteVacuna = async (fecha, vacuna, nombre_hijo, padre) => {
         const requestOptions = {
             method: 'DELETE',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 fecha: fecha,
                 vacuna: vacuna,
@@ -260,7 +269,7 @@ export default function Vacunas() {
     const createVacuna = async (fecha, vacuna, lugar, nombre_hijo, padre) => {
         const requestOptions = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 fecha: fecha,
                 vacuna: vacuna,

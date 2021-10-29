@@ -4,13 +4,12 @@ const auth = require('../auth/auth')
 
 const vacunasController = require('../controllers/vacunasController');
 
-//TODO add authentication method
-router.get('/vacuna', vacunasController.getVacunas);
+router.get('/vacuna',auth.verifyToken, vacunasController.getVacunas);
 
-router.post('/vacuna', vacunasController.createVacuna);
+router.post('/vacuna',auth.verifyToken, vacunasController.createVacuna);
 
-router.put('/vacuna', vacunasController.editVacuna);
+router.put('/vacuna',auth.verifyToken, vacunasController.editVacuna);
 
-router.delete('/vacuna', vacunasController.deleteVacuna);
+router.delete('/vacuna',auth.verifyToken, vacunasController.deleteVacuna);
 
 module.exports = router;

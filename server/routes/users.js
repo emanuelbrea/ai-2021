@@ -8,15 +8,15 @@ router.post('/signup', usersController.postSignup);
 
 router.post('/login', usersController.checkLogin);
 
-router.patch('/user', usersController.updateUser);
+router.patch('/user',auth.verifyToken, usersController.updateUser);
 
-router.get('/user', usersController.getProfile);
+router.get('/user', auth.verifyToken, usersController.getProfile);
 
-router.post('/forgotPassword', usersController.forgotPassword)
+router.post('/forgotPassword',auth.verifyToken, usersController.forgotPassword)
 
-router.post('/verifyCode', usersController.verifyCode)
+router.post('/verifyCode',auth.verifyToken, usersController.verifyCode)
 
-router.post('/resetPassword', usersController.resetPassword)
+router.post('/resetPassword',auth.verifyToken, usersController.resetPassword)
 
 
 module.exports = router;

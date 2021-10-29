@@ -26,6 +26,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import useToken from "../routes/useToken";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -107,6 +108,7 @@ export default function ChildrenProfile(props) {
     const [openAlert, setOpenAlert] = useState(false);
     const defaultNewTab = "+";
     const [openSave, setOpenSave] = useState(false);
+    const {token, setToken} = useToken();
 
     const [tabs, setTabs] = useState(initialTabs);
 
@@ -178,9 +180,16 @@ export default function ChildrenProfile(props) {
     };
 
     const getChildren = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        };
         const children = await fetch('/children?' + +new URLSearchParams({
             padre: 'brea.emanuel@gmail.com'
-        }))
+        }), requestOptions)
             .then(res => res.json())
 
         return children;
@@ -190,7 +199,7 @@ export default function ChildrenProfile(props) {
     const editChildren = async () => {
         const requestOptions = {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 nombre: "pepe",
                 nacimiento: "2020/05/02",
@@ -210,7 +219,7 @@ export default function ChildrenProfile(props) {
     const deleteChildren = async () => {
         const requestOptions = {
             method: 'DELETE',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 nombre: "pepe",
                 padre: "brea.emanuel@gmail.com"
@@ -226,7 +235,7 @@ export default function ChildrenProfile(props) {
     const createChildren = async () => {
         const requestOptions = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 nombre: "pepe",
                 nacimiento: "2020/05/02",
@@ -243,10 +252,17 @@ export default function ChildrenProfile(props) {
 
 
     const getChildrenData = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        };
         const children = await fetch('/childrenData?' + +new URLSearchParams({
             nombre_hijo: 'pepe',
             padre: 'brea.emanuel@gmail.com'
-        }))
+        }), requestOptions)
             .then(res => res.json())
 
         return children;
@@ -256,7 +272,7 @@ export default function ChildrenProfile(props) {
     const editChildrenData = async () => {
         const requestOptions = {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 descripcion: "ajo",
                 descripcion_old: "mani",
@@ -275,7 +291,7 @@ export default function ChildrenProfile(props) {
     const deleteChildrenData = async () => {
         const requestOptions = {
             method: 'DELETE',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 nombre: "pepe",
                 padre: "brea.emanuel@gmail.com"
@@ -291,7 +307,7 @@ export default function ChildrenProfile(props) {
     const createChildrenData = async () => {
         const requestOptions = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 descripcion: "mani",
                 tipo: "alergia",
