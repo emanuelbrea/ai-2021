@@ -55,10 +55,10 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 
-export default function Login(props) {
+export default function Login() {
     const classes = useStyles();
     const history = useHistory();
-    const {token, setToken} = useToken();
+    const setToken = useToken()['setToken'];
 
     const initialState = {
         email: '',

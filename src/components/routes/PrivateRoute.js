@@ -3,7 +3,7 @@ import useToken from "./useToken";
 
 
 export default function PrivateRoute({component: Component, ...rest}) {
-    const {token, setToken} = useToken();
+    const token = useToken()['token'];
 
     return <Route {...rest} render={(props) => (
         token !== undefined

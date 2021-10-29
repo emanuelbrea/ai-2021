@@ -28,12 +28,11 @@ exports.postSignup = async (req, res, next) => {
             });
 
             try {
-                const result = await user.createUser();
-                const token = helper.generateToken(result[0].id);
+                await user.createUser();
                 status_code = 200;
                 success = 'true';
                 message = 'Usuario registrado correctamente';
-                data = {"token": token};
+                data = {};
             } catch (error) {
                 switch (error?.code) {
                     case '23505':
@@ -80,7 +79,7 @@ exports.checkLogin = async (req, res, next) => {
                 status_code = 200;
                 success = 'true';
                 message = 'Inicio de sesion correcto';
-                data = {"token": token};
+                data = {"token": token, "username": email};
             }
         }
     } catch (error) {

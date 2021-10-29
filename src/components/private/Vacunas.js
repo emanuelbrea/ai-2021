@@ -16,7 +16,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import MuiAlert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import useToken from "../routes/useToken";
-
+import user from "./Username";
 
 const columns = [
     {field: 'id', headerName: 'ID', width: 90},
@@ -100,7 +100,8 @@ export default function Vacunas() {
     const [deletedRows, setDeletedRows] = useState([]);
     const [open, setOpen] = useState(false);
     const [missing, setMissing] = useState(false);
-    const {token, setToken} = useToken();
+    const token = useToken()['token'];
+    const username = user.getUsername();
 
     const handleClose = () => {
         setOpen(false);
@@ -149,7 +150,8 @@ export default function Vacunas() {
                 addOldValues(items.data.result);
                 setRows(items.data.result);
             }
-        })
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const convertDate = (vacunas) => {
@@ -181,7 +183,7 @@ export default function Vacunas() {
             rows.forEach((row) => {
                 if (row.new !== undefined && row.new === true) {
                     createVacuna(
-                        row.fecha, row.vacuna, row.lugar, row.nombre_hijo, "brea.emanuel@gmail.com"
+                        row.fecha, row.vacuna, row.lugar, row.nombre_hijo, username
                     );
                     row.fecha_old = row.fecha;
                     row.vacuna_old = row.vacuna;
@@ -193,13 +195,13 @@ export default function Vacunas() {
                     editVacuna(
                         row.fecha, row.vacuna, row.lugar,
                         row.fecha_old, row.vacuna_old, row.lugar_old,
-                        row.nombre_hijo, row.nombre_hijo_old, "brea.emanuel@gmail.com"
+                        row.nombre_hijo, row.nombre_hijo_old, username
                     )
                 }
             });
             deletedRows.forEach((row) => {
                 if (row.new === undefined || row.new === false) {
-                    deleteVacuna(row.fecha, row.vacuna, row.nombre_hijo, "brea.emanuel@gmail.com")
+                    deleteVacuna(row.fecha, row.vacuna, row.nombre_hijo, username)
                 }
             });
             setDeletedRows([]);
@@ -217,7 +219,7 @@ export default function Vacunas() {
             }
         };
         const vacunas = await fetch('/vacuna?' + new URLSearchParams({
-            padre: 'brea.emanuel@gmail.com'
+            padre: username
         }), requestOptions).then(res => res.json())
 
         return vacunas;
@@ -256,7 +258,7 @@ export default function Vacunas() {
                 fecha: fecha,
                 vacuna: vacuna,
                 nombre_hijo: nombre_hijo,
-                padre: "brea.emanuel@gmail.com"
+                padre: username
             })
         };
         const vacunas = await fetch('/vacuna', requestOptions)
@@ -275,7 +277,7 @@ export default function Vacunas() {
                 vacuna: vacuna,
                 lugar: lugar,
                 nombre_hijo: nombre_hijo,
-                padre: "brea.emanuel@gmail.com"
+                padre: username
             })
         };
         const vacunas = await fetch('/vacuna', requestOptions)

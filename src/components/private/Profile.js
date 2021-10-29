@@ -9,6 +9,7 @@ import Grid from "@material-ui/core/Grid";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import useToken from "../routes/useToken";
+import user from "./Username";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -49,7 +50,8 @@ export default function Profile(props) {
     const [newPassword, setNewPassword] = useState('');
     const [cambioPassword, setCambioPassword] = useState(false);
     const [wrongPassword, setWrongPassword] = useState(false);
-    const {token, setToken} = useToken();
+    const token = useToken()['token'];
+    const username = user.getUsername();
 
     const initialState = {
         nombre: "",
@@ -85,7 +87,7 @@ export default function Profile(props) {
             }
         };
         const profile = await fetch('/user?' + new URLSearchParams({
-            email: 'brea.emanuel@gmail.com'
+            email: username
         }), requestOptions).then(res => res.json())
 
         return profile;

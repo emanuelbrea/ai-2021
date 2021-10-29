@@ -13,6 +13,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import useToken from "../routes/useToken";
+import user from "./Username";
 
 const columns = [
     {field: 'id', headerName: 'ID', width: 90},
@@ -132,7 +133,8 @@ export default function ControlPediatrico() {
     const [deletedRows, setDeletedRows] = useState([]);
     const [open, setOpen] = useState(false);
     const [missing, setMissing] = useState(false);
-    const {token, setToken} = useToken();
+    const token = useToken()['token'];
+    const username = user.getUsername();
 
     const handleClose = () => {
         setOpen(false);
@@ -182,6 +184,7 @@ export default function ControlPediatrico() {
                 setRows(items.data.result);
             }
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const convertDate = (controles) => {
@@ -215,7 +218,7 @@ export default function ControlPediatrico() {
                 if (row.new !== undefined && row.new === true) {
                     createControl(
                         row.fecha, row.peso, row.altura, row.diametro, row.observaciones, row.medicamentos, row.dosis,
-                        row.periodo, row.estudios, row.resultados, row.nombre_hijo, "brea.emanuel@gmail.com"
+                        row.periodo, row.estudios, row.resultados, row.nombre_hijo, username
                     );
                     row.fecha_old = row.fecha;
                     row.medicamentos_old = row.medicamentos;
@@ -227,14 +230,14 @@ export default function ControlPediatrico() {
                     editControl(
                         row.fecha, row.peso, row.altura, row.diametro, row.observaciones, row.medicamentos, row.dosis,
                         row.periodo, row.estudios, row.resultados, row.nombre_hijo, row.fecha_old, row.medicamentos_old,
-                        row.estudios_old, row.resultados_old, row.nombre_hijo_old, "brea.emanuel@gmail.com"
+                        row.estudios_old, row.resultados_old, row.nombre_hijo_old, username
                     )
                 }
             });
             deletedRows.forEach((row) => {
                 if (row.new === undefined || row.new === false) {
                     deleteControl(row.fecha, row.medicamentos, row.estudios, row.resultados,
-                        row.nombre_hijo, "brea.emanuel@gmail.com")
+                        row.nombre_hijo, username)
                 }
             });
             setDeletedRows([]);
@@ -253,7 +256,7 @@ export default function ControlPediatrico() {
             }
         };
         const controles = await fetch('/control?' + new URLSearchParams({
-            padre: 'brea.emanuel@gmail.com'
+            padre: username
         }), requestOptions)
             .then(res => res.json())
 
@@ -284,7 +287,7 @@ export default function ControlPediatrico() {
                 estudios_old: estudios_old,
                 resultados_old: resultados_old,
                 nombre_hijo_old: nombre_hijo_old,
-                padre: "brea.emanuel@gmail.com"
+                padre: username
             })
         };
         const control = await fetch('/control', requestOptions)
@@ -304,7 +307,7 @@ export default function ControlPediatrico() {
                 estudios: estudios,
                 resultados: resultados,
                 nombre_hijo: nombre_hijo,
-                padre: "brea.emanuel@gmail.com"
+                padre: username
             })
         };
         const control = await fetch('/control', requestOptions)
@@ -331,7 +334,7 @@ export default function ControlPediatrico() {
                 estudios: estudios,
                 resultados: resultados,
                 nombre_hijo: nombre_hijo,
-                padre: "brea.emanuel@gmail.com"
+                padre: username
             })
         };
         const control = await fetch('/control', requestOptions)
