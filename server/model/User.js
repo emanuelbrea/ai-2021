@@ -46,4 +46,13 @@ User.updateUser = async function (nombre, apellido, dni, telefono, email) {
     }
 };
 
+User.updatePassword = async function (password, email) {
+    try {
+        const {rows} = await userDao.updatePassword(password, email);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
 module.exports = User

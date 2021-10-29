@@ -1,5 +1,6 @@
 const helper = require('../auth/helper')
 const User = require('../model/User');
+const Codigo = require('../model/Codigo');
 
 exports.postSignup = async (req, res, next) => {
     //getting user data from request body
@@ -167,3 +168,121 @@ exports.getProfile = async (req, res, next) => {
     };
     return res.status(status_code).send(response);
 };
+
+exports.forgotPassword = async (req, res, next) => {
+    const {dni, email} = req.body;
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
+    try {
+        if (!email || !dni) {
+            message = 'Valores faltantes';
+        } else {
+            const user = await User.userLogin(email);
+            if (!user[0] || Number(dni) !== user[0].dni) {
+                message = 'Usuario no existente';
+                status_code = 401;
+            } else {
+                const codigo = helper.generateCodigo();
+                const token = new Codigo({email: email, codigo: codigo});
+                const result = await token.createCodigo();
+                if (result[0]) {
+                    const email = await helper.sendEmail(user[0].nombre, codigo);
+                    message = 'Email enviado correctamente';
+                    status_code = 200;
+                    success = 'true';
+                } else {
+                    message = 'Hubo un error al enviar el mail.'
+                    status_code = 500;
+                }
+            }
+        }
+
+    } catch (error) {
+        message = error.message;
+        status_code = 500;
+    }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
+
+}
+
+exports.verifyCode = async (req, res, next) => {
+    const {email, codigo} = req.body;
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
+    try {
+        if (!email || !codigo || typeof codigo !== 'number') {
+            message = 'Valores faltantes';
+        } else {
+            const valid = await Codigo.verifyCodigo(email, codigo);
+            if (!valid[0]) {
+                message = 'Codigo no valido';
+                status_code = 401;
+            } else {
+                message = 'Codigo valido';
+                status_code = 200;
+                success = 'true';
+                data = {"codigo": codigo}
+            }
+        }
+    } catch (error) {
+        message = error.message;
+        status_code = 500;
+    }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
+
+}
+
+exports.resetPassword = async (req, res, next) => {
+    const {email, codigo, password} = req.body;
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
+    try {
+        if (!email || !codigo || !password || typeof codigo !== 'number') {
+            message = 'Valores faltantes';
+        } else {
+            const valid = await Codigo.verifyCodigo(email, codigo);
+            if (!valid[0]) {
+                message = 'Codigo no valido';
+                status_code = 401;
+            } else {
+                const hashPassword = helper.hashPassword(password);
+                const result = await User.updatePassword(hashPassword, email);
+                if (result[0]) {
+                    message = 'Contraseña cambiada correctamente';
+                    status_code = 200;
+                    success = 'true';
+                    data = {}
+                    await Codigo.borrarCodigo(email);
+                } else {
+                    message = 'Hubo un error al actualizar la contraseña';
+                }
+            }
+        }
+    } catch (error) {
+        message = error.message;
+        status_code = 500;
+    }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
+
+}

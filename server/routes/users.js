@@ -12,5 +12,11 @@ router.patch('/user', usersController.updateUser);
 
 router.get('/user', usersController.getProfile);
 
+router.post('/forgotPassword', usersController.forgotPassword)
+
+router.post('/verifyCode', usersController.verifyCode)
+
+router.post('/resetPassword', usersController.resetPassword)
+
 
 module.exports = router;
