@@ -9,7 +9,6 @@ import Grid from "@material-ui/core/Grid";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import useToken from "../routes/useToken";
-import user from "./Username";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -51,7 +50,7 @@ export default function Profile(props) {
     const [cambioPassword, setCambioPassword] = useState(false);
     const [wrongPassword, setWrongPassword] = useState(false);
     const token = useToken()['token'];
-    const username = user.getUsername();
+    const username = props.username;
 
     const initialState = {
         nombre: "",

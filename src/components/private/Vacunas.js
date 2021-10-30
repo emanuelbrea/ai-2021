@@ -16,7 +16,6 @@ import SaveIcon from "@material-ui/icons/Save";
 import MuiAlert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import useToken from "../routes/useToken";
-import user from "./Username";
 
 const columns = [
     {field: 'id', headerName: 'ID', width: 90},
@@ -93,7 +92,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function Vacunas() {
+export default function Vacunas(props) {
     const classes = useToolbarStyles();
     const [selected, setSelected] = useState([]);
     const [rows, setRows] = useState([]);
@@ -101,7 +100,7 @@ export default function Vacunas() {
     const [open, setOpen] = useState(false);
     const [missing, setMissing] = useState(false);
     const token = useToken()['token'];
-    const username = user.getUsername();
+    const username = props.username;
 
     const handleClose = () => {
         setOpen(false);

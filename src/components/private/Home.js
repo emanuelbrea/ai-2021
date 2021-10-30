@@ -148,6 +148,7 @@ export default function Home(props) {
 
     const [menu, setMenu] = useState(menuOptions[initialIndex].value);
     const [selectedIndex, setSelectedIndex] = useState(initialIndex);
+    const username = props.location.state.username;
 
     const [firstLogin, setFirstLogin] = useState(true);
 
@@ -217,19 +218,19 @@ export default function Home(props) {
             <main className={classes.main}>
                 <div className={classes.appBarSpacer}/>
                 {menu === "perfil" && (
-                    <Profile/>
+                    <Profile username={username}/>
                 )}
                 {menu === "hijos" && (
-                    <ChildrenProfile/>
+                    <ChildrenProfile username={username}/>
                 )}
                 {menu === "vacunas" && (
-                    <Vacunas/>
+                    <Vacunas username={username}/>
                 )}
                 {menu === "control" && (
-                    <ControlPediatrico/>
+                    <ControlPediatrico username={username}/>
                 )}
                 {menu === "percentiles" && (
-                    <Percentiles/>
+                    <Percentiles username={username}/>
                 )}
                 {menu === "salir" && (
                     <Redirect to='/'/>

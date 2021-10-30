@@ -108,7 +108,8 @@ export default function ChildrenProfile(props) {
     const [openAlert, setOpenAlert] = useState(false);
     const defaultNewTab = "+";
     const [openSave, setOpenSave] = useState(false);
-    const {token, setToken} = useToken();
+    const token = useToken()['token'];
+    const username = props.username;
 
     const [tabs, setTabs] = useState(initialTabs);
 

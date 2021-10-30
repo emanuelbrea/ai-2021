@@ -76,7 +76,7 @@ export default function Login() {
             checkLogin().then(responseJson => {
                 if (responseJson.success === 'true') {
                     setToken(responseJson.data);
-                    history.push('/home');
+                    history.push('/home', {username: responseJson.data.username});
                 } else {
                     setWarning('failedLogin', true);
                 }

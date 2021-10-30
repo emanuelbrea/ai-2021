@@ -13,7 +13,6 @@ import SaveIcon from "@material-ui/icons/Save";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import useToken from "../routes/useToken";
-import user from "./Username";
 
 const columns = [
     {field: 'id', headerName: 'ID', width: 90},
@@ -126,7 +125,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function ControlPediatrico() {
+export default function ControlPediatrico(props) {
     const classes = useStyles();
     const [selected, setSelected] = useState([]);
     const [rows, setRows] = useState([]);
@@ -134,7 +133,7 @@ export default function ControlPediatrico() {
     const [open, setOpen] = useState(false);
     const [missing, setMissing] = useState(false);
     const token = useToken()['token'];
-    const username = user.getUsername();
+    const username = props.username;
 
     const handleClose = () => {
         setOpen(false);

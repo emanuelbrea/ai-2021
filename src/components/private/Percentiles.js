@@ -57,7 +57,7 @@ const sexos = [
     'femenino', 'masculino'
 ];
 
-export default function Percentiles() {
+export default function Percentiles(props) {
     const classes = useStyles();
 
     const initialState = {
@@ -68,6 +68,7 @@ export default function Percentiles() {
     };
 
     const [estado, setEstado] = useState(initialState);
+    const username = props.username;
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;
