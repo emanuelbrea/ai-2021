@@ -1,6 +1,7 @@
 const helper = require('../auth/helper')
 const User = require('../model/User');
 const Codigo = require('../model/Codigo');
+const Children = require("../model/Children");
 
 exports.postSignup = async (req, res, next) => {
     //getting user data from request body
@@ -76,10 +77,11 @@ exports.checkLogin = async (req, res, next) => {
                 status_code = 401;
             } else {
                 const token = helper.generateToken(result[0].id);
+                const children = await Children.getChildren(email);
                 status_code = 200;
                 success = 'true';
                 message = 'Inicio de sesion correcto';
-                data = {"token": token, "username": email};
+                data = {"token": token, "username": email, "children": helper.addChildren(children)};
             }
         }
     } catch (error) {
@@ -271,6 +273,40 @@ exports.resetPassword = async (req, res, next) => {
                 } else {
                     message = 'Hubo un error al actualizar la contraseña';
                 }
+            }
+        }
+    } catch (error) {
+        message = error.message;
+        status_code = 500;
+    }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
+
+}
+
+exports.updatePassword = async (req, res, next) => {
+    const {email, password} = req.body;
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
+    try {
+        if (!email || !password) {
+            message = 'Valores faltantes';
+        } else {
+            const hashPassword = helper.hashPassword(password);
+            const result = await User.updatePassword(hashPassword, email);
+            if (result[0]) {
+                message = 'Contraseña cambiada correctamente';
+                status_code = 200;
+                success = 'true';
+                data = {}
+            } else {
+                message = 'Hubo un error al actualizar la contraseña';
             }
         }
     } catch (error) {

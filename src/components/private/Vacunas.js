@@ -17,38 +17,6 @@ import MuiAlert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import useToken from "../routes/useToken";
 
-const columns = [
-    {field: 'id', headerName: 'ID', width: 90},
-    {
-        field: 'fecha',
-        headerName: 'Fecha',
-        width: 170,
-        editable: true,
-        type: 'date',
-    },
-    {
-        field: 'vacuna',
-        headerName: 'Vacuna',
-        width: 180,
-        editable: true,
-        flex: 1
-    },
-    {
-        field: 'lugar',
-        headerName: 'Lugar de aplicacion',
-        width: 300,
-        editable: true,
-    },
-    {
-        field: 'nombre_hijo',
-        headerName: 'Hijo',
-        type: 'singleSelect',
-        valueOptions: ['juan', 'pepe'],
-        width: 160,
-        editable: true,
-    },
-];
-
 
 const useToolbarStyles = makeStyles((theme) => ({
     root: {
@@ -101,6 +69,40 @@ export default function Vacunas(props) {
     const [missing, setMissing] = useState(false);
     const token = useToken()['token'];
     const username = props.username;
+    const children = props.children;
+    const [nochildren, setNochildren] = useState(false);
+
+    const columns = [
+        {field: 'id', headerName: 'ID', width: 90},
+        {
+            field: 'fecha',
+            headerName: 'Fecha',
+            width: 170,
+            editable: true,
+            type: 'date',
+        },
+        {
+            field: 'vacuna',
+            headerName: 'Vacuna',
+            width: 180,
+            editable: true,
+            flex: 1
+        },
+        {
+            field: 'lugar',
+            headerName: 'Lugar de aplicacion',
+            width: 300,
+            editable: true,
+        },
+        {
+            field: 'nombre_hijo',
+            headerName: 'Hijo',
+            type: 'singleSelect',
+            valueOptions: children,
+            width: 160,
+            editable: true,
+        },
+    ];
 
     const handleClose = () => {
         setOpen(false);
@@ -123,14 +125,22 @@ export default function Vacunas(props) {
     };
 
     const handleAddRow = () => {
-        const maxId = rows.length > 0 ? Math.max(...rows.map(user => user.id)) : 0;
-        var today = new Date();
-        const newRow = {
-            id: maxId + 1, fecha: new Date(today.toDateString()),
-            vacuna: '', lugar: '', nombre_hijo: 'pepe', new: true
-        };
-        setRows([...rows, newRow]);
+        if (children.length === 0) {
+            setNochildren(true);
+        } else {
+            const maxId = rows.length > 0 ? Math.max(...rows.map(user => user.id)) : 0;
+            var today = new Date();
+            const newRow = {
+                id: maxId + 1, fecha: new Date(today.toDateString()),
+                vacuna: '', lugar: '', nombre_hijo: 'pepe', new: true
+            };
+            setRows([...rows, newRow]);
+        }
     }
+
+    const handleCloseMissingChildren = () => {
+        setNochildren(false);
+    };
 
 
     const handleCellClick = (param, event) => {
@@ -366,6 +376,11 @@ export default function Vacunas(props) {
             <Snackbar open={missing} autoHideDuration={3000} onClose={handleCloseMissing}>
                 <Alert onClose={handleCloseMissing} severity="warning" sx={{width: '100%'}}>
                     Datos faltantes.
+                </Alert>
+            </Snackbar>
+            <Snackbar open={nochildren} autoHideDuration={3000} onClose={handleCloseMissingChildren}>
+                <Alert onClose={handleCloseMissingChildren} severity="warning" sx={{width: '100%'}}>
+                    No hay hijos registrados. Por favor, agregue un hijo en la pestaña Hijos.
                 </Alert>
             </Snackbar>
 

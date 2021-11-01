@@ -91,3 +91,11 @@ exports.sendEmail = async function (nombre, codigo) {
         return error;
     }
 };
+
+exports.addChildren = function (children) {
+    const result = [];
+    for (let i = 0; i < children.length; i++) {
+        result.push(children[i].nombre);
+    }
+    return result;
+}

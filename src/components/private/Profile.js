@@ -115,13 +115,40 @@ export default function Profile(props) {
 
     }
 
+    const editPassword = async () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: username,
+                password: newPassword,
+            })
+        };
+        const result = await fetch('/updatePassword', requestOptions)
+            .then(res => res.json())
+
+        return result;
+
+    }
+
     const handleSaveProfile = () => {
         if (cambioPassword && password !== newPassword) {
             setWrongPassword(true);
         } else {
+            if (cambioPassword) {
+                editPassword(estado.email, newPassword).then(result => {
+                    if (result.success === 'true') {
+                        setCambioPassword(false);
+                    } else {
+                        setEstado({...estado, ['fail']: true});
+                    }
+                })
+            }
             editProfile(estado.dni, estado.telefono, estado.email, estado.nombre, estado.apellido).then(result => {
                 if (result.success === 'true') {
-                    setCambioPassword(false);
                     setEstado({...estado, ['success']: true});
                 } else {
                     setEstado({...estado, ['fail']: true});

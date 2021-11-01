@@ -21,7 +21,7 @@ import ChildrenProfile from "./ChildrenProfile";
 import Vacunas from "./Vacunas";
 import MuiListItem from "@material-ui/core/ListItem";
 import ControlPediatrico from "./ControlPediatrico";
-import {Link, Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import Percentiles from "./Percentiles";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -145,10 +145,10 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export default function Home(props) {
     const classes = useStyles();
     const initialIndex = 0;
-
     const [menu, setMenu] = useState(menuOptions[initialIndex].value);
     const [selectedIndex, setSelectedIndex] = useState(initialIndex);
     const username = props.location.state.username;
+    const children = props.location.state.children;
 
     const [firstLogin, setFirstLogin] = useState(true);
 
@@ -170,9 +170,7 @@ export default function Home(props) {
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     <Typography variant="h5" className={classes.title}>
-                        <Link to="/" className={classes.link}>
-                            <span className={classes.tagline}>Papis Felices</span>
-                        </Link>
+                        <span className={classes.tagline}>Papis Felices</span>
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -218,19 +216,19 @@ export default function Home(props) {
             <main className={classes.main}>
                 <div className={classes.appBarSpacer}/>
                 {menu === "perfil" && (
-                    <Profile username={username}/>
+                    <Profile username={username} children={children}/>
                 )}
                 {menu === "hijos" && (
-                    <ChildrenProfile username={username}/>
+                    <ChildrenProfile username={username} children={children}/>
                 )}
                 {menu === "vacunas" && (
-                    <Vacunas username={username}/>
+                    <Vacunas username={username} children={children}/>
                 )}
                 {menu === "control" && (
-                    <ControlPediatrico username={username}/>
+                    <ControlPediatrico username={username} children={children}/>
                 )}
                 {menu === "percentiles" && (
-                    <Percentiles username={username}/>
+                    <Percentiles username={username} children={children}/>
                 )}
                 {menu === "salir" && (
                     <Redirect to='/'/>

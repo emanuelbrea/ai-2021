@@ -14,84 +14,6 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import useToken from "../routes/useToken";
 
-const columns = [
-    {field: 'id', headerName: 'ID', width: 90},
-    {
-        field: 'fecha',
-        headerName: 'Fecha',
-        width: 120,
-        editable: true,
-        type: 'date',
-    },
-    {
-        field: 'peso',
-        headerName: 'Peso',
-        type: 'number',
-        width: 110,
-        editable: true,
-    },
-    {
-        field: 'altura',
-        headerName: 'Altura',
-        type: 'number',
-        width: 130,
-        editable: true,
-    },
-    {
-        field: 'diametro',
-        headerName: 'Diametro de la cabeza',
-        type: 'number',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'medicamentos',
-        headerName: 'Medicamentos',
-        width: 180,
-        editable: true,
-    },
-    {
-        field: 'dosis',
-        headerName: 'Dosis',
-        type: 'number',
-        width: 120,
-        editable: true,
-    },
-    {
-        field: 'periodo',
-        headerName: 'Periodo',
-        width: 130,
-        editable: true,
-    },
-    {
-        field: 'estudios',
-        headerName: 'Estudios medicos a realizar',
-        width: 200,
-        editable: true,
-    },
-    {
-        field: 'resultados',
-        headerName: 'Resultados',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'observaciones',
-        headerName: 'Observaciones',
-        description: 'This column  is not sortable.',
-        width: 340,
-        editable: true,
-    },
-    {
-        field: 'nombre_hijo',
-        headerName: 'Hijo',
-        width: 110,
-        editable: true,
-        type: 'singleSelect',
-        valueOptions: ['Juan', 'pepe'],
-    },
-];
-
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -134,6 +56,88 @@ export default function ControlPediatrico(props) {
     const [missing, setMissing] = useState(false);
     const token = useToken()['token'];
     const username = props.username;
+    const children = props.children;
+    const [nochildren, setNochildren] = useState(false);
+
+
+    const columns = [
+        {field: 'id', headerName: 'ID', width: 90},
+        {
+            field: 'fecha',
+            headerName: 'Fecha',
+            width: 120,
+            editable: true,
+            type: 'date',
+        },
+        {
+            field: 'peso',
+            headerName: 'Peso',
+            type: 'number',
+            width: 110,
+            editable: true,
+        },
+        {
+            field: 'altura',
+            headerName: 'Altura',
+            type: 'number',
+            width: 130,
+            editable: true,
+        },
+        {
+            field: 'diametro',
+            headerName: 'Diametro de la cabeza',
+            type: 'number',
+            width: 150,
+            editable: true,
+        },
+        {
+            field: 'medicamentos',
+            headerName: 'Medicamentos',
+            width: 180,
+            editable: true,
+        },
+        {
+            field: 'dosis',
+            headerName: 'Dosis',
+            type: 'number',
+            width: 120,
+            editable: true,
+        },
+        {
+            field: 'periodo',
+            headerName: 'Periodo',
+            width: 130,
+            editable: true,
+        },
+        {
+            field: 'estudios',
+            headerName: 'Estudios medicos a realizar',
+            width: 200,
+            editable: true,
+        },
+        {
+            field: 'resultados',
+            headerName: 'Resultados',
+            width: 150,
+            editable: true,
+        },
+        {
+            field: 'observaciones',
+            headerName: 'Observaciones',
+            description: 'This column  is not sortable.',
+            width: 340,
+            editable: true,
+        },
+        {
+            field: 'nombre_hijo',
+            headerName: 'Hijo',
+            width: 110,
+            editable: true,
+            type: 'singleSelect',
+            valueOptions: children,
+        },
+    ];
+
 
     const handleClose = () => {
         setOpen(false);
@@ -141,6 +145,10 @@ export default function ControlPediatrico(props) {
 
     const handleCloseMissing = () => {
         setMissing(false);
+    };
+
+    const handleCloseMissingChildren = () => {
+        setNochildren(false);
     };
 
     const handleDeleteRows = () => {
@@ -156,14 +164,28 @@ export default function ControlPediatrico(props) {
     };
 
     const handleAddRow = () => {
-        const maxId = rows.length > 0 ? Math.max(...rows.map(user => user.id)) : 0;
-        var today = new Date();
-        const newRow = {
-            id: maxId + 1, fecha: new Date(today.toDateString()), peso: 0, altura: 0, diametro: 0, observaciones: '',
-            medicamento: '', dosis: 0, periodo: '',
-            estudios: '', resultados: '', nombre: 'pepe', new: true
-        };
-        setRows([...rows, newRow]);
+        if (children.length === 0) {
+            setNochildren(true);
+        } else {
+            const maxId = rows.length > 0 ? Math.max(...rows.map(user => user.id)) : 0;
+            var today = new Date();
+            const newRow = {
+                id: maxId + 1,
+                fecha: new Date(today.toDateString()),
+                peso: 0,
+                altura: 0,
+                diametro: 0,
+                observaciones: '',
+                medicamento: '',
+                dosis: 0,
+                periodo: '',
+                estudios: '',
+                resultados: '',
+                nombre: 'pepe',
+                new: true
+            };
+            setRows([...rows, newRow]);
+        }
     }
 
     const handleCellClick = (param, event) => {
@@ -412,6 +434,11 @@ export default function ControlPediatrico(props) {
             <Snackbar open={missing} autoHideDuration={3000} onClose={handleCloseMissing}>
                 <Alert onClose={handleCloseMissing} severity="warning" sx={{width: '100%'}}>
                     Datos faltantes.
+                </Alert>
+            </Snackbar>
+            <Snackbar open={nochildren} autoHideDuration={3000} onClose={handleCloseMissingChildren}>
+                <Alert onClose={handleCloseMissingChildren} severity="warning" sx={{width: '100%'}}>
+                    No hay hijos registrados. Por favor, agregue un hijo en la pestaña Hijos.
                 </Alert>
             </Snackbar>
         </div>
