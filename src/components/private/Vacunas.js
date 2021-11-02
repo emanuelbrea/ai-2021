@@ -66,11 +66,10 @@ export default function Vacunas(props) {
     const [rows, setRows] = useState([]);
     const [deletedRows, setDeletedRows] = useState([]);
     const [open, setOpen] = useState(false);
-    const [missing, setMissing] = useState(false);
     const token = useToken()['token'];
     const username = props.username;
     const children = props.children;
-    const [nochildren, setNochildren] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const columns = [
         {field: 'id', headerName: 'ID', width: 90},
@@ -108,10 +107,6 @@ export default function Vacunas(props) {
         setOpen(false);
     };
 
-    const handleCloseMissing = () => {
-        setMissing(false);
-    };
-
     const handleDeleteRows = () => {
         const selectedIDs = new Set(selected);
         const selectedRowData = rows.filter((row) =>
@@ -126,7 +121,7 @@ export default function Vacunas(props) {
 
     const handleAddRow = () => {
         if (children.length === 0) {
-            setNochildren(true);
+            setErrorMessage('No hay hijos registrados. Por favor, agregue un hijo en la pestaña Mis hijos.')
         } else {
             const maxId = rows.length > 0 ? Math.max(...rows.map(user => user.id)) : 0;
             var today = new Date();
@@ -137,11 +132,6 @@ export default function Vacunas(props) {
             setRows([...rows, newRow]);
         }
     }
-
-    const handleCloseMissingChildren = () => {
-        setNochildren(false);
-    };
-
 
     const handleCellClick = (param, event) => {
         let copyRows = rows;
@@ -186,8 +176,10 @@ export default function Vacunas(props) {
     }
 
     const handleSaveVacunas = () => {
-        if (!validateFields()) {
-            setMissing(true);
+        if (children.length === 0) {
+            setErrorMessage('No hay hijos registrados. Por favor, agregue un hijo en la pestaña Mis hijos.')
+        } else if (!validateFields()) {
+            setErrorMessage('Datos faltantes')
         } else {
             rows.forEach((row) => {
                 if (row.new !== undefined && row.new === true) {
@@ -373,14 +365,9 @@ export default function Vacunas(props) {
                     Datos guardados correctamente!
                 </Alert>
             </Snackbar>
-            <Snackbar open={missing} autoHideDuration={3000} onClose={handleCloseMissing}>
-                <Alert onClose={handleCloseMissing} severity="warning" sx={{width: '100%'}}>
-                    Datos faltantes.
-                </Alert>
-            </Snackbar>
-            <Snackbar open={nochildren} autoHideDuration={3000} onClose={handleCloseMissingChildren}>
-                <Alert onClose={handleCloseMissingChildren} severity="warning" sx={{width: '100%'}}>
-                    No hay hijos registrados. Por favor, agregue un hijo en la pestaña Hijos.
+            <Snackbar open={errorMessage !== ''} autoHideDuration={3000} onClose={() => setErrorMessage('')}>
+                <Alert onClose={() => setErrorMessage('')} severity="warning" sx={{width: '100%'}}>
+                    {errorMessage}
                 </Alert>
             </Snackbar>
 

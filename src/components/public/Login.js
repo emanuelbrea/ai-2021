@@ -59,19 +59,18 @@ export default function Login() {
     const classes = useStyles();
     const history = useHistory();
     const setToken = useToken()['setToken'];
+    const [errorMessage, setErrorMessage] = useState('');
 
     const initialState = {
         email: '',
-        password: '',
-        missingValues: false,
-        failedLogin: false
+        password: ''
     };
 
     const [estado, setEstado] = useState(initialState);
 
     const handleClickLogin = () => {
         if (estado.email === '' || estado.password === '') {
-            setWarning('missingValues', true);
+            setErrorMessage('Datos incompletos')
         } else {
             checkLogin().then(responseJson => {
                 if (responseJson.success === 'true') {
@@ -79,15 +78,11 @@ export default function Login() {
                     history.push('/home',
                         {username: responseJson.data.username, children: responseJson.data.children});
                 } else {
-                    setWarning('failedLogin', true);
+                    setErrorMessage('Datos incorrectos')
                 }
             });
         }
     };
-
-    const setWarning = (name, value) => {
-        setEstado({...estado, [name]: value});
-    }
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;
@@ -175,18 +170,11 @@ export default function Login() {
             <Box mt={8}>
                 <Copyright/>
             </Box>
-            <Snackbar open={estado.failedLogin} autoHideDuration={3000}
-                      onClose={() => setWarning('failedLogin', false)}>
-                <Alert onClose={() => setWarning('failedLogin', false)}
+            <Snackbar open={errorMessage !== ''} autoHideDuration={3000}
+                      onClose={() => setErrorMessage('')}>
+                <Alert onClose={() => setErrorMessage('')}
                        severity="error" sx={{width: '100%'}}>
-                    Datos incorrectos
-                </Alert>
-            </Snackbar>
-            <Snackbar open={estado.missingValues} autoHideDuration={3000}
-                      onClose={() => setWarning('missingValues', false)}>
-                <Alert onClose={() => setWarning('missingValues', false)}
-                       severity="warning" sx={{width: '100%'}}>
-                    Datos incompletos
+                    {errorMessage}
                 </Alert>
             </Snackbar>
         </Container>

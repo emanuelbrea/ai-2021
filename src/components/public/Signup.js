@@ -73,6 +73,8 @@ export default function Signup() {
     const [estado, setEstado] = useState(initialState);
 
     const [missingValues, setMissingValues] = useState(false);
+    const [successSignUp, setSuccessSignUp] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('Datos incompletos');
 
 
     const handleInputChange = (e) => {
@@ -82,24 +84,30 @@ export default function Signup() {
 
     const handleClickSignUp = () => {
         if (Object.values(estado).some((e) => e === '')) {
+            setErrorMessage('Datos incompletos');
             setMissingValues(true);
         } else {
             checkSignup().then(responseJson => {
                 if (responseJson.success === 'true') {
-                    history.push('/home');
+                    setSuccessSignUp(true);
                 } else {
                     setMissingValues(true);
+                    setErrorMessage(responseJson.message);
                 }
             });
         }
     };
+
+    const handleAfterSignUp = () => {
+        history.push('/login');
+    }
 
     const checkSignup = async () => {
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                email: estado.email, password: estado.password, username: estado.nombre,
+                email: estado.email, password: estado.password, nombre: estado.nombre, apellido: estado.apellido,
                 dni: estado.dni, telefono: estado.telefono
             })
         };
@@ -229,7 +237,12 @@ export default function Signup() {
             </Box>
             <Snackbar open={missingValues} autoHideDuration={3000} onClose={() => setMissingValues(false)}>
                 <Alert onClose={() => setMissingValues(false)} severity="warning" sx={{width: '100%'}}>
-                    Datos incompletos
+                    {errorMessage}
+                </Alert>
+            </Snackbar>
+            <Snackbar open={successSignUp} autoHideDuration={3000} onClose={handleAfterSignUp}>
+                <Alert onClose={handleAfterSignUp} severity="success" sx={{width: '100%'}}>
+                    Usuario registrado correctamente
                 </Alert>
             </Snackbar>
         </Container>
