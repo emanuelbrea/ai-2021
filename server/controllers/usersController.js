@@ -213,40 +213,6 @@ exports.forgotPassword = async (req, res, next) => {
 
 }
 
-exports.verifyCode = async (req, res, next) => {
-    const {email, codigo} = req.body;
-    let success = 'false';
-    let message = '';
-    let data = {};
-    let status_code = 400;
-    try {
-        if (!email || !codigo || typeof codigo !== 'number') {
-            message = 'Valores faltantes';
-        } else {
-            const valid = await Codigo.verifyCodigo(email, codigo);
-            if (!valid[0]) {
-                message = 'Codigo no valido';
-                status_code = 401;
-            } else {
-                message = 'Codigo valido';
-                status_code = 200;
-                success = 'true';
-                data = {"codigo": codigo}
-            }
-        }
-    } catch (error) {
-        message = error.message;
-        status_code = 500;
-    }
-    const response = {
-        success: success,
-        message: message,
-        data: data
-    };
-    return res.status(status_code).send(response);
-
-}
-
 exports.resetPassword = async (req, res, next) => {
     const {email, codigo, password} = req.body;
     let success = 'false';

@@ -14,8 +14,6 @@ router.get('/user', auth.verifyToken, usersController.getProfile);
 
 router.post('/forgotPassword', usersController.forgotPassword)
 
-router.post('/verifyCode', usersController.verifyCode)
-
 router.post('/resetPassword', usersController.resetPassword)
 
 router.post('/updatePassword', auth.verifyToken, usersController.updatePassword)

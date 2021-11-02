@@ -9,6 +9,7 @@ import Grid from "@material-ui/core/Grid";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import useToken from "../routes/useToken";
+import validator from "validator";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -48,9 +49,10 @@ export default function Profile(props) {
     const [password, setPassword] = useState('password');
     const [newPassword, setNewPassword] = useState('');
     const [cambioPassword, setCambioPassword] = useState(false);
-    const [wrongPassword, setWrongPassword] = useState(false);
     const token = useToken()['token'];
     const username = props.username;
+    const [errorMessage, setErrorMessage] = useState('');
+    const [status, setStatus] = useState("error");
 
     const initialState = {
         nombre: "",
@@ -58,8 +60,6 @@ export default function Profile(props) {
         email: "",
         dni: "",
         telefono: "",
-        success: false,
-        fail: false
     };
 
     const [estado, setEstado] = useState(initialState);
@@ -136,24 +136,32 @@ export default function Profile(props) {
 
     const handleSaveProfile = () => {
         if (cambioPassword && password !== newPassword) {
-            setWrongPassword(true);
+            setStatus("warning")
+            setErrorMessage('Las contraseñas no coinciden')
+        } else if (!validator.isStrongPassword(
+            newPassword, {minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 0, minSymbols: 0})) {
+            setErrorMessage('La contraseña es debil. Debe incluir minimo 8 caracteres y una mayuscula.');
         } else {
             if (cambioPassword) {
                 editPassword(estado.email, newPassword).then(result => {
                     if (result.success === 'true') {
-                        setCambioPassword(false);
+                        setStatus("success")
                     } else {
-                        setEstado({...estado, ['fail']: true});
+                        setStatus("error")
                     }
+                    setErrorMessage(result.message)
                 })
             }
-            editProfile(estado.dni, estado.telefono, estado.email, estado.nombre, estado.apellido).then(result => {
-                if (result.success === 'true') {
-                    setEstado({...estado, ['success']: true});
-                } else {
-                    setEstado({...estado, ['fail']: true});
-                }
-            })
+            if (status === "success") {
+                editProfile(estado.dni, estado.telefono, estado.email, estado.nombre, estado.apellido).then(result => {
+                    if (result.success === 'true') {
+                        setStatus("success")
+                    } else {
+                        setStatus("error")
+                    }
+                    setErrorMessage(result.message)
+                })
+            }
         }
     }
 
@@ -275,24 +283,14 @@ export default function Profile(props) {
                     </Button>
                 </form>
             </div>
-            <Snackbar open={estado.success} autoHideDuration={3000}
-                      onClose={() => setEstado({...estado, ['success']: false})}>
-                <Alert onClose={() => setEstado({...estado, ['success']: false})} severity="success"
-                       sx={{width: '100%'}}>
-                    Datos guardados correctamente!
+            <Snackbar open={errorMessage !== ''} autoHideDuration={3000}
+                      onClose={() => setErrorMessage('')}>
+                <Alert onClose={() => setErrorMessage('')}
+                       severity={status} sx={{width: '100%'}}>
+                    {errorMessage}
                 </Alert>
             </Snackbar>
-            <Snackbar open={wrongPassword} autoHideDuration={3000} onClose={() => setWrongPassword(false)}>
-                <Alert onClose={() => setWrongPassword(false)} severity="error" sx={{width: '100%'}}>
-                    Las contraseñas no coinciden!
-                </Alert>
-            </Snackbar>
-            <Snackbar open={estado.fail} autoHideDuration={3000}
-                      onClose={() => setEstado({...estado, ['fail']: false})}>
-                <Alert onClose={() => setEstado({...estado, ['fail']: false})} severity="error" sx={{width: '100%'}}>
-                    Hubo un error al actualizar los datos!
-                </Alert>
-            </Snackbar>
+
         </Container>
     );
 }
