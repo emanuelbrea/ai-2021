@@ -4,7 +4,7 @@ const queryCreateChildrenData = `INSERT INTO children_data(descripcion, tipo, no
 VALUES ($1, $2, $3, $4) RETURNING *`
 
 const queryDeleteChildrenData = `DELETE FROM children_data 
-WHERE  ($1 is null or descripcion = $1) and tipo =$2 and nombre_hijo=$3 and padre=$4 RETURNING *`
+WHERE tipo =$1 and nombre_hijo=$2 and padre=$3 RETURNING *`
 
 const queryGetChildrenData = `SELECT * FROM children_data WHERE nombre_hijo=$1 and padre=$2`
 
@@ -17,9 +17,9 @@ exports.createChildrenData = function (descripcion, tipo, nombre_hijo, padre) {
     );
 }
 
-exports.deleteChildrenData = function (descripcion, tipo, nombre_hijo, padre) {
+exports.deleteChildrenData = function (tipo, nombre_hijo, padre) {
     return poolPostgres.query(queryDeleteChildrenData,
-        [descripcion, tipo, nombre_hijo, padre]
+        [ tipo, nombre_hijo, padre]
     );
 }
 

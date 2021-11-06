@@ -170,11 +170,18 @@ export default function ChildrenProfile(props) {
         setChildren(childrenCopy);
     };
 
-    const handleRemoveClick = (index, name) => {
-        // const list = estado[name];
-        // const newList = [...list];
-        // newList.splice(index, 1);
-        // setEstado((estado) => ({...estado, [name]: newList}));
+    const handleRemoveAlergia = (index) => {
+        const alergiasHijo = alergias[currentNombre];
+        const newList = [...alergiasHijo];
+        newList.splice(index, 1);
+        setAlergias((estado) => ({...estado, [currentNombre]: newList}));
+    };
+
+    const handleRemoveEnfermedad = (index) => {
+        const enfermedadesHijo = enfermedades[currentNombre];
+        const newList = [...enfermedadesHijo];
+        newList.splice(index, 1);
+        setEnfermedades((estado) => ({...estado, [currentNombre]: newList}));
     };
 
     //TABS
@@ -271,10 +278,13 @@ export default function ChildrenProfile(props) {
         }
         const alergiasHijo = alergias[currentNombre];
         if (alergiasHijo !== undefined) {
-            deleteChildrenData('alergia', childName);
-            for (let i = 0; i < alergiasHijo.length; i++) {
-                createChildrenData('alergia', alergiasHijo[i], childName);
-            }
+            deleteChildrenData('alergia', childName).then(res => {
+                    for (let i = 0; i < alergiasHijo.length; i++) {
+                        createChildrenData('alergia', alergiasHijo[i], childName);
+                    }
+                }
+            )
+
         }
         const enfermedadesHijo = enfermedades[currentNombre];
         if (enfermedadesHijo !== undefined) {
@@ -394,7 +404,7 @@ export default function ChildrenProfile(props) {
             headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 tipo: tipo,
-                nombre: childName,
+                nombre_hijo: childName,
                 padre: username
             })
         };
@@ -517,7 +527,7 @@ export default function ChildrenProfile(props) {
                                                     {alergia !== '' && alergias[currentNombre].length > 1
                                                     && <Tooltip title="Eliminar">
                                                         <IconButton aria-label="delete"
-                                                                    onClick={() => handleRemoveClick(index, 'alergias')}>
+                                                                    onClick={() => handleRemoveAlergia(index)}>
                                                             <DeleteIcon/>
                                                         </IconButton>
                                                     </Tooltip>}
@@ -551,7 +561,7 @@ export default function ChildrenProfile(props) {
                                                     {enfermedad !== '' && enfermedades[currentNombre].length > 1
                                                     && <Tooltip title="Eliminar">
                                                         <IconButton aria-label="delete"
-                                                                    onClick={() => handleRemoveClick(index, 'enfermedades')}>
+                                                                    onClick={() => handleRemoveEnfermedad(index)}>
                                                             <DeleteIcon/>
                                                         </IconButton>
                                                     </Tooltip>}
