@@ -127,7 +127,7 @@ export default function Vacunas(props) {
             var today = new Date();
             const newRow = {
                 id: maxId + 1, fecha: new Date(today.toDateString()),
-                vacuna: '', lugar: '', nombre_hijo: 'pepe', new: true
+                vacuna: '', lugar: '', nombre_hijo: children[0], new: true
             };
             setRows([...rows, newRow]);
         }

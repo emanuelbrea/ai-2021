@@ -139,7 +139,7 @@ export default function Profile(props) {
         if (cambioPassword && password !== newPassword) {
             setStatus("warning")
             setErrorMessage('Las contraseñas no coinciden')
-        } else if (!validator.isStrongPassword(
+        } else if (cambioPassword && !validator.isStrongPassword(
             newPassword, {minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 0, minSymbols: 0})) {
             setErrorMessage('La contraseña es debil. Debe incluir minimo 8 caracteres y una mayuscula.');
         } else {
@@ -153,16 +153,16 @@ export default function Profile(props) {
                     setErrorMessage(result.message)
                 })
             }
-            if (status === "success") {
-                editProfile(estado.dni, estado.telefono, estado.email, estado.nombre, estado.apellido).then(result => {
-                    if (result.success === 'true') {
-                        setStatus("success")
-                    } else {
-                        setStatus("error")
-                    }
-                    setErrorMessage(result.message)
-                })
-            }
+
+            editProfile(estado.dni, estado.telefono, estado.email, estado.nombre, estado.apellido).then(result => {
+                if (result.success === 'true') {
+                    setStatus("success")
+                } else {
+                    setStatus("error")
+                }
+                setErrorMessage(result.message)
+            })
+
         }
     }
 

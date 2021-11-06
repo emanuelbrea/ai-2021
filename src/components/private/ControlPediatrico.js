@@ -173,7 +173,7 @@ export default function ControlPediatrico(props) {
                 periodo: '',
                 estudios: '',
                 resultados: '',
-                nombre: 'pepe',
+                nombre: children[0],
                 new: true
             };
             setRows([...rows, newRow]);
