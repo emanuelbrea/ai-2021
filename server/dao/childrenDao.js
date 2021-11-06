@@ -17,8 +17,7 @@ const queryEditChildren = `UPDATE children
                                nacimiento=$2,
                                grupo_sanguineo=$3
                            WHERE nombre = $4
-                             and nacimiento = $5
-                             and padre = $6 RETURNING *`
+                             and padre = $5 RETURNING *`
 
 
 exports.createChildren = function (nombre, nacimiento, grupoSanguineo, padre) {
@@ -39,9 +38,9 @@ exports.getChildren = function (padre) {
     );
 }
 
-exports.editChildren = function (nombre, nacimiento, grupoSanguineo, nombre_old, nacimiento_old, padre) {
+exports.editChildren = function (nombre, nacimiento, grupoSanguineo, nombre_old, padre) {
     return poolPostgres.query(queryEditChildren,
-        [nombre, nacimiento, grupoSanguineo, nombre_old, nacimiento_old, padre]
+        [nombre, nacimiento, grupoSanguineo, nombre_old, padre]
     );
 }
 

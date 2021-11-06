@@ -46,7 +46,7 @@ exports.deleteChildrenData = async (req, res, next) => {
     let data = {};
     let status_code = 400;
     try {
-        if (!descripcion || !tipo || !nombre_hijo || !padre) {
+        if (!tipo || !nombre_hijo || !padre) {
             message = 'Valores faltantes';
         } else {
             const result = await ChildrenData.deleteChildrenData(descripcion, tipo, nombre_hijo, padre);

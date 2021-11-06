@@ -4,7 +4,7 @@ const queryCreateChildrenData = `INSERT INTO children_data(descripcion, tipo, no
 VALUES ($1, $2, $3, $4) RETURNING *`
 
 const queryDeleteChildrenData = `DELETE FROM children_data 
-WHERE descripcion= $1 and tipo =$2 and nombre_hijo=$3 and padre=$4 RETURNING *`
+WHERE  ($1 is null or descripcion = $1) and tipo =$2 and nombre_hijo=$3 and padre=$4 RETURNING *`
 
 const queryGetChildrenData = `SELECT * FROM children_data WHERE nombre_hijo=$1 and padre=$2`
 

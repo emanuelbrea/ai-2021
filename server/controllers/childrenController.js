@@ -98,7 +98,7 @@ exports.getChildren = async (req, res, next) => {
 };
 
 exports.editChildren = async (req, res, next) => {
-    const {nombre, nacimiento, grupoSanguineo, nombre_old, nacimiento_old, padre} = req.body;
+    const {nombre, nacimiento, grupoSanguineo, nombre_old, padre} = req.body;
     let success = 'false';
     let message = '';
     let data = {};
@@ -108,7 +108,7 @@ exports.editChildren = async (req, res, next) => {
             message = 'Valores faltantes';
         } else {
             const result = await Children.editChildren(
-                nombre, nacimiento, grupoSanguineo, nombre_old, nacimiento_old, padre);
+                nombre, nacimiento, grupoSanguineo, nombre_old, padre);
             if (!result[0]) {
                 message = 'No se pudo actualizar el hijo';
                 status_code = 401;

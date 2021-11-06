@@ -42,10 +42,10 @@ Children.getChildren = async function (padre) {
     }
 };
 
-Children.editChildren = async function (nombre, nacimiento, grupoSanguineo, nombre_old, nacimiento_old, padre) {
+Children.editChildren = async function (nombre, nacimiento, grupoSanguineo, nombre_old, padre) {
     try {
         const {rows} = await childrenDao.editChildren(
-            nombre, nacimiento, grupoSanguineo, nombre_old, nacimiento_old, padre);
+            nombre, nacimiento, grupoSanguineo, nombre_old, padre);
         return rows;
     } catch (error) {
         throw error;
