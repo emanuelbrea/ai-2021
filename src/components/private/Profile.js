@@ -75,6 +75,7 @@ export default function Profile(props) {
                 setEstado(items.data);
             }
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const getProfile = async () => {

@@ -188,21 +188,39 @@ export default function ChildrenProfile(props) {
     const handleTabChange = (event, newValue) => {
         const newIndex = children.findIndex(child => child.nombre === newValue);
         setCurrentHijo(newIndex);
-        setCurrentNombre(children[newIndex]);
+        if (children[newIndex].new === undefined) {
+            setCurrentNombre(children[newIndex].nombre);
+        } else {
+            setCurrentNombre('');
+        }
     };
 
     const addTab = () => {
-        // if (currentHijo !== '') {
-        //     setCurrentHijo('');
-        //     setChildren([...children, '']);
-        // }
+        const newChild = children.some(child => child.new !== undefined);
+        if (!newChild) {
+            const newChildren = [...children];
+            newChildren.push(nuevoHijo);
+            setChildren(newChildren);
+            setCurrentHijo(newChildren.length - 1);
+            setCurrentNombre('');
+        }
     }
 
     const deleteTab = () => {
-        // handleClose();
-        // const newTab = children.at(-1).nombre === currentHijo ? children[0] : children.at(-1);
-        // setChildren(children.filter(item => item !== currentHijo));
-        // setCurrentHijo(newTab);
+        handleClose();
+        if (currentNombre !== '') {
+            deleteChildrenData('alergia', currentNombre).then(res => {
+                deleteChildrenData('enfermedad', currentNombre).then(async res => {
+                    await deleteChildren()
+                })
+            })
+        }
+        delete alergias[currentNombre]
+        delete enfermedades[currentNombre]
+        setCurrentHijo(0);
+        setChildren(children.filter(child => child.nombre !== currentNombre))
+        setCurrentNombre(children[0].nombre);
+
     }
 
     useEffect(() => {
@@ -253,11 +271,11 @@ export default function ChildrenProfile(props) {
 
     //ALERTS
     const handleClickOpen = () => {
-        // if (currentHijo !== '') {
-        //     setOpenAlert(true);
-        // } else {
-        //     deleteTab();
-        // }
+        if (currentNombre !== '') {
+            setOpenAlert(true);
+        } else {
+            deleteTab();
+        }
     };
 
     const handleClose = () => {
@@ -350,8 +368,8 @@ export default function ChildrenProfile(props) {
             method: 'DELETE',
             headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
-                nombre: "pepe",
-                padre: "brea.emanuel@gmail.com"
+                nombre: currentNombre,
+                padre: username
             })
         };
         const children = await fetch('/children', requestOptions)
@@ -608,10 +626,10 @@ export default function ChildrenProfile(props) {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">{"¿Eliminar hijo " + currentHijo.nombre + " ?"}</DialogTitle>
+                <DialogTitle id="alert-dialog-title">{"¿Eliminar hijo " + currentNombre + " ?"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        Se perderan los datos del hijo {currentHijo.nombre}
+                        Se perderan los datos del hijo {currentNombre}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
