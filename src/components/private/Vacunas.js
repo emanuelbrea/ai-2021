@@ -68,7 +68,7 @@ export default function Vacunas(props) {
     const [open, setOpen] = useState(false);
     const token = useToken()['token'];
     const username = props.username;
-    const children = props.children;
+    const [children, setChildren] = useState(props.children);
     const [errorMessage, setErrorMessage] = useState('');
 
     const columns = [
@@ -142,6 +142,17 @@ export default function Vacunas(props) {
     };
 
     useEffect(() => {
+        getChildren().then(result => {
+            if (result.success === 'true') {
+                const children = result.data.result;
+                let childrenNames = []
+                for( let i = 0 ; i < children.length ; i++){
+                    childrenNames.push(children[i].nombre)
+                }
+                setChildren(childrenNames);
+            }
+
+        })
         getVacunas().then(items => {
             if (items.success === 'true') {
                 addIds(items.data.result);
@@ -152,6 +163,23 @@ export default function Vacunas(props) {
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    const getChildren = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        };
+        const children = await fetch('/children?' + new URLSearchParams({
+            padre: username
+        }), requestOptions)
+            .then(res => res.json())
+
+        return children;
+
+    }
 
     const convertDate = (vacunas) => {
         vacunas.forEach((row) => {

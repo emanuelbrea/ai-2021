@@ -503,6 +503,7 @@ export default function ChildrenProfile(props) {
                                         label="Fecha de nacimiento"
                                         name="nacimiento"
                                         format="MM/dd/yyyy"
+                                        id="fecha"
                                         value={children[currentHijo].nacimiento}
                                         InputAdornmentProps={{position: "end"}}
                                         onChange={(e) => handleInputChange(e)}
@@ -514,7 +515,7 @@ export default function ChildrenProfile(props) {
                                     variant="outlined"
                                     select
                                     fullWidth
-                                    id="email"
+                                    id="grupo"
                                     label="Grupo Sanguineo"
                                     name="grupo_sanguineo"
                                     value={children[currentHijo].grupo_sanguineo}
