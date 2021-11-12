@@ -4,12 +4,12 @@ const auth = require('../auth/auth')
 
 const controlController = require('../controllers/controlController');
 
-router.post('/control', controlController.createControl);
+router.post('/control', auth.verifyToken, controlController.createControl);
 
-router.delete('/control', controlController.deleteControl);
+router.delete('/control', auth.verifyToken, controlController.deleteControl);
 
-router.get('/control', controlController.getControls);
+router.get('/control', auth.verifyToken, controlController.getControls);
 
-router.put('/control', controlController.editControls);
+router.put('/control', auth.verifyToken, controlController.editControls);
 
 module.exports = router;

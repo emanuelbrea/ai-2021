@@ -4,13 +4,12 @@ const auth = require('../auth/auth')
 
 const childrenController = require('../controllers/childrenController');
 
-//TODO add authentication method
-router.post('/children', childrenController.createChildren);
+router.post('/children', auth.verifyToken, childrenController.createChildren);
 
-router.delete('/children', childrenController.deleteChildren);
+router.delete('/children', auth.verifyToken, childrenController.deleteChildren);
 
-router.get('/children', childrenController.getChildren);
+router.get('/children', auth.verifyToken, childrenController.getChildren);
 
-router.put('/children', childrenController.editChildren);
+router.put('/children', auth.verifyToken, childrenController.editChildren);
 
 module.exports = router;

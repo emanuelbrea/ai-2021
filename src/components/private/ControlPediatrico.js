@@ -12,84 +12,7 @@ import AddIcon from "@material-ui/icons/Add";
 import SaveIcon from "@material-ui/icons/Save";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-
-const columns = [
-    {field: 'id', headerName: 'ID', width: 90},
-    {
-        field: 'fecha',
-        headerName: 'Fecha',
-        width: 120,
-        editable: true,
-        type: 'date',
-    },
-    {
-        field: 'peso',
-        headerName: 'Peso',
-        type: 'number',
-        width: 110,
-        editable: true,
-    },
-    {
-        field: 'altura',
-        headerName: 'Altura',
-        type: 'number',
-        width: 130,
-        editable: true,
-    },
-    {
-        field: 'diametro',
-        headerName: 'Diametro de la cabeza',
-        type: 'number',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'medicamentos',
-        headerName: 'Medicamentos',
-        width: 180,
-        editable: true,
-    },
-    {
-        field: 'dosis',
-        headerName: 'Dosis',
-        type: 'number',
-        width: 120,
-        editable: true,
-    },
-    {
-        field: 'periodo',
-        headerName: 'Periodo',
-        width: 130,
-        editable: true,
-    },
-    {
-        field: 'estudios',
-        headerName: 'Estudios medicos a realizar',
-        width: 200,
-        editable: true,
-    },
-    {
-        field: 'resultados',
-        headerName: 'Resultados',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'observaciones',
-        headerName: 'Observaciones',
-        description: 'This column  is not sortable.',
-        width: 340,
-        editable: true,
-    },
-    {
-        field: 'nombre_hijo',
-        headerName: 'Hijo',
-        width: 110,
-        editable: true,
-        type: 'singleSelect',
-        valueOptions: ['Juan', 'pepe'],
-    },
-];
+import useToken from "../routes/useToken";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -124,21 +47,101 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function ControlPediatrico() {
+export default function ControlPediatrico(props) {
     const classes = useStyles();
     const [selected, setSelected] = useState([]);
     const [rows, setRows] = useState([]);
     const [deletedRows, setDeletedRows] = useState([]);
     const [open, setOpen] = useState(false);
-    const [missing, setMissing] = useState(false);
+    const token = useToken()['token'];
+    const username = props.username;
+    const [children, setChildren] = useState(props.children);
+    const [errorMessage, setErrorMessage] = useState('');
+
+
+    const columns = [
+        {field: 'id', headerName: 'ID', width: 90},
+        {
+            field: 'fecha',
+            headerName: 'Fecha',
+            width: 120,
+            editable: true,
+            type: 'date',
+        },
+        {
+            field: 'peso',
+            headerName: 'Peso',
+            type: 'number',
+            width: 110,
+            editable: true,
+        },
+        {
+            field: 'altura',
+            headerName: 'Altura',
+            type: 'number',
+            width: 130,
+            editable: true,
+        },
+        {
+            field: 'diametro',
+            headerName: 'Diametro de la cabeza',
+            type: 'number',
+            width: 150,
+            editable: true,
+        },
+        {
+            field: 'medicamentos',
+            headerName: 'Medicamentos',
+            width: 180,
+            editable: true,
+        },
+        {
+            field: 'dosis',
+            headerName: 'Dosis',
+            type: 'number',
+            width: 120,
+            editable: true,
+        },
+        {
+            field: 'periodo',
+            headerName: 'Periodo',
+            width: 130,
+            editable: true,
+        },
+        {
+            field: 'estudios',
+            headerName: 'Estudios medicos a realizar',
+            width: 200,
+            editable: true,
+        },
+        {
+            field: 'resultados',
+            headerName: 'Resultados',
+            width: 150,
+            editable: true,
+        },
+        {
+            field: 'observaciones',
+            headerName: 'Observaciones',
+            description: 'This column  is not sortable.',
+            width: 340,
+            editable: true,
+        },
+        {
+            field: 'nombre_hijo',
+            headerName: 'Hijo',
+            width: 110,
+            editable: true,
+            type: 'singleSelect',
+            valueOptions: children,
+        },
+    ];
+
 
     const handleClose = () => {
         setOpen(false);
     };
 
-    const handleCloseMissing = () => {
-        setMissing(false);
-    };
 
     const handleDeleteRows = () => {
         const selectedIDs = new Set(selected);
@@ -153,14 +156,28 @@ export default function ControlPediatrico() {
     };
 
     const handleAddRow = () => {
-        const maxId = rows.length > 0 ? Math.max(...rows.map(user => user.id)) : 0;
-        var today = new Date();
-        const newRow = {
-            id: maxId + 1, fecha: new Date(today.toDateString()), peso: 0, altura: 0, diametro: 0, observaciones: '',
-            medicamento: '', dosis: 0, periodo: '',
-            estudios: '', resultados: '', nombre: 'pepe', new: true
-        };
-        setRows([...rows, newRow]);
+        if (children.length === 0) {
+            setErrorMessage('No hay hijos registrados. Por favor, agregue un hijo en la pestaña Mis hijos.')
+        } else {
+            const maxId = rows.length > 0 ? Math.max(...rows.map(user => user.id)) : 0;
+            var today = new Date();
+            const newRow = {
+                id: maxId + 1,
+                fecha: new Date(today.toDateString()),
+                peso: 0,
+                altura: 0,
+                diametro: 0,
+                observaciones: '',
+                medicamento: '',
+                dosis: 0,
+                periodo: '',
+                estudios: '',
+                resultados: '',
+                nombre: children[0],
+                new: true
+            };
+            setRows([...rows, newRow]);
+        }
     }
 
     const handleCellClick = (param, event) => {
@@ -172,6 +189,17 @@ export default function ControlPediatrico() {
     };
 
     useEffect(() => {
+        getChildren().then(result => {
+            if (result.success === 'true') {
+                const children = result.data.result;
+                let childrenNames = []
+                for( let i = 0 ; i < children.length ; i++){
+                    childrenNames.push(children[i].nombre)
+                }
+                setChildren(childrenNames);
+            }
+
+        })
         getControles().then(items => {
             if (items.success === 'true') {
                 addIds(items.data.result);
@@ -180,7 +208,25 @@ export default function ControlPediatrico() {
                 setRows(items.data.result);
             }
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    const getChildren = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        };
+        const children = await fetch('/children?' + new URLSearchParams({
+            padre: username
+        }), requestOptions)
+            .then(res => res.json())
+
+        return children;
+
+    }
 
     const convertDate = (controles) => {
         controles.forEach((row) => {
@@ -206,14 +252,16 @@ export default function ControlPediatrico() {
     }
 
     const handleSaveControles = () => {
-        if (!validateFields()) {
-            setMissing(true);
+        if (children.length === 0) {
+            setErrorMessage('No hay hijos registrados. Por favor, agregue un hijo en la pestaña Mis hijos.')
+        } else if (!validateFields()) {
+            setErrorMessage('Datos faltantes')
         } else {
             rows.forEach((row) => {
                 if (row.new !== undefined && row.new === true) {
                     createControl(
                         row.fecha, row.peso, row.altura, row.diametro, row.observaciones, row.medicamentos, row.dosis,
-                        row.periodo, row.estudios, row.resultados, row.nombre_hijo, "brea.emanuel@gmail.com"
+                        row.periodo, row.estudios, row.resultados, row.nombre_hijo, username
                     );
                     row.fecha_old = row.fecha;
                     row.medicamentos_old = row.medicamentos;
@@ -225,14 +273,14 @@ export default function ControlPediatrico() {
                     editControl(
                         row.fecha, row.peso, row.altura, row.diametro, row.observaciones, row.medicamentos, row.dosis,
                         row.periodo, row.estudios, row.resultados, row.nombre_hijo, row.fecha_old, row.medicamentos_old,
-                        row.estudios_old, row.resultados_old, row.nombre_hijo_old, "brea.emanuel@gmail.com"
+                        row.estudios_old, row.resultados_old, row.nombre_hijo_old, username
                     )
                 }
             });
             deletedRows.forEach((row) => {
                 if (row.new === undefined || row.new === false) {
                     deleteControl(row.fecha, row.medicamentos, row.estudios, row.resultados,
-                        row.nombre_hijo, "brea.emanuel@gmail.com")
+                        row.nombre_hijo, username)
                 }
             });
             setDeletedRows([]);
@@ -243,9 +291,16 @@ export default function ControlPediatrico() {
 
 
     const getControles = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        };
         const controles = await fetch('/control?' + new URLSearchParams({
-            padre: 'brea.emanuel@gmail.com'
-        }))
+            padre: username
+        }), requestOptions)
             .then(res => res.json())
 
         return controles;
@@ -257,7 +312,7 @@ export default function ControlPediatrico() {
                                estudios_old, resultados_old, nombre_hijo_old, padre) => {
         const requestOptions = {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 fecha: fecha,
                 peso: peso,
@@ -275,7 +330,7 @@ export default function ControlPediatrico() {
                 estudios_old: estudios_old,
                 resultados_old: resultados_old,
                 nombre_hijo_old: nombre_hijo_old,
-                padre: "brea.emanuel@gmail.com"
+                padre: username
             })
         };
         const control = await fetch('/control', requestOptions)
@@ -288,14 +343,14 @@ export default function ControlPediatrico() {
     const deleteControl = async (fecha, medicamentos, estudios, resultados, nombre_hijo, padre) => {
         const requestOptions = {
             method: 'DELETE',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 fecha: fecha,
                 medicamentos: medicamentos,
                 estudios: estudios,
                 resultados: resultados,
                 nombre_hijo: nombre_hijo,
-                padre: "brea.emanuel@gmail.com"
+                padre: username
             })
         };
         const control = await fetch('/control', requestOptions)
@@ -309,7 +364,7 @@ export default function ControlPediatrico() {
                                  estudios, resultados, nombre_hijo, padre) => {
         const requestOptions = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 fecha: fecha,
                 peso: peso,
@@ -322,7 +377,7 @@ export default function ControlPediatrico() {
                 estudios: estudios,
                 resultados: resultados,
                 nombre_hijo: nombre_hijo,
-                padre: "brea.emanuel@gmail.com"
+                padre: username
             })
         };
         const control = await fetch('/control', requestOptions)
@@ -398,9 +453,9 @@ export default function ControlPediatrico() {
                     Datos guardados correctamente!
                 </Alert>
             </Snackbar>
-            <Snackbar open={missing} autoHideDuration={3000} onClose={handleCloseMissing}>
-                <Alert onClose={handleCloseMissing} severity="warning" sx={{width: '100%'}}>
-                    Datos faltantes.
+            <Snackbar open={errorMessage !== ''} autoHideDuration={3000} onClose={() => setErrorMessage('')}>
+                <Alert onClose={() => setErrorMessage('')} severity="warning" sx={{width: '100%'}}>
+                    {errorMessage}
                 </Alert>
             </Snackbar>
         </div>

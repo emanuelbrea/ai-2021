@@ -1,5 +1,7 @@
 const helper = require('../auth/helper')
 const User = require('../model/User');
+const Codigo = require('../model/Codigo');
+const Children = require("../model/Children");
 
 exports.postSignup = async (req, res, next) => {
     //getting user data from request body
@@ -27,12 +29,11 @@ exports.postSignup = async (req, res, next) => {
             });
 
             try {
-                const result = await user.createUser();
-                const token = helper.generateToken(result[0].id);
+                await user.createUser();
                 status_code = 200;
                 success = 'true';
                 message = 'Usuario registrado correctamente';
-                data = {"token": token};
+                data = {};
             } catch (error) {
                 switch (error?.code) {
                     case '23505':
@@ -76,10 +77,11 @@ exports.checkLogin = async (req, res, next) => {
                 status_code = 401;
             } else {
                 const token = helper.generateToken(result[0].id);
+                const children = await Children.getChildren(email);
                 status_code = 200;
                 success = 'true';
                 message = 'Inicio de sesion correcto';
-                data = {"token": token};
+                data = {"token": token, "username": email, "children": helper.addChildren(children)};
             }
         }
     } catch (error) {
@@ -167,3 +169,121 @@ exports.getProfile = async (req, res, next) => {
     };
     return res.status(status_code).send(response);
 };
+
+exports.forgotPassword = async (req, res, next) => {
+    const {dni, email} = req.body;
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
+    try {
+        if (!email || !dni) {
+            message = 'Valores faltantes';
+        } else {
+            const user = await User.userLogin(email);
+            if (!user[0] || Number(dni) !== user[0].dni) {
+                message = 'Usuario no existente';
+                status_code = 401;
+            } else {
+                const codigo = helper.generateCodigo();
+                const token = new Codigo({email: email, codigo: codigo});
+                const result = await token.createCodigo();
+                if (result[0]) {
+                    const email = await helper.sendEmail(user[0].nombre, codigo);
+                    message = 'Email enviado correctamente';
+                    status_code = 200;
+                    success = 'true';
+                } else {
+                    message = 'Hubo un error al enviar el mail.'
+                    status_code = 500;
+                }
+            }
+        }
+
+    } catch (error) {
+        message = error.message;
+        status_code = 500;
+    }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
+
+}
+
+exports.resetPassword = async (req, res, next) => {
+    const {email, codigo, password} = req.body;
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
+    try {
+        if (!email || !codigo || !password || typeof codigo !== 'number') {
+            message = 'Valores faltantes';
+        } else {
+            const valid = await Codigo.verifyCodigo(email, codigo);
+            if (!valid[0]) {
+                message = 'Codigo no valido';
+                status_code = 401;
+            } else {
+                const hashPassword = helper.hashPassword(password);
+                const result = await User.updatePassword(hashPassword, email);
+                if (result[0]) {
+                    message = 'Contraseña cambiada correctamente';
+                    status_code = 200;
+                    success = 'true';
+                    data = {}
+                    await Codigo.borrarCodigo(email);
+                } else {
+                    message = 'Hubo un error al actualizar la contraseña';
+                }
+            }
+        }
+    } catch (error) {
+        message = error.message;
+        status_code = 500;
+    }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
+
+}
+
+exports.updatePassword = async (req, res, next) => {
+    const {email, password} = req.body;
+    let success = 'false';
+    let message = '';
+    let data = {};
+    let status_code = 400;
+    try {
+        if (!email || !password) {
+            message = 'Valores faltantes';
+        } else {
+            const hashPassword = helper.hashPassword(password);
+            const result = await User.updatePassword(hashPassword, email);
+            if (result[0]) {
+                message = 'Contraseña cambiada correctamente';
+                status_code = 200;
+                success = 'true';
+                data = {}
+            } else {
+                message = 'Hubo un error al actualizar la contraseña';
+            }
+        }
+    } catch (error) {
+        message = error.message;
+        status_code = 500;
+    }
+    const response = {
+        success: success,
+        message: message,
+        data: data
+    };
+    return res.status(status_code).send(response);
+
+}

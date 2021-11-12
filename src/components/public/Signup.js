@@ -13,7 +13,7 @@ import Container from '@material-ui/core/Container';
 import MuiAlert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import {useHistory} from "react-router-dom";
-
+import validator from 'validator'
 
 function Copyright() {
     return (
@@ -71,8 +71,8 @@ export default function Signup() {
     };
 
     const [estado, setEstado] = useState(initialState);
-
-    const [missingValues, setMissingValues] = useState(false);
+    const [successSignUp, setSuccessSignUp] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
 
     const handleInputChange = (e) => {
@@ -82,24 +82,31 @@ export default function Signup() {
 
     const handleClickSignUp = () => {
         if (Object.values(estado).some((e) => e === '')) {
-            setMissingValues(true);
+            setErrorMessage('Datos incompletos');
+        } else if (!validator.isStrongPassword(
+            estado.password, {minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 0, minSymbols: 0})) {
+            setErrorMessage('La contraseña es debil. Debe incluir minimo 8 caracteres y una mayuscula.');
         } else {
             checkSignup().then(responseJson => {
                 if (responseJson.success === 'true') {
-                    history.push('/home');
+                    setSuccessSignUp(true);
                 } else {
-                    setMissingValues(true);
+                    setErrorMessage(responseJson.message);
                 }
             });
         }
     };
+
+    const handleAfterSignUp = () => {
+        history.push('/login');
+    }
 
     const checkSignup = async () => {
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                email: estado.email, password: estado.password, username: estado.nombre,
+                email: estado.email, password: estado.password, nombre: estado.nombre, apellido: estado.apellido,
                 dni: estado.dni, telefono: estado.telefono
             })
         };
@@ -227,9 +234,14 @@ export default function Signup() {
             <Box mt={5}>
                 <Copyright/>
             </Box>
-            <Snackbar open={missingValues} autoHideDuration={3000} onClose={() => setMissingValues(false)}>
-                <Alert onClose={() => setMissingValues(false)} severity="warning" sx={{width: '100%'}}>
-                    Datos incompletos
+            <Snackbar open={errorMessage !== ''} autoHideDuration={3000} onClose={() => setErrorMessage('')}>
+                <Alert onClose={() => setErrorMessage('')} severity="warning" sx={{width: '100%'}}>
+                    {errorMessage}
+                </Alert>
+            </Snackbar>
+            <Snackbar open={successSignUp} autoHideDuration={3000} onClose={handleAfterSignUp}>
+                <Alert onClose={handleAfterSignUp} severity="success" sx={{width: '100%'}}>
+                    Usuario registrado correctamente!
                 </Alert>
             </Snackbar>
         </Container>

@@ -14,6 +14,10 @@ const queryUpdateUser = `UPDATE users
                              telefono=$4
                          where email = $5 RETURNING *`
 
+const queryUpdatePassword = `UPDATE users
+                             set password=$1
+                             where email = $2 RETURNING *`
+
 exports.createUser = function (email, password, nombre, apellido, dni, telefono) {
     return poolPostgres.query(queryCreateUser,
         [email, password, nombre, apellido, dni, telefono]
@@ -32,4 +36,8 @@ exports.updateUser = function (nombre, apellido, dni, telefono, email) {
     );
 }
 
-
+exports.updatePassword = function (password, email) {
+    return poolPostgres.query(queryUpdatePassword,
+        [password, email]
+    );
+}

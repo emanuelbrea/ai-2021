@@ -39,17 +39,17 @@ exports.createChildrenData = async (req, res, next) => {
 };
 
 exports.deleteChildrenData = async (req, res, next) => {
-    const {descripcion, tipo, nombre_hijo, padre} = req.body;
+    const {tipo, nombre_hijo, padre} = req.body;
 
     let success = 'false';
     let message = '';
     let data = {};
     let status_code = 400;
     try {
-        if (!descripcion || !tipo || !nombre_hijo || !padre) {
+        if (!tipo || !nombre_hijo || !padre) {
             message = 'Valores faltantes';
         } else {
-            const result = await ChildrenData.deleteChildrenData(descripcion, tipo, nombre_hijo, padre);
+            const result = await ChildrenData.deleteChildrenData(tipo, nombre_hijo, padre);
             success = 'true';
             status_code = 200;
             message = 'Registro eliminado correctamente';

@@ -24,9 +24,9 @@ ChildrenData.prototype.createChildrenData = async function () {
 };
 
 
-ChildrenData.deleteChildrenData = async function (descripcion, tipo, nombre_hijo, padre) {
+ChildrenData.deleteChildrenData = async function (tipo, nombre_hijo, padre) {
     try {
-        const {rows} = await childrenDao.deleteChildrenData(descripcion, tipo, nombre_hijo, padre);
+        const {rows} = await childrenDao.deleteChildrenData(tipo, nombre_hijo, padre);
         return rows;
     } catch (error) {
         throw error;

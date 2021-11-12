@@ -1,45 +1,31 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
-import {Card, InputAdornment, MenuItem} from "@material-ui/core";
+import {Card, MenuItem} from "@material-ui/core";
 import ModalImage from "react-modal-image";
 import Box from "@material-ui/core/Box";
 import PercentilesPesoF from "../../images/percentiles-peso-nina.jpg.webp";
 import PercentilesPesoM from "../../images/percentiles-peso-nino.jpg.webp";
 import PercentilesAltF from "../../images/percentiles-estatura-nina.jpg.webp";
 import PercentilesAltM from "../../images/percentiles-estatura-nino.jpg.webp";
+import useToken from "../routes/useToken";
+import {DataGrid} from "@mui/x-data-grid";
+import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
 
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(5),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'left',
     },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.primary.main,
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1),
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2),
-    },
-    numberField: {
-        "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
-            display: "none"
-        }
-    },
     title: {
-        marginBottom: theme.spacing(3),
+        marginBottom: theme.spacing(2),
+        flex: '1 1 100%',
     },
     cardFuncionalidad: {
         marginTop: theme.spacing(2),
@@ -51,13 +37,22 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(1),
         backgroundColor: "#f2f6f9"
     },
+    heroContent: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '50%',
+        marginLeft: theme.spacing(5),
+    },
 }));
+
+
 
 const sexos = [
     'femenino', 'masculino'
 ];
 
-export default function Percentiles() {
+export default function Percentiles(props) {
     const classes = useStyles();
 
     const initialState = {
@@ -68,118 +63,198 @@ export default function Percentiles() {
     };
 
     const [estado, setEstado] = useState(initialState);
+    const token = useToken()['token'];
+    const username = props.username;
+    const [children, setChildren] = useState([]);
+    const [rows, setRows] = useState([]);
+    const [currentHijo, setCurrentHijo] = useState('');
+    const [currentSexo, setCurrentSexo] = useState('masculino')
+
+    const columns = [
+        {field: 'id', headerName: 'ID', flex:1,},
+        {
+            field: 'fecha',
+            headerName: 'Fecha',
+            flex:1,
+            type: 'date',
+        },
+        {
+            field: 'peso',
+            headerName: 'Peso',
+            type: 'number',
+            flex:1,
+        },
+        {
+            field: 'altura',
+            headerName: 'Altura',
+            type: 'number',
+            flex:1,
+        },
+        {
+            field: 'nombre_hijo',
+            headerName: 'Hijo',
+            flex:1,
+            type: 'singleSelect',
+            valueOptions: children,
+        },
+    ];
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;
         setEstado({...estado, [name]: value});
     };
 
+    const convertDate = (controles) => {
+        controles.forEach((row) => {
+            let fecha = new Date(row.fecha);
+            row.fecha = new Date(fecha.toDateString());
+        });
+    }
+
+    useEffect(() => {
+        getChildren().then(result => {
+            if (result.success === 'true') {
+                const children = result.data.result;
+                let childrenNames = []
+                for( let i = 0 ; i < children.length ; i++){
+                    childrenNames.push(children[i].nombre)
+                }
+                setChildren(childrenNames);
+                setCurrentHijo(childrenNames[0]);
+            }
+
+        })
+        getControles().then(items => {
+            if (items.success === 'true') {
+                convertDate(items.data.result);
+                getSubset(items.data.result);
+            }
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const getChildren = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        };
+        const children = await fetch('/children?' + new URLSearchParams({
+            padre: username
+        }), requestOptions)
+            .then(res => res.json())
+
+        return children;
+
+    }
+
+    const getSubset = (result) =>{
+        let rows = []
+        for( let i = 0 ; i< result.length ; i++){
+            const row = (({ fecha, peso, altura,nombre_hijo }) => ({ fecha, peso, altura,nombre_hijo  }))(result[i])
+            row['id'] = i
+            rows.push(row)
+        }
+        setRows(rows)
+    }
+
+    const getControles = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        };
+        const controles = await fetch('/control?' + new URLSearchParams({
+            padre: username
+        }), requestOptions)
+            .then(res => res.json())
+
+        return controles;
+
+    }
+
     return (
         <Container component="main" maxWidth={'xl'}>
             <CssBaseline/>
             <div className={classes.paper}>
-                <Typography component="h1" variant="h5" className={classes.title}>
+                <Typography component="div" variant="h6" className={classes.title}>
                     Consulta de Percentiles
                 </Typography>
-                <form className={classes.form} noValidate>
-                    <Grid container spacing={2} justifyContent="flex-start" direction="row" alignItems="center">
-                        <Grid item>
-                            <TextField
-                                autoComplete="off"
-                                name="edad"
-                                variant="outlined"
-                                fullWidth
-                                id="edad"
-                                label="Edad"
-                                autoFocus
-                                type="number"
-                                onChange={e => handleInputChange(e)}
-                                value={estado.edad}
-                                InputProps={{
-                                    endAdornment: <InputAdornment position="end">meses</InputAdornment>,
-                                }}
-                            />
-                        </Grid>
-                        <Grid item>
+                <Box display="flex" >
+                    <Box style={{width:"40%"}}>
+                        <DataGrid
+                            style={{backgroundColor: "#f2f6f9"}}
+                            autoHeight
+                            rows={rows.filter(row => row.nombre_hijo === currentHijo)}
+                            columns={columns}
+                            pageSize={5}
+                            rowsPerPageOptions={[5]}
+                            disableSelectionOnClick
+                        />
+                    </Box>
+                    <Box className={classes.heroContent} style={{width:"10%"}}>
+                        <Grid item xs={12}>
                             <TextField
                                 variant="outlined"
+                                select
+                                id="hijos"
+                                label="Seleccione un hijo"
+                                name="hijos"
+                                value={currentHijo}
+                                onChange={(e) => setCurrentHijo(e.target.value)}
                                 fullWidth
-                                id="peso"
-                                label="Peso"
-                                name="peso"
-                                autoComplete="off"
-                                type="number"
-                                onChange={e => handleInputChange(e)}
-                                value={estado.peso}
-                                InputProps={{
-                                    endAdornment: <InputAdornment position="end">Kg</InputAdornment>,
-                                }}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <TextField
-                                variant="outlined"
-                                fullWidth
-                                id="altura"
-                                label="Altura"
-                                name="altura"
-                                type="number"
-                                onChange={e => handleInputChange(e)}
-                                value={estado.altura}
-                                InputProps={{
-                                    endAdornment: <InputAdornment position="end">cm</InputAdornment>,
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={2}>
-                            <TextField className={classes.numberField}
-                                       variant="outlined"
-                                       fullWidth
-                                       name="sexo"
-                                       label="Sexo"
-                                       id="sexo"
-                                       autoComplete="off"
-                                       onChange={e => handleInputChange(e)}
-                                       value={estado.sexo}
-                                       select
-                                       SelectProps={{
-                                           MenuProps: {
-                                               anchorOrigin: {
-                                                   vertical: "bottom",
-                                                   horizontal: "left"
-                                               },
-                                               getContentAnchorEl: null
-                                           }
-                                       }}
                             >
-                                {sexos.map((option, index) => (
-                                    <MenuItem key={index} value={option}>
-                                        {option}
+                                {children.map((child) => (
+                                    <MenuItem key={child} value={child}>
+                                        {child}
                                     </MenuItem>
                                 ))}
                             </TextField>
                         </Grid>
-                        <Grid item>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                className={classes.submit}
+                    </Box>
+                    <Box className={classes.heroContent} style={{width:"10%"}}>
+                        <Grid item xs={12}>
+                            <TextField
+                                variant="outlined"
+                                select
+                                id="sexo"
+                                label="Seleccione un sexo"
+                                name="sexo"
+                                value={currentSexo}
+                                onChange={(e) => setCurrentSexo(e.target.value)}
+                                fullWidth
+                                SelectProps={{
+                                    MenuProps: {
+                                        anchorOrigin: {
+                                            vertical: "bottom",
+                                            horizontal: "left"
+                                        },
+                                        getContentAnchorEl: null
+                                    }
+                                }}
                             >
-                                Consultar
-                            </Button>
+                                {sexos.map((sexo) => (
+                                    <MenuItem key={sexo} value={sexo}>
+                                        {sexo}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
                         </Grid>
-                    </Grid>
-                </form>
+                    </Box>
 
-
+                </Box>
             </div>
             <Container maxWidth="xl">
                 <Box display="flex" width={1} m={1} p={1}>
                     <Box p={1} style={{width: "50%"}}>
                         <Card className={classes.cardFuncionalidad}>
                             <ModalImage
-                                small={estado.sexo === sexos[0] ? PercentilesAltF : PercentilesAltM}
-                                large={estado.sexo === sexos[0] ? PercentilesAltF : PercentilesAltM}
+                                small={currentSexo === sexos[0] ? PercentilesAltF : PercentilesAltM}
+                                large={currentSexo === sexos[0] ? PercentilesAltF : PercentilesAltM}
                                 alt="Tabla de Percentiles Altura"
                             />
                         </Card>
@@ -187,8 +262,8 @@ export default function Percentiles() {
                     <Box p={1} style={{width: "50%"}}>
                         <Card className={classes.cardFuncionalidad}>
                             <ModalImage
-                                small={estado.sexo === sexos[0] ? PercentilesPesoF : PercentilesPesoM}
-                                large={estado.sexo === sexos[0] ? PercentilesPesoF : PercentilesPesoM}
+                                small={currentSexo === sexos[0] ? PercentilesPesoF : PercentilesPesoM}
+                                large={currentSexo === sexos[0] ? PercentilesPesoF : PercentilesPesoM}
                                 alt="Tabla de Percentiles Peso"
                             />
                         </Card>

@@ -15,39 +15,7 @@ import ModalImage from "react-modal-image";
 import SaveIcon from "@material-ui/icons/Save";
 import MuiAlert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
-
-
-const columns = [
-    {field: 'id', headerName: 'ID', width: 90},
-    {
-        field: 'fecha',
-        headerName: 'Fecha',
-        width: 170,
-        editable: true,
-        type: 'date',
-    },
-    {
-        field: 'vacuna',
-        headerName: 'Vacuna',
-        width: 180,
-        editable: true,
-        flex: 1
-    },
-    {
-        field: 'lugar',
-        headerName: 'Lugar de aplicacion',
-        width: 300,
-        editable: true,
-    },
-    {
-        field: 'nombre_hijo',
-        headerName: 'Hijo',
-        type: 'singleSelect',
-        valueOptions: ['juan', 'pepe'],
-        width: 160,
-        editable: true,
-    },
-];
+import useToken from "../routes/useToken";
 
 
 const useToolbarStyles = makeStyles((theme) => ({
@@ -92,20 +60,51 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function Vacunas() {
+export default function Vacunas(props) {
     const classes = useToolbarStyles();
     const [selected, setSelected] = useState([]);
     const [rows, setRows] = useState([]);
     const [deletedRows, setDeletedRows] = useState([]);
     const [open, setOpen] = useState(false);
-    const [missing, setMissing] = useState(false);
+    const token = useToken()['token'];
+    const username = props.username;
+    const [children, setChildren] = useState(props.children);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const columns = [
+        {field: 'id', headerName: 'ID', width: 90},
+        {
+            field: 'fecha',
+            headerName: 'Fecha',
+            width: 170,
+            editable: true,
+            type: 'date',
+        },
+        {
+            field: 'vacuna',
+            headerName: 'Vacuna',
+            width: 180,
+            editable: true,
+            flex: 1
+        },
+        {
+            field: 'lugar',
+            headerName: 'Lugar de aplicacion',
+            width: 300,
+            editable: true,
+        },
+        {
+            field: 'nombre_hijo',
+            headerName: 'Hijo',
+            type: 'singleSelect',
+            valueOptions: children,
+            width: 160,
+            editable: true,
+        },
+    ];
 
     const handleClose = () => {
         setOpen(false);
-    };
-
-    const handleCloseMissing = () => {
-        setMissing(false);
     };
 
     const handleDeleteRows = () => {
@@ -121,15 +120,18 @@ export default function Vacunas() {
     };
 
     const handleAddRow = () => {
-        const maxId = rows.length > 0 ? Math.max(...rows.map(user => user.id)) : 0;
-        var today = new Date();
-        const newRow = {
-            id: maxId + 1, fecha: new Date(today.toDateString()),
-            vacuna: '', lugar: '', nombre_hijo: 'pepe', new: true
-        };
-        setRows([...rows, newRow]);
+        if (children.length === 0) {
+            setErrorMessage('No hay hijos registrados. Por favor, agregue un hijo en la pestaña Mis hijos.')
+        } else {
+            const maxId = rows.length > 0 ? Math.max(...rows.map(user => user.id)) : 0;
+            var today = new Date();
+            const newRow = {
+                id: maxId + 1, fecha: new Date(today.toDateString()),
+                vacuna: '', lugar: '', nombre_hijo: children[0], new: true
+            };
+            setRows([...rows, newRow]);
+        }
     }
-
 
     const handleCellClick = (param, event) => {
         let copyRows = rows;
@@ -140,6 +142,17 @@ export default function Vacunas() {
     };
 
     useEffect(() => {
+        getChildren().then(result => {
+            if (result.success === 'true') {
+                const children = result.data.result;
+                let childrenNames = []
+                for( let i = 0 ; i < children.length ; i++){
+                    childrenNames.push(children[i].nombre)
+                }
+                setChildren(childrenNames);
+            }
+
+        })
         getVacunas().then(items => {
             if (items.success === 'true') {
                 addIds(items.data.result);
@@ -147,8 +160,26 @@ export default function Vacunas() {
                 addOldValues(items.data.result);
                 setRows(items.data.result);
             }
-        })
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    const getChildren = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        };
+        const children = await fetch('/children?' + new URLSearchParams({
+            padre: username
+        }), requestOptions)
+            .then(res => res.json())
+
+        return children;
+
+    }
 
     const convertDate = (vacunas) => {
         vacunas.forEach((row) => {
@@ -173,13 +204,15 @@ export default function Vacunas() {
     }
 
     const handleSaveVacunas = () => {
-        if (!validateFields()) {
-            setMissing(true);
+        if (children.length === 0) {
+            setErrorMessage('No hay hijos registrados. Por favor, agregue un hijo en la pestaña Mis hijos.')
+        } else if (!validateFields()) {
+            setErrorMessage('Datos faltantes')
         } else {
             rows.forEach((row) => {
                 if (row.new !== undefined && row.new === true) {
                     createVacuna(
-                        row.fecha, row.vacuna, row.lugar, row.nombre_hijo, "brea.emanuel@gmail.com"
+                        row.fecha, row.vacuna, row.lugar, row.nombre_hijo, username
                     );
                     row.fecha_old = row.fecha;
                     row.vacuna_old = row.vacuna;
@@ -191,13 +224,13 @@ export default function Vacunas() {
                     editVacuna(
                         row.fecha, row.vacuna, row.lugar,
                         row.fecha_old, row.vacuna_old, row.lugar_old,
-                        row.nombre_hijo, row.nombre_hijo_old, "brea.emanuel@gmail.com"
+                        row.nombre_hijo, row.nombre_hijo_old, username
                     )
                 }
             });
             deletedRows.forEach((row) => {
                 if (row.new === undefined || row.new === false) {
-                    deleteVacuna(row.fecha, row.vacuna, row.nombre_hijo, "brea.emanuel@gmail.com")
+                    deleteVacuna(row.fecha, row.vacuna, row.nombre_hijo, username)
                 }
             });
             setDeletedRows([]);
@@ -207,9 +240,16 @@ export default function Vacunas() {
     };
 
     const getVacunas = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        };
         const vacunas = await fetch('/vacuna?' + new URLSearchParams({
-            padre: 'brea.emanuel@gmail.com'
-        })).then(res => res.json())
+            padre: username
+        }), requestOptions).then(res => res.json())
 
         return vacunas;
 
@@ -219,7 +259,7 @@ export default function Vacunas() {
                               vacuna_old, lugar_old, nombre_hijo, nombre_hijo_old, padre) => {
         const requestOptions = {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 fecha: fecha,
                 vacuna: vacuna,
@@ -242,12 +282,12 @@ export default function Vacunas() {
     const deleteVacuna = async (fecha, vacuna, nombre_hijo, padre) => {
         const requestOptions = {
             method: 'DELETE',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 fecha: fecha,
                 vacuna: vacuna,
                 nombre_hijo: nombre_hijo,
-                padre: "brea.emanuel@gmail.com"
+                padre: username
             })
         };
         const vacunas = await fetch('/vacuna', requestOptions)
@@ -260,13 +300,13 @@ export default function Vacunas() {
     const createVacuna = async (fecha, vacuna, lugar, nombre_hijo, padre) => {
         const requestOptions = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 fecha: fecha,
                 vacuna: vacuna,
                 lugar: lugar,
                 nombre_hijo: nombre_hijo,
-                padre: "brea.emanuel@gmail.com"
+                padre: username
             })
         };
         const vacunas = await fetch('/vacuna', requestOptions)
@@ -353,9 +393,9 @@ export default function Vacunas() {
                     Datos guardados correctamente!
                 </Alert>
             </Snackbar>
-            <Snackbar open={missing} autoHideDuration={3000} onClose={handleCloseMissing}>
-                <Alert onClose={handleCloseMissing} severity="warning" sx={{width: '100%'}}>
-                    Datos faltantes.
+            <Snackbar open={errorMessage !== ''} autoHideDuration={3000} onClose={() => setErrorMessage('')}>
+                <Alert onClose={() => setErrorMessage('')} severity="warning" sx={{width: '100%'}}>
+                    {errorMessage}
                 </Alert>
             </Snackbar>
 
