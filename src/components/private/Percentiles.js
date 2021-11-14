@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
         width: '50%',
-        marginLeft: theme.spacing(5),
+        margin: theme.spacing(5),
     },
 }));
 
@@ -184,7 +184,7 @@ export default function Percentiles(props) {
                     Consulta de Percentiles
                 </Typography>
                 <Box display="flex">
-                    <Box style={{width: "40%"}}>
+                    <Box style={{width: "70%"}}>
                         <DataGrid
                             style={{backgroundColor: "#f2f6f9"}}
                             autoHeight
@@ -195,55 +195,58 @@ export default function Percentiles(props) {
                             disableSelectionOnClick
                         />
                     </Box>
-                    <Box className={classes.heroContent} style={{width: "10%"}}>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                select
-                                id="hijos"
-                                label="Seleccione un hijo"
-                                name="hijos"
-                                value={currentHijo}
-                                onChange={(e) => setCurrentHijo(e.target.value)}
-                                fullWidth
-                            >
-                                {children.map((child) => (
-                                    <MenuItem key={child} value={child}>
-                                        {child}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid>
+                    <Box style={{width: "30%"}}>
+                        <Box className={classes.heroContent}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    select
+                                    id="hijos"
+                                    label="Seleccione un hijo"
+                                    name="hijos"
+                                    value={currentHijo}
+                                    onChange={(e) => setCurrentHijo(e.target.value)}
+                                    fullWidth
+                                >
+                                    {children.map((child) => (
+                                        <MenuItem key={child} value={child}>
+                                            {child}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                        </Box>
+                        <Box className={classes.heroContent}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    select
+                                    id="sexo"
+                                    label="Seleccione un sexo"
+                                    name="sexo"
+                                    value={currentSexo}
+                                    onChange={(e) => setCurrentSexo(e.target.value)}
+                                    fullWidth
+                                    SelectProps={{
+                                        MenuProps: {
+                                            anchorOrigin: {
+                                                vertical: "bottom",
+                                                horizontal: "left"
+                                            },
+                                            getContentAnchorEl: null
+                                        }
+                                    }}
+                                >
+                                    {sexos.map((sexo) => (
+                                        <MenuItem key={sexo} value={sexo}>
+                                            {sexo}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                        </Box>
                     </Box>
-                    <Box className={classes.heroContent} style={{width: "10%"}}>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                select
-                                id="sexo"
-                                label="Seleccione un sexo"
-                                name="sexo"
-                                value={currentSexo}
-                                onChange={(e) => setCurrentSexo(e.target.value)}
-                                fullWidth
-                                SelectProps={{
-                                    MenuProps: {
-                                        anchorOrigin: {
-                                            vertical: "bottom",
-                                            horizontal: "left"
-                                        },
-                                        getContentAnchorEl: null
-                                    }
-                                }}
-                            >
-                                {sexos.map((sexo) => (
-                                    <MenuItem key={sexo} value={sexo}>
-                                        {sexo}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid>
-                    </Box>
+
 
                 </Box>
             </div>

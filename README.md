@@ -1,6 +1,6 @@
 # Aplicaciones Interactivas - UADE 2021
 
-Projecto de la materia Aplicaciones Interactivas de la Universidad Argentina de la Empresa, segundo cuatrimestre 2021.
+Proyecto de la materia Aplicaciones Interactivas de la Universidad Argentina de la Empresa, segundo cuatrimestre 2021.
 
 ## Objetivo
 
@@ -14,7 +14,7 @@ Projecto de la materia Aplicaciones Interactivas de la Universidad Argentina de 
 ## Requisitos:
 
 - Node ^14.0.0
-- PostgresSQL v12.8
+- PostgresSQL v12 o superior
 
 ## Instalacion:
 ### `npm install`
@@ -22,16 +22,14 @@ Projecto de la materia Aplicaciones Interactivas de la Universidad Argentina de 
 
 ## Crear base de datos
 
-- Instalar PostgresSQL
-- Crear una base de datos, con los datos del archivo .env
-- Correr postgres_localhost-dump.sql
+- Descargar e instalar PostgresSQL v12 o superior
+- Configurar la base con los datos del archivo .env
+- Verificar que la conexion a la base de datos es correcta
+- Correr postgres_localhost-dump.sql para crear las tablas.
 
 ## Correr aplicacion
 
 ### `npm start`
-
-Observacion: Verificar que la conexion a la base de datos es correcta.
-
 
 
 ### Autor: Emanuel Brea
