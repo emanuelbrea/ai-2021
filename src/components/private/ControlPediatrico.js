@@ -193,7 +193,7 @@ export default function ControlPediatrico(props) {
             if (result.success === 'true') {
                 const children = result.data.result;
                 let childrenNames = []
-                for( let i = 0 ; i < children.length ; i++){
+                for (let i = 0; i < children.length; i++) {
                     childrenNames.push(children[i].nombre)
                 }
                 setChildren(childrenNames);

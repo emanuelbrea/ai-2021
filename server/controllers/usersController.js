@@ -30,11 +30,10 @@ exports.postSignup = async (req, res, next) => {
 
             try {
                 const dniUsed = await user.checkDniUsed();
-                if(dniUsed.length > 0){
+                if (dniUsed.length > 0) {
                     message = 'Usuario con DNI ya registrado! Por favor, utilize otro.'
                     status_code = 403;
-                }
-                else{
+                } else {
                     await user.createUser();
                     status_code = 200;
                     success = 'true';
@@ -88,8 +87,10 @@ exports.checkLogin = async (req, res, next) => {
                 status_code = 200;
                 success = 'true';
                 message = 'Inicio de sesion correcto';
-                data = {"token": token, "username": email, "children": helper.addChildren(children),
-                    "name": result[0].nombre};
+                data = {
+                    "token": token, "username": email, "children": helper.addChildren(children),
+                    "name": result[0].nombre
+                };
             }
         }
     } catch (error) {

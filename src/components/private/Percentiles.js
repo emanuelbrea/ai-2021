@@ -47,7 +47,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-
 const sexos = [
     'femenino', 'masculino'
 ];
@@ -71,29 +70,29 @@ export default function Percentiles(props) {
     const [currentSexo, setCurrentSexo] = useState('masculino')
 
     const columns = [
-        {field: 'id', headerName: 'ID', flex:1,},
+        {field: 'id', headerName: 'ID', flex: 1,},
         {
             field: 'fecha',
             headerName: 'Fecha',
-            flex:1,
+            flex: 1,
             type: 'date',
         },
         {
             field: 'peso',
             headerName: 'Peso',
             type: 'number',
-            flex:1,
+            flex: 1,
         },
         {
             field: 'altura',
             headerName: 'Altura',
             type: 'number',
-            flex:1,
+            flex: 1,
         },
         {
             field: 'nombre_hijo',
             headerName: 'Hijo',
-            flex:1,
+            flex: 1,
             type: 'singleSelect',
             valueOptions: children,
         },
@@ -116,7 +115,7 @@ export default function Percentiles(props) {
             if (result.success === 'true') {
                 const children = result.data.result;
                 let childrenNames = []
-                for( let i = 0 ; i < children.length ; i++){
+                for (let i = 0; i < children.length; i++) {
                     childrenNames.push(children[i].nombre)
                 }
                 setChildren(childrenNames);
@@ -150,10 +149,10 @@ export default function Percentiles(props) {
 
     }
 
-    const getSubset = (result) =>{
+    const getSubset = (result) => {
         let rows = []
-        for( let i = 0 ; i< result.length ; i++){
-            const row = (({ fecha, peso, altura,nombre_hijo }) => ({ fecha, peso, altura,nombre_hijo  }))(result[i])
+        for (let i = 0; i < result.length; i++) {
+            const row = (({fecha, peso, altura, nombre_hijo}) => ({fecha, peso, altura, nombre_hijo}))(result[i])
             row['id'] = i
             rows.push(row)
         }
@@ -184,8 +183,8 @@ export default function Percentiles(props) {
                 <Typography component="div" variant="h6" className={classes.title}>
                     Consulta de Percentiles
                 </Typography>
-                <Box display="flex" >
-                    <Box style={{width:"40%"}}>
+                <Box display="flex">
+                    <Box style={{width: "40%"}}>
                         <DataGrid
                             style={{backgroundColor: "#f2f6f9"}}
                             autoHeight
@@ -196,7 +195,7 @@ export default function Percentiles(props) {
                             disableSelectionOnClick
                         />
                     </Box>
-                    <Box className={classes.heroContent} style={{width:"10%"}}>
+                    <Box className={classes.heroContent} style={{width: "10%"}}>
                         <Grid item xs={12}>
                             <TextField
                                 variant="outlined"
@@ -216,7 +215,7 @@ export default function Percentiles(props) {
                             </TextField>
                         </Grid>
                     </Box>
-                    <Box className={classes.heroContent} style={{width:"10%"}}>
+                    <Box className={classes.heroContent} style={{width: "10%"}}>
                         <Grid item xs={12}>
                             <TextField
                                 variant="outlined"
