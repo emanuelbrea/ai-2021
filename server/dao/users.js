@@ -18,6 +18,10 @@ const queryUpdatePassword = `UPDATE users
                              set password=$1
                              where email = $2 RETURNING *`
 
+const queryDni = `SELECT *
+                        FROM users
+                        where dni = $1 `
+
 exports.createUser = function (email, password, nombre, apellido, dni, telefono) {
     return poolPostgres.query(queryCreateUser,
         [email, password, nombre, apellido, dni, telefono]
@@ -39,5 +43,11 @@ exports.updateUser = function (nombre, apellido, dni, telefono, email) {
 exports.updatePassword = function (password, email) {
     return poolPostgres.query(queryUpdatePassword,
         [password, email]
+    );
+}
+
+exports.checkDNI = function (dni) {
+    return poolPostgres.query(queryDni,
+        [dni]
     );
 }

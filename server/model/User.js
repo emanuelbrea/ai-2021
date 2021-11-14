@@ -27,6 +27,16 @@ User.prototype.createUser = async function () {
     }
 };
 
+User.prototype.checkDniUsed = async function () {
+
+    try {
+        const {rows} = await userDao.checkDNI(this.dni);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+
+};
 
 User.userLogin = async function (email) {
     try {

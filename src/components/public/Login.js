@@ -76,7 +76,8 @@ export default function Login() {
                 if (responseJson.success === 'true') {
                     setToken(responseJson.data);
                     history.push('/home',
-                        {username: responseJson.data.username, children: responseJson.data.children});
+                        {username: responseJson.data.username,name: responseJson.data.name ,
+                            children: responseJson.data.children});
                 } else {
                     setErrorMessage('Datos incorrectos')
                 }
