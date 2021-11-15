@@ -150,10 +150,10 @@ export default function ChildrenProfile(props) {
         }
     }
 
-    const handleAddEnfermedad = () => {
+    const handleAddEnfermedad = (newValue) => {
         const enfermedadesHijo = enfermedades[currentNombre];
         const newList = [...enfermedadesHijo];
-        newList.push('');
+        newList.push(newValue);
         setEnfermedades((enfermedades) => ({...enfermedades, [currentNombre]: newList}))
     }
 
@@ -198,6 +198,8 @@ export default function ChildrenProfile(props) {
     const addTab = () => {
         const newChild = children.some(child => child.new !== undefined);
         if (!newChild) {
+            delete alergias[""];
+            delete enfermedades[""];
             const newChildren = [...children];
             newChildren.push(nuevoHijo);
             setChildren(newChildren);
@@ -291,6 +293,8 @@ export default function ChildrenProfile(props) {
             createChildren(currentChild).then(res => {
                 if (res.success === 'true') {
                     currentChild.new = undefined;
+                    setAlergias((alergias) => ({...alergias, [childName]: alergiasHijo}));
+                    setEnfermedades((enfermedades) => ({...enfermedades, [childName]: enfermedadesHijo}));
                 }
             });
         }
@@ -306,19 +310,16 @@ export default function ChildrenProfile(props) {
         }
         const enfermedadesHijo = enfermedades[currentNombre];
         if (enfermedadesHijo !== undefined) {
-            deleteChildrenData('enfermedad', childName);
-            for (let i = 0; i < enfermedadesHijo.length; i++) {
-                createChildrenData('enfermedad', enfermedadesHijo[i], childName);
-            }
+            deleteChildrenData('enfermedad', childName).then(res => {
+                for (let i = 0; i < enfermedadesHijo.length; i++) {
+                    createChildrenData('enfermedad', enfermedadesHijo[i], childName);
+                }
+            })
         }
 
 
         if (currentChild.new === undefined) {
-            editChildren(currentChild).then(res => {
-                if (res.success === 'true') {
-
-                }
-            });
+            editChildren(currentChild);
         }
         setOpenSave(true);
     };
@@ -353,7 +354,7 @@ export default function ChildrenProfile(props) {
                 nacimiento: currentChild.nacimiento,
                 grupoSanguineo: currentChild.grupo_sanguineo,
                 nombre_old: currentNombre,
-                padre: "brea.emanuel@gmail.com"
+                padre: username
             })
         };
         const children = await fetch('/children', requestOptions)
@@ -588,7 +589,7 @@ export default function ChildrenProfile(props) {
                                                     && enfermedades[currentNombre].length === index + 1 &&
                                                     <Tooltip title="Agregar">
                                                         <IconButton aria-label="add"
-                                                                    onClick={(e) => handleAddEnfermedad(e.target.value)}>
+                                                                    onClick={() => handleAddEnfermedad('')}>
                                                             <AddIcon/>
                                                         </IconButton>
                                                     </Tooltip>}

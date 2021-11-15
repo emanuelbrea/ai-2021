@@ -224,6 +224,7 @@ export default function Profile(props) {
                                        type="number"
                                        onChange={e => handleInputChange(e)}
                                        value={estado.dni}
+                                       disabled={true}
                             />
                         </Grid>
                         <Grid item xs={12}>

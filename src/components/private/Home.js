@@ -149,6 +149,7 @@ export default function Home(props) {
     const [selectedIndex, setSelectedIndex] = useState(initialIndex);
     const username = props.location.state.username;
     const children = props.location.state.children;
+    const name = props.location.state.name;
 
     const [firstLogin, setFirstLogin] = useState(true);
 
@@ -189,7 +190,7 @@ export default function Home(props) {
                         </div>
                         <div className="item">
                             <Typography variant="h5" style={{fontSize: '18px'}} color="textSecondary">
-                                Hola, Emanuel
+                                Hola, {name}
                             </Typography>
                         </div>
                     </Container>

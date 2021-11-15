@@ -29,11 +29,17 @@ exports.postSignup = async (req, res, next) => {
             });
 
             try {
-                await user.createUser();
-                status_code = 200;
-                success = 'true';
-                message = 'Usuario registrado correctamente';
-                data = {};
+                const dniUsed = await user.checkDniUsed();
+                if (dniUsed.length > 0) {
+                    message = 'Usuario con DNI ya registrado! Por favor, utilize otro.'
+                    status_code = 403;
+                } else {
+                    await user.createUser();
+                    status_code = 200;
+                    success = 'true';
+                    message = 'Usuario registrado correctamente';
+                }
+
             } catch (error) {
                 switch (error?.code) {
                     case '23505':
@@ -81,7 +87,10 @@ exports.checkLogin = async (req, res, next) => {
                 status_code = 200;
                 success = 'true';
                 message = 'Inicio de sesion correcto';
-                data = {"token": token, "username": email, "children": helper.addChildren(children)};
+                data = {
+                    "token": token, "username": email, "children": helper.addChildren(children),
+                    "name": result[0].nombre
+                };
             }
         }
     } catch (error) {

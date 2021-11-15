@@ -42,10 +42,9 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
         width: '50%',
-        marginLeft: theme.spacing(5),
+        margin: theme.spacing(5),
     },
 }));
-
 
 
 const sexos = [
@@ -55,14 +54,6 @@ const sexos = [
 export default function Percentiles(props) {
     const classes = useStyles();
 
-    const initialState = {
-        edad: 11,
-        peso: 2.3,
-        altura: 44.8,
-        sexo: sexos[0],
-    };
-
-    const [estado, setEstado] = useState(initialState);
     const token = useToken()['token'];
     const username = props.username;
     const [children, setChildren] = useState([]);
@@ -71,38 +62,33 @@ export default function Percentiles(props) {
     const [currentSexo, setCurrentSexo] = useState('masculino')
 
     const columns = [
-        {field: 'id', headerName: 'ID', flex:1,},
+        {field: 'id', headerName: 'ID', flex: 1,},
         {
             field: 'fecha',
             headerName: 'Fecha',
-            flex:1,
+            flex: 1,
             type: 'date',
         },
         {
             field: 'peso',
             headerName: 'Peso',
             type: 'number',
-            flex:1,
+            flex: 1,
         },
         {
             field: 'altura',
             headerName: 'Altura',
             type: 'number',
-            flex:1,
+            flex: 1,
         },
         {
             field: 'nombre_hijo',
             headerName: 'Hijo',
-            flex:1,
+            flex: 1,
             type: 'singleSelect',
             valueOptions: children,
         },
     ];
-
-    const handleInputChange = (e) => {
-        const {name, value} = e.target;
-        setEstado({...estado, [name]: value});
-    };
 
     const convertDate = (controles) => {
         controles.forEach((row) => {
@@ -116,7 +102,7 @@ export default function Percentiles(props) {
             if (result.success === 'true') {
                 const children = result.data.result;
                 let childrenNames = []
-                for( let i = 0 ; i < children.length ; i++){
+                for (let i = 0; i < children.length; i++) {
                     childrenNames.push(children[i].nombre)
                 }
                 setChildren(childrenNames);
@@ -150,10 +136,10 @@ export default function Percentiles(props) {
 
     }
 
-    const getSubset = (result) =>{
+    const getSubset = (result) => {
         let rows = []
-        for( let i = 0 ; i< result.length ; i++){
-            const row = (({ fecha, peso, altura,nombre_hijo }) => ({ fecha, peso, altura,nombre_hijo  }))(result[i])
+        for (let i = 0; i < result.length; i++) {
+            const row = (({fecha, peso, altura, nombre_hijo}) => ({fecha, peso, altura, nombre_hijo}))(result[i])
             row['id'] = i
             rows.push(row)
         }
@@ -184,8 +170,8 @@ export default function Percentiles(props) {
                 <Typography component="div" variant="h6" className={classes.title}>
                     Consulta de Percentiles
                 </Typography>
-                <Box display="flex" >
-                    <Box style={{width:"40%"}}>
+                <Box display="flex">
+                    <Box style={{width: "70%"}}>
                         <DataGrid
                             style={{backgroundColor: "#f2f6f9"}}
                             autoHeight
@@ -196,55 +182,58 @@ export default function Percentiles(props) {
                             disableSelectionOnClick
                         />
                     </Box>
-                    <Box className={classes.heroContent} style={{width:"10%"}}>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                select
-                                id="hijos"
-                                label="Seleccione un hijo"
-                                name="hijos"
-                                value={currentHijo}
-                                onChange={(e) => setCurrentHijo(e.target.value)}
-                                fullWidth
-                            >
-                                {children.map((child) => (
-                                    <MenuItem key={child} value={child}>
-                                        {child}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid>
+                    <Box style={{width: "30%"}}>
+                        <Box className={classes.heroContent}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    select
+                                    id="hijos"
+                                    label="Seleccione un hijo"
+                                    name="hijos"
+                                    value={currentHijo}
+                                    onChange={(e) => setCurrentHijo(e.target.value)}
+                                    fullWidth
+                                >
+                                    {children.map((child) => (
+                                        <MenuItem key={child} value={child}>
+                                            {child}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                        </Box>
+                        <Box className={classes.heroContent}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    select
+                                    id="sexo"
+                                    label="Seleccione un sexo"
+                                    name="sexo"
+                                    value={currentSexo}
+                                    onChange={(e) => setCurrentSexo(e.target.value)}
+                                    fullWidth
+                                    SelectProps={{
+                                        MenuProps: {
+                                            anchorOrigin: {
+                                                vertical: "bottom",
+                                                horizontal: "left"
+                                            },
+                                            getContentAnchorEl: null
+                                        }
+                                    }}
+                                >
+                                    {sexos.map((sexo) => (
+                                        <MenuItem key={sexo} value={sexo}>
+                                            {sexo}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                        </Box>
                     </Box>
-                    <Box className={classes.heroContent} style={{width:"10%"}}>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                select
-                                id="sexo"
-                                label="Seleccione un sexo"
-                                name="sexo"
-                                value={currentSexo}
-                                onChange={(e) => setCurrentSexo(e.target.value)}
-                                fullWidth
-                                SelectProps={{
-                                    MenuProps: {
-                                        anchorOrigin: {
-                                            vertical: "bottom",
-                                            horizontal: "left"
-                                        },
-                                        getContentAnchorEl: null
-                                    }
-                                }}
-                            >
-                                {sexos.map((sexo) => (
-                                    <MenuItem key={sexo} value={sexo}>
-                                        {sexo}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid>
-                    </Box>
+
 
                 </Box>
             </div>
