@@ -54,14 +54,6 @@ const sexos = [
 export default function Percentiles(props) {
     const classes = useStyles();
 
-    const initialState = {
-        edad: 11,
-        peso: 2.3,
-        altura: 44.8,
-        sexo: sexos[0],
-    };
-
-    const [estado, setEstado] = useState(initialState);
     const token = useToken()['token'];
     const username = props.username;
     const [children, setChildren] = useState([]);
@@ -97,11 +89,6 @@ export default function Percentiles(props) {
             valueOptions: children,
         },
     ];
-
-    const handleInputChange = (e) => {
-        const {name, value} = e.target;
-        setEstado({...estado, [name]: value});
-    };
 
     const convertDate = (controles) => {
         controles.forEach((row) => {
