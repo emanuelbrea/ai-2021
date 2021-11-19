@@ -389,6 +389,8 @@ export default function ControlPediatrico(props) {
 
     const validateFields = () => {
         const emptyFields = rows.some((row) =>
+            row.nombre_hijo === undefined || row.medicamentos === undefined
+            || row.estudios === undefined || row.resultados === undefined || row.fecha === undefined ||
             row.nombre_hijo.length === 0 || row.medicamentos.length === 0
             || row.estudios.length === 0 || row.resultados.length === 0 || row.fecha.length === 0
         );
