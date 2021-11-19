@@ -34,7 +34,8 @@
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
     "web-vitals": "^2.1.1",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "multer": "^1.4.3"
   },
   "scripts": {
     "start-front": "react-scripts start",
