@@ -104,7 +104,7 @@ exports.editChildren = async (req, res, next) => {
     let data = {};
     let status_code = 400;
     try {
-        if (!padre || !nombre || !padre) {
+        if (!nombre || !padre) {
             message = 'Valores faltantes';
         } else {
             const result = await Children.editChildren(

@@ -10,6 +10,7 @@ var childrenRouter = require('./routes/children');
 var controlRouter = require('./routes/control');
 var childrenDataRouter = require('./routes/childrenData');
 var vacunasRouter = require('./routes/vacunas');
+var uploadRouter = require('./routes/upload');
 
 var server = express();
 
@@ -23,7 +24,8 @@ server.use(childrenRouter);
 server.use(controlRouter);
 server.use(childrenDataRouter);
 server.use(vacunasRouter);
-
+server.use(uploadRouter);
+server.use('/public', express.static('public'));
 
 // catch 404 and forward to error handler
 server.use(function (req, res, next) {

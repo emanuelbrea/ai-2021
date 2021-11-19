@@ -27,6 +27,7 @@ import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers"
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import useToken from "../routes/useToken";
+import ImageIcon from '@material-ui/icons/Image';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -106,6 +107,7 @@ export default function ChildrenProfile(props) {
     const [openSave, setOpenSave] = useState(false);
     const token = useToken()['token'];
     const username = props.username;
+    const [image, setImage] = useState('');
 
     const nuevoHijo = {
         nombre: '',
@@ -118,6 +120,7 @@ export default function ChildrenProfile(props) {
     const [currentHijo, setCurrentHijo] = useState(0);
     const [alergias, setAlergias] = useState({});
     const [enfermedades, setEnfermedades] = useState({});
+    const [childrenImages, setChildrenImages] = useState({});
     const [currentNombre, setCurrentNombre] = useState(children[currentHijo].nombre);
 
 
@@ -190,8 +193,10 @@ export default function ChildrenProfile(props) {
         setCurrentHijo(newIndex);
         if (children[newIndex].new === undefined) {
             setCurrentNombre(children[newIndex].nombre);
+            setImage(childrenImages[children[newIndex].nombre]);
         } else {
             setCurrentNombre('');
+            setImage('');
         }
     };
 
@@ -205,6 +210,7 @@ export default function ChildrenProfile(props) {
             setChildren(newChildren);
             setCurrentHijo(newChildren.length - 1);
             setCurrentNombre('');
+            setImage('');
         }
     }
 
@@ -219,9 +225,12 @@ export default function ChildrenProfile(props) {
         }
         delete alergias[currentNombre]
         delete enfermedades[currentNombre]
+        delete childrenImages[currentNombre]
         setCurrentHijo(0);
         setChildren(children.filter(child => child.nombre !== currentNombre))
-        setCurrentNombre(children[0].nombre);
+        const newName = children.filter(child => child.nombre !== currentNombre)[0].nombre
+        setCurrentNombre(newName);
+        setImage(childrenImages[newName])
 
     }
 
@@ -267,6 +276,14 @@ export default function ChildrenProfile(props) {
                     setEnfermedades((enfermedades) => ({...enfermedades, [children[i].nombre]: enfermedadesHijo}));
                 }
             });
+            getChildrenImage(children[i].nombre).then(res => {
+                if (res.success === 'true') {
+                    if(i === 0){
+                        setImage(res.data.result);
+                    }
+                    setChildrenImages(childrenImages => ({...childrenImages, [children[i].nombre]: res.data.result}));
+                }
+            })
         }
         return children;
     }
@@ -297,6 +314,7 @@ export default function ChildrenProfile(props) {
                     setEnfermedades((enfermedades) => ({...enfermedades, [childName]: enfermedadesHijo}));
                 }
             });
+            setCurrentNombre(childName);
         }
         const alergiasHijo = alergias[currentNombre];
         if (alergiasHijo !== undefined) {
@@ -450,6 +468,61 @@ export default function ChildrenProfile(props) {
 
         return childrenData;
 
+    }
+
+    const uploadChildrenImage = async (e) => {
+        const image = e.target.files[0]
+        const data = new FormData()
+        data.append('image', image)
+        data.append('padre', username)
+        data.append('nombre_hijo', currentNombre)
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Authorization': token},
+            body: data
+        };
+        const uploaded = await fetch('/image', requestOptions)
+            .then(res => res.json()).then(res => {
+                if (res.success === 'true') {
+                    setChildrenImages(childrenImages => ({...childrenImages, [currentNombre]: res.data.result}));
+                    setImage(res.data.result);
+                }
+            })
+
+        return uploaded;
+    }
+
+    const getChildrenImage = async (nombre_hijo) => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        };
+        const childrenImagen = await fetch('/image?' + new URLSearchParams({
+            nombre_hijo: nombre_hijo,
+            padre: username
+        }), requestOptions).then(res => res.json())
+
+        return childrenImagen;
+    }
+
+    const deleteChildrenImage = async () => {
+        const requestOptions = {
+            method: 'DELETE',
+            headers: {'Authorization': token, 'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                nombre_hijo: currentNombre,
+                padre: username
+            })
+        };
+        await fetch('/image', requestOptions).then(res => res.json()).then(res => {
+            if (res.success === 'true') {
+                delete childrenImages[currentNombre]
+                setImage('');
+            }
+        })
     }
 
 
@@ -608,6 +681,22 @@ export default function ChildrenProfile(props) {
                         >
                             Guardar
                         </Button>
+                        {currentNombre &&
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            component="label"
+                            className={classes.submit}
+                        >
+                            Subir foto
+                            <input
+                                type="file"
+                                hidden
+                                name="image" accept="image/*" multiple={false}
+                                onChange={(e) => uploadChildrenImage(e)}
+                            />
+                        </Button> }
+                        {image && <img src={image} width="100%" alt="img"/>}
                     </form>
                 </div>
             </Container>
@@ -615,6 +704,12 @@ export default function ChildrenProfile(props) {
                 <Fab color="primary" aria-label="add" title="Agregar hijo" onClick={addTab}>
                     <AddIcon/>
                 </Fab>
+                {image &&
+                <Fab style={{backgroundColor: "red", color: "white"}} size="small" aria-label="delete"
+                     title="Eliminar imagen" onClick={deleteChildrenImage}>
+                    <ImageIcon/>
+                </Fab>
+                }
                 {children.length > 1 &&
                 <Fab style={{backgroundColor: "red", color: "white"}} size="small" aria-label="delete"
                      title="Eliminar hijo" onClick={handleClickOpen}>
