@@ -49,10 +49,13 @@ exports.getImagen = async (req, res, next) => {
             const {rows} = await uploadDao.getImage(nombre_hijo, padre);
             if (rows[0]) {
                 message = 'Imagen obtenida correctamente';
-                status_code = 200;
                 data = {result: rows[0].path};
-                success = "true";
             }
+            else{
+                message = 'No hay imagenes para el usuario pedido';
+            }
+            status_code = 200;
+            success = "true";
         }
     } catch (error) {
         message = error.message;

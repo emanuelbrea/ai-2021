@@ -228,8 +228,9 @@ export default function ChildrenProfile(props) {
         delete childrenImages[currentNombre]
         setCurrentHijo(0);
         setChildren(children.filter(child => child.nombre !== currentNombre))
-        setCurrentNombre(children[0].nombre);
-        setImage(childrenImages[children[0].nombre])
+        const newName = children.filter(child => child.nombre !== currentNombre)[0].nombre
+        setCurrentNombre(newName);
+        setImage(childrenImages[newName])
 
     }
 
@@ -276,9 +277,11 @@ export default function ChildrenProfile(props) {
                 }
             });
             getChildrenImage(children[i].nombre).then(res => {
-                if (res.success == 'true') {
+                if (res.success === 'true') {
+                    if(i === 0){
+                        setImage(res.data.result);
+                    }
                     setChildrenImages(childrenImages => ({...childrenImages, [children[i].nombre]: res.data.result}));
-                    setImage(res.data.result);
                 }
             })
         }
@@ -311,6 +314,7 @@ export default function ChildrenProfile(props) {
                     setEnfermedades((enfermedades) => ({...enfermedades, [childName]: enfermedadesHijo}));
                 }
             });
+            setCurrentNombre(childName);
         }
         const alergiasHijo = alergias[currentNombre];
         if (alergiasHijo !== undefined) {
@@ -677,6 +681,7 @@ export default function ChildrenProfile(props) {
                         >
                             Guardar
                         </Button>
+                        {currentNombre &&
                         <Button
                             variant="contained"
                             color="primary"
@@ -690,7 +695,7 @@ export default function ChildrenProfile(props) {
                                 name="image" accept="image/*" multiple={false}
                                 onChange={(e) => uploadChildrenImage(e)}
                             />
-                        </Button>
+                        </Button> }
                         {image && <img src={image} width="100%" alt="img"/>}
                     </form>
                 </div>
